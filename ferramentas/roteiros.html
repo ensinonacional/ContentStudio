@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roteiros - ContentStudio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styles.css">
+    <script src="../js/auth-block.js"></script>
+    <style>
+        /* Estilos especificos da ferramenta */
+        .textarea-highlight {
+            background: linear-gradient(135deg, var(--accent-glow), transparent);
+            border-color: var(--accent);
+        }
+
+        .video-block {
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-md);
+            margin-bottom: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .video-header {
+            background: var(--gradient-primary);
+            padding: 12px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .video-title {
+            font-weight: 600;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .video-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: var(--radius-lg);
+            font-size: 0.8rem;
+            color: white;
+        }
+
+        .video-body {
+            padding: 18px;
+        }
+
+        .scene {
+            margin-bottom: 18px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .scene:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .scene-row {
+            margin-bottom: 10px;
+        }
+
+        .scene-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .scene-label::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+
+        .scene-label.hook { color: var(--warning); }
+        .scene-label.hook::before { background: var(--warning); }
+        .scene-label.visual { color: #c084fc; }
+        .scene-label.visual::before { background: #c084fc; }
+        .scene-label.narration { color: var(--accent-light); }
+        .scene-label.narration::before { background: var(--accent-light); }
+        .scene-label.cta { color: var(--success); }
+        .scene-label.cta::before { background: var(--success); }
+
+        .scene-text {
+            font-size: 0.9rem;
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            background: var(--bg-secondary);
+            border-left: 3px solid var(--border);
+        }
+
+        .scene-text.hook { border-color: var(--warning); font-weight: 500; }
+        .scene-text.visual { border-color: #c084fc; font-style: italic; color: var(--text-secondary); }
+        .scene-text.narration { border-color: var(--accent-light); }
+        .scene-text.cta { border-color: var(--success); font-weight: 500; }
+
+        .scene-time {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 10px;
+        }
+
+        .script-header {
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .script-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .script-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .script-meta span {
+            background: var(--bg-tertiary);
+            padding: 4px 10px;
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .ai-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--gradient-secondary);
+            padding: 4px 10px;
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: white;
+            margin-left: 8px;
+        }
+
+        .ai-badge svg {
+            width: 12px;
+            height: 12px;
+            fill: white;
+        }
+
+        .important-box {
+            background: linear-gradient(135deg, var(--accent-glow), transparent);
+            border: 1px solid var(--accent);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .important-box-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--accent-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .important-box-content {
+            font-size: 0.9rem;
+            color: var(--text-primary);
+        }
+
+        /* Refine Panel */
+        .refine-panel {
+            display: none;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            margin-top: 24px;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+
+        .refine-panel.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .refine-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 24px;
+            background: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .refine-title {
+            font-size: 1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .refine-title svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--accent-light);
+        }
+
+        .refine-counter {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            background: var(--bg-input);
+            padding: 6px 14px;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+        }
+
+        .refine-counter span {
+            color: var(--accent-light);
+            font-weight: 700;
+        }
+
+        .refine-body {
+            padding: 24px;
+        }
+
+        .refine-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 18px 0 20px;
+        }
+
+        .refine-chip {
+            padding: 10px 18px;
+            background: var(--bg-input);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-lg);
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .refine-chip:hover {
+            border-color: var(--accent);
+            color: var(--text-primary);
+        }
+
+        .refine-chip.selected {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+        }
+
+        .refine-actions {
+            display: flex;
+            gap: 14px;
+            margin-top: 20px;
+        }
+
+        .panel-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        @media (max-width: 600px) {
+            .config-group.span-2 {
+                grid-column: span 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Hero -->
+        <section class="hero" style="padding: 40px 0;">
+            <h1 class="hero-title" style="font-size: 2.5rem;">Roteiros</h1>
+            <p class="hero-subtitle">Transforme textos em roteiros profissionais prontos para gravar</p>
+        </section>
+
+        <!-- Config Section -->
+        <div class="card mb-3">
+            <!-- Abas de Configuracao -->
+            <div class="config-tabs">
+                <button class="config-tab active" onclick="switchConfigTab('basico')" id="tabBasico">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                    Basico
+                </button>
+                <button class="config-tab" onclick="switchConfigTab('avancado')" id="tabAvancado">
+                    <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                    Avancado
+                </button>
+            </div>
+
+            <!-- Aba Basico -->
+            <div class="config-tab-content active" id="contentBasico">
+                <div class="config-row">
+                    <div class="config-group">
+                        <label class="config-label">Tipo de conteudo</label>
+                        <select id="tipoConteudo">
+                            <option value="stories">Stories</option>
+                            <option value="reels">Reels / TikTok</option>
+                            <option value="youtube">YouTube</option>
+                            <option value="venda">Video de Venda</option>
+                            <option value="curso">Aula / Curso</option>
+                            <option value="institucional">Institucional</option>
+                            <option value="podcast">Podcast</option>
+                        </select>
+                    </div>
+                    <div class="config-group">
+                        <label class="config-label">Tom</label>
+                        <select id="tomConteudo">
+                            <option value="conversacional">Conversacional</option>
+                            <option value="amigavel">Amigavel</option>
+                            <option value="profissional">Profissional</option>
+                            <option value="energetico">Energetico</option>
+                            <option value="inspirador">Inspirador</option>
+                            <option value="educativo">Educativo</option>
+                            <option value="urgente">Urgente</option>
+                        </select>
+                    </div>
+                    <div class="config-group">
+                        <label class="config-label">Videos</label>
+                        <div class="input-row">
+                            <input type="number" id="numVideos" value="1" min="1" max="10">
+                            <span class="input-suffix">video(s)</span>
+                        </div>
+                    </div>
+                    <div class="config-group">
+                        <label class="config-label">Duracao</label>
+                        <div class="input-row">
+                            <input type="number" id="duracaoVideo" value="60" min="15" max="600" step="15">
+                            <span class="input-suffix">segundos</span>
+                        </div>
+                    </div>
+                    <div class="config-group">
+                        <label class="config-label">Formato de saida</label>
+                        <select id="formatoSaida">
+                            <option value="completo">Completo (Visual + Narracao)</option>
+                            <option value="script">So Script (apenas fala)</option>
+                            <option value="cenario">Cenario e Narrativa</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Aba Avancado -->
+            <div class="config-tab-content" id="contentAvancado">
+                <div class="config-row">
+                    <div class="config-group">
+                        <label class="config-label">Seu nome / Canal</label>
+                        <input type="text" id="nomeCanal" placeholder="Ex: Maria Silva">
+                    </div>
+                    <div class="config-group">
+                        <label class="config-label">Assunto do video</label>
+                        <input type="text" id="assuntoVideo" placeholder="Ex: Marketing Digital">
+                    </div>
+                    <div class="config-group">
+                        <label class="config-label">Plataforma</label>
+                        <select id="redeSocial">
+                            <option value="ensinonacional" selected>Ensino Nacional</option>
+                            <option value="instagram">Instagram</option>
+                            <option value="tiktok">TikTok</option>
+                            <option value="youtube">YouTube</option>
+                            <option value="linkedin">LinkedIn</option>
+                            <option value="facebook">Facebook</option>
+                            <option value="twitter">X / Twitter</option>
+                            <option value="outro">Outro</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="section-title">Elementos do Roteiro</div>
+
+                <div class="config-row">
+                    <div class="config-group">
+                        <label class="config-label">Tipo de gancho</label>
+                        <select id="tipoGancho">
+                            <option value="nenhum" selected>Sem gancho</option>
+                            <option value="duvida">Gerar duvida</option>
+                            <option value="desafio">Desafiar o espectador</option>
+                            <option value="storytelling">Storytelling / Historia</option>
+                            <option value="estatistica">Estatistica impactante</option>
+                            <option value="pergunta">Pergunta direta</option>
+                            <option value="controverso">Afirmacao controversa</option>
+                            <option value="problema">Apresentar problema</option>
+                            <option value="curiosidade">Despertar curiosidade</option>
+                            <option value="promessa">Promessa de resultado</option>
+                            <option value="erro">Erro comum</option>
+                            <option value="segredo">Revelar segredo</option>
+                            <option value="urgencia">Criar urgencia</option>
+                        </select>
+                    </div>
+                    <div class="config-group">
+                        <label class="config-label">Chamada para acao (CTA)</label>
+                        <select id="tipoCTA">
+                            <option value="nenhum" selected>Sem CTA</option>
+                            <option value="comentar">Comenta aqui</option>
+                            <option value="curtir">Curte esse video</option>
+                            <option value="compartilhar">Compartilha com alguem</option>
+                            <option value="seguir">Segue para mais</option>
+                            <option value="inscrever">Se inscreve no canal</option>
+                            <option value="salvar">Salva para depois</option>
+                            <option value="link">Clica no link da bio</option>
+                            <option value="proxima">Veja a proxima aula</option>
+                            <option value="ativar">Ativa as notificacoes</option>
+                            <option value="baixar">Baixa o material</option>
+                            <option value="comprar">Garanta o seu agora</option>
+                            <option value="contato">Chama no direct/WhatsApp</option>
+                            <option value="marcar">Marca um amigo</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="config-row">
+                    <div class="config-group span-2">
+                        <label class="config-label highlight">Pontos cruciais - O que nao pode faltar</label>
+                        <textarea id="pontosCruciais" class="textarea-highlight" placeholder="Ex: Mencionar o desconto de 50%, mostrar o antes e depois, falar do prazo limitado..."></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Translator -->
+        <div class="translator">
+            <div class="panel">
+                <div class="panel-header">
+                    <span class="panel-title">Texto original</span>
+                    <div class="panel-actions">
+                        <button class="btn-icon" onclick="colarTexto()" title="Colar">
+                            <svg viewBox="0 0 24 24"><path d="M19 2h-4.18C14.4.84 13.3 0 12 0c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm7 18H5V4h2v3h10V4h2v16z"/></svg>
+                        </button>
+                        <button class="btn-icon" onclick="limparTexto()" title="Limpar">
+                            <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <textarea class="main-textarea" id="inputText" placeholder="Cole aqui o texto que voce quer transformar em roteiro...
+
+Pode ser uma ideia, um artigo, uma transcricao ou qualquer conteudo que voce queira adaptar para video."></textarea>
+                </div>
+            </div>
+
+            <div class="center-action">
+                <button class="btn-convert" onclick="gerarRoteiro()" title="Gerar Roteiro" id="btnConvert">
+                    <svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
+                </button>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <span class="panel-title">Roteiro gerado</span>
+                    <div class="panel-actions">
+                        <button class="btn-icon" onclick="copiarRoteiro()" title="Copiar">
+                            <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="output-area" id="outputArea">
+                        <div class="output-placeholder">
+                            <svg viewBox="0 0 24 24"><path d="M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4h-4z"/></svg>
+                            <p>Seu roteiro aparecera aqui</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Refine Panel -->
+        <div class="refine-panel" id="refinePanel">
+            <div class="refine-header">
+                <div class="refine-title">
+                    <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                    Aprimorar Roteiro
+                </div>
+                <div class="refine-counter">
+                    Refinamentos: <span id="refineCount">0</span>/3
+                </div>
+            </div>
+            <div class="refine-body">
+                <p class="text-muted">Selecione o tipo de melhoria ou descreva o que deseja ajustar:</p>
+
+                <div class="refine-options" id="refineOptions">
+                    <div class="refine-chip" data-refine="mais-curto">Mais curto</div>
+                    <div class="refine-chip" data-refine="mais-longo">Mais detalhado</div>
+                    <div class="refine-chip" data-refine="mais-informal">Mais informal</div>
+                    <div class="refine-chip" data-refine="mais-formal">Mais formal</div>
+                    <div class="refine-chip" data-refine="mais-energia">Mais energia</div>
+                    <div class="refine-chip" data-refine="mais-calmo">Mais calmo</div>
+                    <div class="refine-chip" data-refine="mais-vendedor">Mais persuasivo</div>
+                    <div class="refine-chip" data-refine="mais-educativo">Mais educativo</div>
+                    <div class="refine-chip" data-refine="gancho-forte">Gancho mais forte</div>
+                    <div class="refine-chip" data-refine="cta-forte">CTA mais forte</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Ou descreva a melhoria:</label>
+                    <textarea id="refineCustom" placeholder="Ex: Quero que o gancho seja mais impactante..."></textarea>
+                </div>
+
+                <div class="refine-actions">
+                    <button class="btn btn-secondary" onclick="fecharRefine()">Cancelar</button>
+                    <button class="btn btn-primary" id="btnApplyRefine" onclick="aplicarRefinamento()">
+                        <svg viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+                        Aplicar Melhoria
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/common.js"></script>
+    <script src="../js/config.js"></script>
+    <script>
+        // Renderizar header
+        renderHeader('roteiros');
+
+        // ==================== CONTROLE DE ABAS ====================
+
+        function switchConfigTab(tabName) {
+            document.querySelectorAll('.config-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.config-tab-content').forEach(content => content.classList.remove('active'));
+
+            if (tabName === 'basico') {
+                document.getElementById('tabBasico').classList.add('active');
+                document.getElementById('contentBasico').classList.add('active');
+            } else {
+                document.getElementById('tabAvancado').classList.add('active');
+                document.getElementById('contentAvancado').classList.add('active');
+            }
+        }
+
+        // ==================== CONFIGURACOES ====================
+
+        // ==================== CONFIGURACOES DE TIPOS DE VIDEO ====================
+        const tiposVideoConfig = {
+            stories: {
+                nome: 'Stories',
+                descricao: 'Conexao e proximidade',
+                instrucoes: `STORIES - E como se voce tivesse pegando o celular pra contar algo pra um amigo.
+Sem producao, sem frescura. So voce sendo voce.
+Pode mostrar bastidor, contar do seu dia, dar sua opiniao.
+A pessoa do outro lado quer sentir que ta conversando com voce de verdade.`
+            },
+            reels: {
+                nome: 'Reels / TikTok',
+                descricao: 'Rapido e direto',
+                instrucoes: `REELS - Aqui cada segundo conta.
+Comeca ja no assunto, sem enrolacao.
+Uma ideia so por video. Frase curta, pensamento claro.
+Se a pessoa nao entender em 3 segundos o que voce ta falando, ela ja foi embora.`
+            },
+            youtube: {
+                nome: 'YouTube',
+                descricao: 'Mais espaco pra desenvolver',
+                instrucoes: `YOUTUBE - Aqui voce tem mais tempo.
+Pode explicar com calma, dar contexto, contar historias.
+Mas ainda assim, nada de enrolacao. Respeita o tempo da pessoa.
+Desenvolve o raciocinio de forma organizada.`
+            },
+            venda: {
+                nome: 'Video de Venda',
+                descricao: 'Mostrar a solucao',
+                instrucoes: `VENDA - A pessoa tem um problema. Voce tem a solucao.
+Mostra que voce entende a dor dela. Nao fica empurrando produto.
+Fala dos beneficios, do que vai mudar na vida dela.
+Sem pressao fake. So clareza sobre o que voce oferece.`
+            },
+            curso: {
+                nome: 'Aula / Curso',
+                descricao: 'Ensinar de verdade',
+                instrucoes: `AULA - O texto ja tem os detalhes tecnicos. O aluno ja leu.
+Seu trabalho e trazer o que e interessante, o que surpreende.
+Fala como professor que ama o assunto.
+Cada video tem que ensinar algo que a pessoa vai lembrar.`
+            },
+            institucional: {
+                nome: 'Institucional',
+                descricao: 'Profissional mas acessivel',
+                instrucoes: `INSTITUCIONAL - Transmite confianca sem ser robotico.
+Mostra o valor da empresa de forma clara.
+Linguagem mais cuidada, mas ainda humana.
+Nada de frases corporativas vazias.`
+            },
+            podcast: {
+                nome: 'Podcast',
+                descricao: 'Conversa entre amigos',
+                instrucoes: `PODCAST - E uma conversa.
+Pode divagar um pouco, contar historia, dar opiniao.
+Ritmo mais tranquilo, como se tivesse tomando um cafe.
+Aprofunda no que e interessante.`
+            }
+        };
+
+        // ==================== CONFIGURACOES DE TONS ====================
+        const tonsConfig = {
+            conversacional: {
+                nome: 'Conversacional',
+                instrucoes: `Fala como se tivesse batendo papo. Nada forcado.
+Usa "voce", "a gente". Frases do jeito que a gente fala no dia a dia.
+Proximo mas sem forcar intimidade.`
+            },
+            amigavel: {
+                nome: 'Amigavel',
+                instrucoes: `Acolhedor, de boa. Como um amigo explicando algo.
+Palavras leves, positivas. Mostra que ta ali pra ajudar.
+Sem julgamento, sem pressao.`
+            },
+            profissional: {
+                nome: 'Profissional',
+                instrucoes: `Linguagem mais cuidada, mas ainda humana.
+Transmite competencia sem ser frio.
+Direto, claro, sem enrolacao.`
+            },
+            energetico: {
+                nome: 'Energetico',
+                instrucoes: `Ritmo mais acelerado. Frases curtas.
+Transmite entusiasmo genuino, nao forcado.
+Empolgacao de verdade, nao de vendedor.`
+            },
+            inspirador: {
+                nome: 'Inspirador',
+                instrucoes: `Eleva a pessoa, mostra possibilidades.
+Nao e autoajuda cliche. E mostrar que da pra fazer.
+Conecta com o que importa de verdade.`
+            },
+            educativo: {
+                nome: 'Educativo',
+                instrucoes: `Tom de professor que ama o que ensina.
+Explica de forma clara, com exemplos reais.
+Paciente, didatico, mas sem tratar a pessoa como burra.`
+            },
+            urgente: {
+                nome: 'Urgente',
+                instrucoes: `Direto, sem rodeio. Mostra por que isso importa agora.
+Nao e desespero fake. E clareza sobre prioridade.
+Vai no ponto, sem enrolacao.`
+            }
+        };
+
+        const ganchosConfig = {
+            nenhum: { texto: '', visual: '' },
+            duvida: { texto: 'Voce sabia que a maioria das pessoas erra nisso?', visual: 'Expressao de duvida' },
+            desafio: { texto: 'Aposto que voce nao consegue fazer isso...', visual: 'Expressao desafiadora' },
+            storytelling: { texto: 'Deixa eu te contar uma historia...', visual: 'Close no rosto' },
+            estatistica: { texto: '90% das pessoas nao sabem disso...', visual: 'Numero grande na tela' },
+            pergunta: { texto: 'Voce ja se perguntou por que isso acontece?', visual: 'Expressao curiosa' },
+            controverso: { texto: 'Isso que vou falar vai contra tudo que voce acredita...', visual: 'Expressao seria' },
+            problema: { texto: 'Se voce tem esse problema, presta atencao...', visual: 'X vermelho' },
+            curiosidade: { texto: 'O que eu vou mostrar agora vai te surpreender...', visual: 'Suspense' },
+            promessa: { texto: 'Em 60 segundos voce vai aprender algo que vai mudar seu jogo...', visual: 'Contagem regressiva' },
+            erro: { texto: 'Esse e o erro numero 1 que as pessoas cometem...', visual: 'Alerta' },
+            segredo: { texto: 'Vou revelar um segredo que poucos conhecem...', visual: 'Gesto de silencio' },
+            urgencia: { texto: 'Para tudo que voce esta fazendo agora...', visual: 'Gesto de pare' }
+        };
+
+        const ctasConfig = {
+            nenhum: { texto: '', visual: '' },
+            comentar: { texto: 'Comenta aqui o que voce achou!', visual: 'Icone de comentario' },
+            curtir: { texto: 'Deixa o like se esse conteudo te ajudou!', visual: 'Coracao animado' },
+            compartilhar: { texto: 'Manda pra alguem que precisa ver isso!', visual: 'Icone de compartilhar' },
+            seguir: { texto: 'Segue aqui pra nao perder nenhum conteudo!', visual: 'Botao seguir' },
+            inscrever: { texto: 'Se inscreve no canal e ativa o sininho!', visual: 'Botao inscrever-se' },
+            salvar: { texto: 'Salva esse video pra ver depois!', visual: 'Icone de salvar' },
+            link: { texto: 'Link na bio pra voce saber mais!', visual: 'Seta apontando pra cima' },
+            proxima: { texto: 'Na proxima aula eu vou te mostrar o passo seguinte...', visual: 'Preview' },
+            ativar: { texto: 'Ativa as notificacoes pra nao perder nada!', visual: 'Sino animado' },
+            baixar: { texto: 'Baixa o material gratuito no link!', visual: 'Icone de download' },
+            comprar: { texto: 'Garanta o seu agora antes que acabe!', visual: 'Botao de compra' },
+            contato: { texto: 'Me chama no direct que eu te ajudo!', visual: 'Icone de mensagem' },
+            marcar: { texto: 'Marca aquele amigo que precisa ver isso!', visual: 'Icone de arroba' }
+        };
+
+        // ==================== GERACAO DE ROTEIRO ====================
+
+        async function gerarRoteiro() {
+            const texto = document.getElementById('inputText').value.trim();
+            const outputArea = document.getElementById('outputArea');
+            const btnConvert = document.getElementById('btnConvert');
+
+            if (!texto) {
+                outputArea.innerHTML = `
+                    <div class="output-placeholder">
+                        <svg viewBox="0 0 24 24" style="fill: var(--warning);"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                        <p>Insira um texto para gerar o roteiro</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Verificar API
+            if (!APIConfig.key) {
+                outputArea.innerHTML = `
+                    <div class="output-placeholder">
+                        <svg viewBox="0 0 24 24" style="fill: var(--error);"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                        <p style="color: var(--error);">API nao configurada</p>
+                        <p class="text-muted" style="font-size: 0.85rem;">Entre em contato com o administrador</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Coletar configuracoes
+            const nomeCanal = document.getElementById('nomeCanal').value.trim();
+            const assunto = document.getElementById('assuntoVideo').value.trim();
+            const tipo = document.getElementById('tipoConteudo').value;
+            const tom = document.getElementById('tomConteudo').value;
+            const rede = document.getElementById('redeSocial').value;
+            const numVideos = parseInt(document.getElementById('numVideos').value) || 1;
+            const duracaoVideo = parseInt(document.getElementById('duracaoVideo').value) || 60;
+            const tipoGancho = document.getElementById('tipoGancho').value;
+            const tipoCTA = document.getElementById('tipoCTA').value;
+            const pontosCruciais = document.getElementById('pontosCruciais').value.trim();
+            const formatoSaida = document.getElementById('formatoSaida').value;
+
+            // Mostrar loading
+            btnConvert.classList.add('generating');
+            outputArea.innerHTML = `
+                <div class="output-placeholder">
+                    <div class="loading" style="font-size: 3rem;">🤖</div>
+                    <p>Gerando roteiro com IA...</p>
+                    <p class="text-muted" style="font-size: 0.85rem;">Isso pode levar alguns segundos</p>
+                </div>
+            `;
+
+            const tipoGanchoTexto = tipoGancho !== 'nenhum' ? ganchosConfig[tipoGancho].texto : '';
+            const tipoCTATexto = tipoCTA !== 'nenhum' ? ctasConfig[tipoCTA].texto : '';
+            const tipoVideoInfo = tiposVideoConfig[tipo] || tiposVideoConfig.reels;
+            const tomInfo = tonsConfig[tom] || tonsConfig.conversacional;
+
+            const systemPrompt = `Você é um professor que domina o assunto e ama ensinar. Você fala com autoridade, mas de forma acessível. Não é distante nem arrogante, é alguém que sabe do que está falando e quer genuinamente que o outro aprenda.
+
+=== SEU ESTILO ===
+
+Pense em um professor universitário que é referência na área, mas que consegue explicar de forma clara. Ele tem credibilidade porque conhece profundamente o assunto, e tem carisma porque fala de forma natural e envolvente.
+
+Você transmite confiança. Quando você fala, a pessoa sente que está aprendendo com alguém que realmente entende.
+
+=== TIPO DE VÍDEO: ${tipoVideoInfo.nome.toUpperCase()} ===
+${tipoVideoInfo.instrucoes}
+
+=== TOM: ${tomInfo.nome.toUpperCase()} ===
+${tomInfo.instrucoes}
+
+=== REGRAS DE ESCRITA ===
+
+1. ACENTOS CORRETOS - OBRIGATÓRIO
+   - "você", "é", "então", "também", "aí", "até"
+   - Escreva português correto, isso transmite credibilidade
+
+2. FALA FLUIDA PARA TELEPROMPTER
+   - Vírgulas criam pausas curtas e dão ritmo
+   - A cada 2-3 frases, PULE UMA LINHA para respirar
+   - O texto precisa fluir naturalmente quando lido em voz alta
+
+3. CONECTIVOS NATURAIS
+   - "e" para conectar ideias
+   - "é" quando for verbo ser
+   - "então" para consequência
+   - "mas" para contraste
+   - "só que" para ressalva
+   - "o interessante é que" para destacar
+   - "e isso é importante porque" para dar peso
+
+4. TOM DE AUTORIDADE ACESSÍVEL
+   - Fale com segurança, você domina o assunto
+   - Seja claro e direto, sem rodeios
+   - Natural mas profissional
+   - PROIBIDO: gírias infantis como "danada", "massa", "show", "top"
+   - PROIBIDO: excesso de informalidade que tire a credibilidade
+   - Seja o professor que inspira respeito e admiração
+
+5. CONTEÚDO DE VALOR
+   - Cada frase precisa ensinar algo ou construir o raciocínio
+   - Traga informações que surpreendem e enriquecem
+   - Faça conexões que o aluno não faria sozinho
+   - O aluno deve terminar pensando "isso fez sentido, aprendi algo"
+
+6. SEM CLICHÊS
+   - Nada de "Você sabia que..."
+   - Nada de "Já parou pra pensar..."
+   - Nada de "Nesse vídeo vou te ensinar..."
+   - Comece direto no conteúdo, com autoridade
+
+=== TEMPO ===
+- 130-150 palavras = 1 minuto falando
+- ${duracaoVideo} segundos = ENTRE ${Math.round(duracaoVideo * 2.15)} E ${Math.round(duracaoVideo * 2.5)} PALAVRAS
+- CONTE as palavras e respeite o limite
+
+=== EXEMPLO DE NARRATIVA CORRETA ===
+
+"A maioria das pessoas comete um erro comum aqui, e é um erro que faz toda a diferença no resultado final.
+
+O ponto é o seguinte: quando você entende como isso funciona na essência, percebe que a aplicação é muito mais simples do que parece. E isso não é teoria, é o que separa quem consegue resultado de quem fica travado.
+
+Tem um detalhe técnico que poucas pessoas conhecem. Esse detalhe explica por que algumas abordagens funcionam e outras não. E quando você entende isso, sua forma de pensar o assunto muda completamente."
+
+PERCEBA: Tom de autoridade, conteúdo de valor, fala fluida com pausas, acentos corretos, sem gírias infantis.
+
+Responda em português brasileiro COM ACENTOS.
+Retorne APENAS JSON, sem markdown.`;
+
+            const userPrompt = `TEXTO BASE PARA TRANSFORMAR EM ROTEIRO:
+"""
+${texto}
+"""
+
+CONFIGURAÇÕES:
+- Tipo de vídeo: ${tipoVideoInfo.nome}
+- Tom: ${tomInfo.nome}
+- Quantidade: ${numVideos} vídeo(s)
+- Duração: ${duracaoVideo} segundos cada
+- PALAVRAS POR VÍDEO: entre ${Math.round(duracaoVideo * 2.15)} e ${Math.round(duracaoVideo * 2.5)} palavras (CONTE!)
+${tipoGancho !== 'nenhum' ? '- Gancho: ' + tipoGancho : '- SEM gancho - começa direto no conteúdo'}
+${tipoCTA !== 'nenhum' ? '- CTA: ' + tipoCTA : '- SEM CTA - termina quando acabar o assunto'}
+${pontosCruciais ? '- Incluir obrigatoriamente: ' + pontosCruciais : ''}
+
+COMO ESCREVER O ROTEIRO:
+
+Você é um professor que domina esse assunto. Vai explicar com autoridade, mas de forma clara e envolvente. O aluno precisa sentir que está aprendendo com alguém que realmente entende.
+
+REGRAS OBRIGATÓRIAS:
+
+1. ACENTOS CORRETOS
+   - "você", "é", "então", "também", "aí", "até"
+   - Português correto transmite credibilidade
+
+2. FALA FLUIDA PARA TELEPROMPTER
+   - Vírgulas criam pausas curtas e dão ritmo
+   - A cada 2-3 frases, PULE UMA LINHA para respirar
+   - Conectivos: "e", "é", "então", "mas", "só que", "o interessante é que"
+
+3. TOM DE AUTORIDADE
+   - Fale com segurança, você domina o assunto
+   - Natural mas profissional
+   - SEM gírias infantis (danada, massa, show, top)
+   - SEM informalidade excessiva
+
+4. CONTEÚDO DE VALOR
+   - Complemente o texto base, não repita o óbvio
+   - Traga informações que surpreendem e enriquecem
+   - Cada frase constrói o raciocínio
+
+5. QUANTIDADE: ${Math.round(duracaoVideo * 2.15)} a ${Math.round(duracaoVideo * 2.5)} palavras
+
+EXEMPLO DE NARRATIVA CORRETA:
+
+"Quando falamos de [assunto], existe um ponto que a maioria das pessoas não percebe. E é justamente esse ponto que faz a diferença no resultado.
+
+O que acontece é o seguinte: [explicação clara]. Quando você entende isso, a aplicação se torna muito mais simples. Não é teoria, é o que funciona na prática.
+
+E tem um detalhe técnico importante aqui. Esse detalhe explica por que algumas abordagens funcionam e outras não."
+
+PERCEBA: Tom de autoridade, conteúdo de valor, fala fluida, acentos corretos, profissional mas acessível.
+
+Retorne em JSON:
+{
+    "videos": [
+        {
+            "numero": 1,
+            "titulo": "[POSIÇÃO] Título descritivo",
+            "narrativa": "Texto com autoridade, fluido, acentos corretos. Entre ${Math.round(duracaoVideo * 2.15)} e ${Math.round(duracaoVideo * 2.5)} palavras.",
+            "visual": "Sugestão do que mostrar na tela",
+            "duracao": ${duracaoVideo}
+        }
+    ]
+}
+
+Posições para o título: [ABERTURA], [FUNDAMENTO], [APROFUNDANDO], [NA PRÁTICA], [FECHAMENTO]`;
+
+            try {
+                const resposta = await chamarAPI(systemPrompt, userPrompt);
+
+                // Parsear JSON
+                let dados;
+                try {
+                    const jsonLimpo = resposta.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+                    dados = JSON.parse(jsonLimpo);
+                } catch (e) {
+                    throw new Error('A IA retornou um formato invalido. Tente novamente.');
+                }
+
+                // Renderizar
+                let roteiro = `
+                    <div class="script-header">
+                        <div class="script-title">${assunto || 'Roteiro de Video'}${nomeCanal ? ' - ' + nomeCanal : ''}<span class="ai-badge"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>IA</span></div>
+                        <div class="script-meta">
+                            <span>${numVideos} video${numVideos > 1 ? 's' : ''}</span>
+                            <span>${duracaoVideo}s cada</span>
+                            <span>${capitalize(tipo)}</span>
+                            <span>${capitalize(rede)}</span>
+                        </div>
+                    </div>
+                `;
+
+                if (pontosCruciais) {
+                    roteiro += `
+                        <div class="important-box">
+                            <div class="important-box-title">Nao esquecer</div>
+                            <div class="important-box-content">${pontosCruciais}</div>
+                        </div>
+                    `;
+                }
+
+                videoCounter = 0; // Reseta contador para novos vídeos
+                dados.videos.forEach(video => {
+                    roteiro += renderizarVideoNovo(video, formatoSaida);
+                });
+
+                outputArea.innerHTML = roteiro;
+                mostrarPainelRefine();
+
+            } catch (error) {
+                outputArea.innerHTML = `
+                    <div class="output-placeholder">
+                        <svg viewBox="0 0 24 24" style="fill: var(--error);"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                        <p style="color: var(--error);">Erro ao gerar roteiro</p>
+                        <p class="text-muted" style="font-size: 0.85rem;">${error.message}</p>
+                        <button onclick="gerarRoteiro()" class="btn btn-primary mt-2">Tentar novamente</button>
+                    </div>
+                `;
+            } finally {
+                btnConvert.classList.remove('generating');
+            }
+        }
+
+        function renderizarVideo(video, duracao, formato) {
+            let html = '';
+
+            video.cenas.forEach(cena => {
+                const labelClass = cena.tipo === 'gancho' ? 'hook' : cena.tipo === 'cta' ? 'cta' : 'narration';
+                const labelText = cena.tipo === 'gancho' ? 'Gancho' : cena.tipo === 'cta' ? 'CTA' : 'Narracao';
+
+                if (formato === 'script') {
+                    html += `
+                        <div class="scene">
+                            <div class="scene-row">
+                                <div class="scene-label ${labelClass}">${labelText}</div>
+                                <div class="scene-text ${labelClass}">"${cena.fala}"</div>
+                            </div>
+                        </div>
+                    `;
+                } else if (formato === 'cenario') {
+                    html += `
+                        <div class="scene">
+                            <div class="scene-row">
+                                <div class="scene-label visual">Cenario</div>
+                                <div class="scene-text visual">${cena.visual}</div>
+                            </div>
+                            <div class="scene-row">
+                                <div class="scene-label ${labelClass}">Narrativa</div>
+                                <div class="scene-text ${labelClass}">"${cena.fala}"</div>
+                            </div>
+                            <div class="scene-time">⏱ ${cena.duracao}s</div>
+                        </div>
+                    `;
+                } else {
+                    html += `
+                        <div class="scene">
+                            <div class="scene-row">
+                                <div class="scene-label ${labelClass}">${labelText}</div>
+                                <div class="scene-text ${labelClass}">"${cena.fala}"</div>
+                            </div>
+                            <div class="scene-row">
+                                <div class="scene-label visual">Visual</div>
+                                <div class="scene-text visual">${cena.visual}</div>
+                            </div>
+                            <div class="scene-time">⏱ ${cena.duracao}s</div>
+                        </div>
+                    `;
+                }
+            });
+
+            const formatoLabel = formato === 'script' ? 'So Script' : formato === 'cenario' ? 'Cenario + Narrativa' : 'Completo';
+
+            return `
+                <div class="video-block">
+                    <div class="video-header">
+                        <span class="video-title">Video ${video.numero}</span>
+                        <span class="video-badge">${duracao}s - ${formatoLabel}</span>
+                    </div>
+                    <div class="video-body">${html}</div>
+                </div>
+            `;
+        }
+
+        function capitalize(s) {
+            return s.charAt(0).toUpperCase() + s.slice(1);
+        }
+
+        let videoCounter = 0;
+
+        function renderizarVideoNovo(video, formato) {
+            videoCounter++;
+            const videoId = `video-narrativa-${videoCounter}`;
+            const titulo = video.titulo || `Video ${video.numero}`;
+            const narrativa = video.narrativa || '';
+            const visual = video.visual || '';
+            const duracao = video.duracao || 60;
+
+            let html = '';
+
+            if (formato === 'script') {
+                // Só a narrativa
+                html = `
+                    <div class="scene">
+                        <div class="scene-row">
+                            <div class="scene-label narration">Roteiro</div>
+                            <div class="scene-text narration" id="${videoId}" style="white-space: pre-wrap; line-height: 1.7;">${narrativa}</div>
+                        </div>
+                    </div>
+                `;
+            } else if (formato === 'cenario') {
+                // Visual + Narrativa
+                html = `
+                    <div class="scene">
+                        <div class="scene-row">
+                            <div class="scene-label visual">Visual</div>
+                            <div class="scene-text visual">${visual}</div>
+                        </div>
+                        <div class="scene-row" style="margin-top: 12px;">
+                            <div class="scene-label narration">Roteiro</div>
+                            <div class="scene-text narration" id="${videoId}" style="white-space: pre-wrap; line-height: 1.7;">${narrativa}</div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                // Completo
+                html = `
+                    <div class="scene">
+                        <div class="scene-row">
+                            <div class="scene-label narration">Roteiro</div>
+                            <div class="scene-text narration" id="${videoId}" style="white-space: pre-wrap; line-height: 1.7;">${narrativa}</div>
+                        </div>
+                        <div class="scene-row" style="margin-top: 12px;">
+                            <div class="scene-label visual">Visual</div>
+                            <div class="scene-text visual">${visual}</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            return `
+                <div class="video-block">
+                    <div class="video-header">
+                        <span class="video-title">${titulo}</span>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <button onclick="copiarNarrativa('${videoId}')" style="padding: 6px 12px; background: rgba(255,255,255,0.2); border: none; border-radius: 6px; color: white; cursor: pointer; font-size: 0.8rem; display: flex; align-items: center; gap: 5px;">
+                                <svg viewBox="0 0 24 24" width="14" height="14" fill="white"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                                Copiar
+                            </button>
+                            <span class="video-badge">${duracao}s</span>
+                        </div>
+                    </div>
+                    <div class="video-body">${html}</div>
+                </div>
+            `;
+        }
+
+        function copiarNarrativa(id) {
+            const elemento = document.getElementById(id);
+            if (elemento) {
+                const texto = elemento.innerText;
+                navigator.clipboard.writeText(texto).then(() => {
+                    mostrarNotificacao('Roteiro copiado!', 'success');
+                });
+            }
+        }
+
+        // ==================== FUNCOES AUXILIARES ====================
+
+        function limparTexto() {
+            document.getElementById('inputText').value = '';
+            document.getElementById('outputArea').innerHTML = `
+                <div class="output-placeholder">
+                    <svg viewBox="0 0 24 24"><path d="M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4h-4z"/></svg>
+                    <p>Seu roteiro aparecera aqui</p>
+                </div>
+            `;
+            document.getElementById('refinePanel').classList.remove('active');
+        }
+
+        async function colarTexto() {
+            try {
+                const texto = await navigator.clipboard.readText();
+                document.getElementById('inputText').value = texto;
+            } catch (err) {
+                mostrarNotificacao('Nao foi possivel acessar a area de transferencia', 'error');
+            }
+        }
+
+        function copiarRoteiro() {
+            const outputArea = document.getElementById('outputArea');
+            const texto = outputArea.innerText;
+            if (texto.includes('Seu roteiro aparecera aqui')) {
+                mostrarNotificacao('Gere um roteiro primeiro!', 'warning');
+                return;
+            }
+            navigator.clipboard.writeText(texto).then(() => {
+                mostrarNotificacao('Roteiro copiado!', 'success');
+            });
+        }
+
+        // ==================== REFINAMENTO ====================
+
+        let refineCount = 0;
+        let selectedRefineOption = null;
+
+        function mostrarPainelRefine() {
+            const panel = document.getElementById('refinePanel');
+            if (!panel.classList.contains('active')) {
+                refineCount = 0;
+                updateRefineUI();
+            }
+            panel.classList.add('active');
+        }
+
+        function fecharRefine() {
+            document.getElementById('refinePanel').classList.remove('active');
+            limparSelecaoRefine();
+        }
+
+        function limparSelecaoRefine() {
+            document.querySelectorAll('.refine-chip').forEach(chip => chip.classList.remove('selected'));
+            document.getElementById('refineCustom').value = '';
+            selectedRefineOption = null;
+        }
+
+        function updateRefineUI() {
+            document.getElementById('refineCount').textContent = refineCount;
+            const btn = document.getElementById('btnApplyRefine');
+            if (refineCount >= 3) {
+                btn.disabled = true;
+                btn.innerHTML = 'Limite atingido';
+            }
+        }
+
+        // Eventos dos chips
+        document.querySelectorAll('.refine-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                document.querySelectorAll('.refine-chip').forEach(c => c.classList.remove('selected'));
+                chip.classList.add('selected');
+                selectedRefineOption = chip.dataset.refine;
+            });
+        });
+
+        async function aplicarRefinamento() {
+            if (refineCount >= 3) {
+                mostrarNotificacao('Limite de refinamentos atingido', 'warning');
+                return;
+            }
+
+            const customText = document.getElementById('refineCustom').value.trim();
+            if (!selectedRefineOption && !customText) {
+                mostrarNotificacao('Selecione uma opcao ou descreva a melhoria', 'warning');
+                return;
+            }
+
+            const outputArea = document.getElementById('outputArea');
+            const roteiroAtual = outputArea.innerText;
+            const btn = document.getElementById('btnApplyRefine');
+
+            btn.disabled = true;
+            btn.innerHTML = '<div class="loading">⏳</div> Refinando...';
+
+            // Mapear opcoes de refinamento para instrucoes claras
+            const refinamentosMap = {
+                'mais-curto': 'Reduza o texto, mantendo apenas o essencial. Corte palavras desnecessarias e va direto ao ponto.',
+                'mais-longo': 'Expanda o texto com mais detalhes, exemplos e explicacoes. Aprofunde mais no assunto.',
+                'mais-informal': 'Torne mais casual e proximo. Use linguagem do dia a dia, como uma conversa entre amigos.',
+                'mais-formal': 'Torne mais profissional e polido. Use linguagem mais elaborada e seria.',
+                'mais-energia': 'Adicione mais energia e entusiasmo. Frases mais curtas, palavras de acao, mais dinamismo.',
+                'mais-calmo': 'Torne mais tranquilo e sereno. Ritmo mais lento, frases mais longas, tom mais reflexivo.',
+                'mais-vendedor': 'Torne mais persuasivo. Destaque beneficios, crie desejo, adicione urgencia de forma etica.',
+                'mais-educativo': 'Foque mais em ensinar. Explique melhor os conceitos, use mais exemplos praticos.',
+                'gancho-forte': 'Crie um inicio mais impactante que prenda a atencao imediatamente.',
+                'cta-forte': 'Crie um final mais forte com chamada para acao clara e motivadora.'
+            };
+
+            const instrucaoRefinamento = selectedRefineOption
+                ? refinamentosMap[selectedRefineOption]
+                : customText;
+
+            const systemPrompt = `Voce e um roteirista especialista em refinar roteiros de video.
+
+IMPORTANTE: O usuario pode descrever o que quer de forma simples ou leiga. Interprete o pedido e aplique a melhoria de forma profissional.
+
+Exemplos de interpretacao:
+- "ficou ruim o comeco" = melhore a abertura, crie algo mais impactante
+- "muito grande" = reduza, va direto ao ponto
+- "parece robo" = torne mais natural e humano
+- "sem graca" = adicione mais personalidade e energia
+- "confuso" = simplifique e organize melhor as ideias
+- "travado" = melhore o ritmo, adicione virgulas e pausas naturais
+- "muito formal" = torne mais casual e proximo
+- "nao convence" = torne mais persuasivo
+- "chato" = torne mais envolvente e dinamico
+
+Mantenha o formato do roteiro e aplique a melhoria solicitada.`;
+
+            const userPrompt = `MELHORIA SOLICITADA: ${instrucaoRefinamento}
+
+ROTEIRO ATUAL:
+${roteiroAtual}
+
+Aplique a melhoria mantendo o mesmo formato JSON. Retorne apenas o JSON refinado.`;
+
+            try {
+                const resposta = await chamarAPI(systemPrompt, userPrompt);
+                const jsonLimpo = resposta.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+                const dados = JSON.parse(jsonLimpo);
+
+                let roteiro = outputArea.innerHTML.split('<div class="video-block">')[0];
+                dados.videos.forEach(video => {
+                    roteiro += renderizarVideo(video, 60, 'completo');
+                });
+
+                outputArea.innerHTML = roteiro;
+                refineCount++;
+                updateRefineUI();
+                limparSelecaoRefine();
+                mostrarNotificacao('Roteiro refinado!', 'success');
+
+            } catch (error) {
+                mostrarNotificacao('Erro ao refinar: ' + error.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg> Aplicar Melhoria`;
+            }
+        }
+    </script>
+</body>
+</html>

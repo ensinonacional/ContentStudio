@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teleprompter - ContentStudio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styles.css">
+    <script src="../js/auth-block.js"></script>
+    <style>
+        .teleprompter-container {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 24px;
+            margin-top: 24px;
+        }
+
+        @media (max-width: 900px) {
+            .teleprompter-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .teleprompter-screen {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            min-height: 500px;
+            position: relative;
+        }
+
+        .teleprompter-display {
+            height: 500px;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .teleprompter-text {
+            font-size: 32px;
+            line-height: 1.8;
+            text-align: center;
+            transition: transform 0.1s linear;
+            padding-bottom: 400px;
+        }
+
+        .teleprompter-text.mirror {
+            transform: scaleX(-1);
+        }
+
+        .teleprompter-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: linear-gradient(180deg, var(--bg-card) 0%, transparent 100%);
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .teleprompter-overlay-bottom {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: linear-gradient(0deg, var(--bg-card) 0%, transparent 100%);
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .teleprompter-highlight {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 60px;
+            transform: translateY(-50%);
+            border-top: 2px solid var(--accent);
+            border-bottom: 2px solid var(--accent);
+            background: var(--accent-glow);
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .controls-panel {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            padding: 24px;
+        }
+
+        .control-section {
+            margin-bottom: 24px;
+        }
+
+        .control-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .control-title {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .play-controls {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .btn-play {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            box-shadow: 0 4px 20px rgba(124, 58, 237, 0.4);
+        }
+
+        .btn-play:hover {
+            transform: scale(1.1);
+        }
+
+        .btn-play svg {
+            width: 28px;
+            height: 28px;
+            fill: white;
+        }
+
+        .btn-control {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-md);
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            color: var(--text-secondary);
+        }
+
+        .btn-control:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+        }
+
+        .btn-control svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        .slider-group {
+            margin-bottom: 20px;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .slider-label span {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .slider-value {
+            font-weight: 600;
+            color: var(--accent-light);
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: var(--bg-tertiary);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--accent);
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(124, 58, 237, 0.4);
+        }
+
+        .toggle-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .toggle-group:last-child {
+            border-bottom: none;
+        }
+
+        .toggle-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .toggle {
+            position: relative;
+            width: 48px;
+            height: 26px;
+            background: var(--bg-tertiary);
+            border-radius: 13px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .toggle.active {
+            background: var(--accent);
+        }
+
+        .toggle::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.2s;
+        }
+
+        .toggle.active::after {
+            transform: translateX(22px);
+        }
+
+        .text-input-section {
+            margin-top: 24px;
+        }
+
+        .text-input-section textarea {
+            min-height: 150px;
+        }
+
+        .fullscreen-btn {
+            width: 100%;
+            margin-top: 16px;
+        }
+
+        /* Fullscreen mode */
+        .teleprompter-fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 9999;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .teleprompter-fullscreen .teleprompter-display {
+            width: 100%;
+            height: 100vh;
+            padding: 60px;
+        }
+
+        .teleprompter-fullscreen .teleprompter-text {
+            font-size: 48px;
+        }
+
+        .teleprompter-fullscreen .exit-fullscreen {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            padding: 12px 24px;
+            border-radius: var(--radius-md);
+            color: white;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .teleprompter-fullscreen .fullscreen-controls {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10000;
+            display: flex;
+            gap: 16px;
+            background: rgba(0,0,0,0.7);
+            padding: 16px 24px;
+            border-radius: var(--radius-xl);
+        }
+
+        .status-indicator {
+            text-align: center;
+            padding: 12px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-md);
+            margin-bottom: 20px;
+        }
+
+        .status-indicator.playing {
+            background: var(--accent-glow);
+            border: 1px solid var(--accent);
+        }
+
+        .status-text {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .status-indicator.playing .status-text {
+            color: var(--accent-light);
+        }
+
+        .shortcut-hint {
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 16px;
+        }
+
+        .shortcut-hint kbd {
+            background: var(--bg-tertiary);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Hero -->
+        <section class="hero" style="padding: 40px 0;">
+            <h1 class="hero-title" style="font-size: 2.5rem;">Teleprompter</h1>
+            <p class="hero-subtitle">Ferramenta para leitura durante gravacao. Controle velocidade, tamanho e mais.</p>
+        </section>
+
+        <!-- Teleprompter -->
+        <div class="teleprompter-container">
+            <!-- Tela principal -->
+            <div class="teleprompter-screen" id="teleprompterScreen">
+                <div class="teleprompter-overlay"></div>
+                <div class="teleprompter-highlight"></div>
+                <div class="teleprompter-display">
+                    <div class="teleprompter-text" id="teleprompterText">
+                        Digite ou cole seu texto no painel ao lado para comecar a usar o teleprompter.
+
+                        Use os controles para ajustar velocidade, tamanho da fonte e ativar o modo espelho se necessario.
+
+                        Pressione ESPACO para iniciar/pausar a rolagem.
+                    </div>
+                </div>
+                <div class="teleprompter-overlay-bottom"></div>
+            </div>
+
+            <!-- Painel de controles -->
+            <div class="controls-panel">
+                <div class="status-indicator" id="statusIndicator">
+                    <span class="status-text" id="statusText">Pausado</span>
+                </div>
+
+                <div class="play-controls">
+                    <button class="btn-control" onclick="resetTeleprompter()" title="Reiniciar">
+                        <svg viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
+                    </button>
+                    <button class="btn-play" onclick="togglePlay()" id="btnPlay" title="Play/Pause">
+                        <svg viewBox="0 0 24 24" id="playIcon"><path d="M8 5v14l11-7z"/></svg>
+                    </button>
+                    <button class="btn-control" onclick="toggleFullscreen()" title="Tela cheia">
+                        <svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+                    </button>
+                </div>
+
+                <div class="control-section">
+                    <div class="control-title">Velocidade</div>
+                    <div class="slider-group">
+                        <div class="slider-label">
+                            <span>Rolagem</span>
+                            <span class="slider-value" id="speedValue">1.0x</span>
+                        </div>
+                        <input type="range" id="speedSlider" min="0.5" max="3" step="0.1" value="1" onchange="updateSpeed()">
+                    </div>
+                </div>
+
+                <div class="control-section">
+                    <div class="control-title">Aparencia</div>
+                    <div class="slider-group">
+                        <div class="slider-label">
+                            <span>Tamanho da fonte</span>
+                            <span class="slider-value" id="fontValue">32px</span>
+                        </div>
+                        <input type="range" id="fontSlider" min="20" max="72" step="2" value="32" onchange="updateFontSize()">
+                    </div>
+                </div>
+
+                <div class="control-section">
+                    <div class="control-title">Opcoes</div>
+                    <div class="toggle-group">
+                        <span class="toggle-label">Modo espelho</span>
+                        <div class="toggle" id="toggleMirror" onclick="toggleMirror()"></div>
+                    </div>
+                    <div class="toggle-group">
+                        <span class="toggle-label">Fundo escuro</span>
+                        <div class="toggle active" id="toggleDark" onclick="toggleDarkBg()"></div>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary fullscreen-btn" onclick="toggleFullscreen()">
+                    <svg viewBox="0 0 24 24" width="20" height="20"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+                    Tela Cheia
+                </button>
+
+                <div class="shortcut-hint">
+                    Pressione <kbd>ESPACO</kbd> para play/pause
+                </div>
+            </div>
+        </div>
+
+        <!-- Entrada de texto -->
+        <div class="card text-input-section">
+            <div class="card-header">
+                <span class="card-title">Seu Texto</span>
+                <button class="btn btn-secondary btn-sm" onclick="limparTexto()">Limpar</button>
+            </div>
+            <textarea id="inputText" placeholder="Cole ou digite aqui o texto que voce vai ler durante a gravacao...
+
+Dica: Quebre o texto em paragrafos curtos para facilitar a leitura."></textarea>
+            <button class="btn btn-primary mt-2" onclick="carregarTexto()">Carregar Texto</button>
+        </div>
+    </div>
+
+    <script src="../js/common.js"></script>
+    <script>
+        // Renderizar header
+        renderHeader('teleprompter');
+
+        // Estado do teleprompter
+        let isPlaying = false;
+        let scrollPosition = 0;
+        let scrollSpeed = 1;
+        let fontSize = 32;
+        let isMirror = false;
+        let isDarkBg = true;
+        let animationFrame = null;
+        let isFullscreen = false;
+
+        const textElement = document.getElementById('teleprompterText');
+        const statusIndicator = document.getElementById('statusIndicator');
+        const statusText = document.getElementById('statusText');
+        const playIcon = document.getElementById('playIcon');
+
+        function togglePlay() {
+            isPlaying = !isPlaying;
+            updatePlayState();
+
+            if (isPlaying) {
+                startScrolling();
+            } else {
+                stopScrolling();
+            }
+        }
+
+        function updatePlayState() {
+            if (isPlaying) {
+                playIcon.innerHTML = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
+                statusIndicator.classList.add('playing');
+                statusText.textContent = 'Reproduzindo';
+            } else {
+                playIcon.innerHTML = '<path d="M8 5v14l11-7z"/>';
+                statusIndicator.classList.remove('playing');
+                statusText.textContent = 'Pausado';
+            }
+        }
+
+        function startScrolling() {
+            const scroll = () => {
+                if (!isPlaying) return;
+
+                scrollPosition += scrollSpeed * 0.5;
+                textElement.style.transform = `translateY(-${scrollPosition}px)` + (isMirror ? ' scaleX(-1)' : '');
+
+                // Verificar se chegou ao fim
+                const maxScroll = textElement.scrollHeight - 200;
+                if (scrollPosition >= maxScroll) {
+                    isPlaying = false;
+                    updatePlayState();
+                    return;
+                }
+
+                animationFrame = requestAnimationFrame(scroll);
+            };
+
+            animationFrame = requestAnimationFrame(scroll);
+        }
+
+        function stopScrolling() {
+            if (animationFrame) {
+                cancelAnimationFrame(animationFrame);
+            }
+        }
+
+        function resetTeleprompter() {
+            isPlaying = false;
+            scrollPosition = 0;
+            textElement.style.transform = isMirror ? 'scaleX(-1)' : 'none';
+            updatePlayState();
+            stopScrolling();
+        }
+
+        function updateSpeed() {
+            const slider = document.getElementById('speedSlider');
+            scrollSpeed = parseFloat(slider.value);
+            document.getElementById('speedValue').textContent = scrollSpeed.toFixed(1) + 'x';
+        }
+
+        function updateFontSize() {
+            const slider = document.getElementById('fontSlider');
+            fontSize = parseInt(slider.value);
+            textElement.style.fontSize = fontSize + 'px';
+            document.getElementById('fontValue').textContent = fontSize + 'px';
+        }
+
+        function toggleMirror() {
+            isMirror = !isMirror;
+            document.getElementById('toggleMirror').classList.toggle('active');
+            textElement.style.transform = `translateY(-${scrollPosition}px)` + (isMirror ? ' scaleX(-1)' : '');
+        }
+
+        function toggleDarkBg() {
+            isDarkBg = !isDarkBg;
+            document.getElementById('toggleDark').classList.toggle('active');
+            const screen = document.getElementById('teleprompterScreen');
+            if (isDarkBg) {
+                screen.style.background = 'var(--bg-card)';
+                textElement.style.color = 'var(--text-primary)';
+            } else {
+                screen.style.background = '#ffffff';
+                textElement.style.color = '#000000';
+            }
+        }
+
+        function carregarTexto() {
+            const texto = document.getElementById('inputText').value.trim();
+            if (texto) {
+                textElement.innerHTML = texto.replace(/\n/g, '<br><br>');
+                resetTeleprompter();
+                mostrarNotificacao('Texto carregado!', 'success');
+            } else {
+                mostrarNotificacao('Digite ou cole um texto primeiro', 'warning');
+            }
+        }
+
+        function limparTexto() {
+            document.getElementById('inputText').value = '';
+            textElement.innerHTML = 'Digite ou cole seu texto no painel ao lado para comecar a usar o teleprompter.';
+            resetTeleprompter();
+        }
+
+        function toggleFullscreen() {
+            const screen = document.getElementById('teleprompterScreen');
+
+            if (!isFullscreen) {
+                // Entrar em tela cheia
+                screen.classList.add('teleprompter-fullscreen');
+
+                // Adicionar botao de sair e controles
+                screen.innerHTML += `
+                    <button class="exit-fullscreen" onclick="toggleFullscreen()">Sair (ESC)</button>
+                    <div class="fullscreen-controls">
+                        <button class="btn-control" onclick="resetTeleprompter()" title="Reiniciar">
+                            <svg viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
+                        </button>
+                        <button class="btn-play" onclick="togglePlay()" title="Play/Pause">
+                            <svg viewBox="0 0 24 24" id="playIconFs">${isPlaying ? '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>' : '<path d="M8 5v14l11-7z"/>'}</svg>
+                        </button>
+                        <button class="btn-control" onclick="toggleFullscreen()" title="Sair">
+                            <svg viewBox="0 0 24 24"><path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/></svg>
+                        </button>
+                    </div>
+                `;
+
+                isFullscreen = true;
+
+                // Tentar API de tela cheia do navegador
+                if (screen.requestFullscreen) {
+                    screen.requestFullscreen();
+                }
+            } else {
+                // Sair de tela cheia
+                screen.classList.remove('teleprompter-fullscreen');
+
+                // Remover controles extras
+                const exitBtn = screen.querySelector('.exit-fullscreen');
+                const fsControls = screen.querySelector('.fullscreen-controls');
+                if (exitBtn) exitBtn.remove();
+                if (fsControls) fsControls.remove();
+
+                isFullscreen = false;
+
+                if (document.exitFullscreen) {
+                    document.exitFullscreen().catch(() => {});
+                }
+            }
+        }
+
+        // Atalho de teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' && e.target.tagName !== 'TEXTAREA' && e.target.tagName !== 'INPUT') {
+                e.preventDefault();
+                togglePlay();
+            }
+            if (e.code === 'Escape' && isFullscreen) {
+                toggleFullscreen();
+            }
+        });
+
+        // Sair de tela cheia quando o navegador sair
+        document.addEventListener('fullscreenchange', () => {
+            if (!document.fullscreenElement && isFullscreen) {
+                toggleFullscreen();
+            }
+        });
+    </script>
+</body>
+</html>

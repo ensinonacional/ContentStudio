@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atualizar Curso - ContentStudio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styles.css">
+    <script src="../js/auth-block.js"></script>
+    <style>
+        .upload-area {
+            border: 2px dashed var(--border);
+            border-radius: var(--radius-xl);
+            padding: 48px;
+            text-align: center;
+            background: var(--bg-tertiary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .upload-area:hover {
+            border-color: var(--accent);
+            background: var(--accent-glow);
+        }
+
+        .upload-area.dragover {
+            border-color: var(--accent);
+            background: var(--accent-glow);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+        }
+
+        .upload-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .upload-hint {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .or-divider {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin: 24px 0;
+            color: var(--text-muted);
+        }
+
+        .or-divider::before,
+        .or-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .conversion-preview {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+        .preview-header {
+            background: var(--bg-tertiary);
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .preview-title {
+            font-weight: 600;
+        }
+
+        .preview-body {
+            padding: 24px;
+        }
+
+        .content-block {
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin-bottom: 16px;
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+        }
+
+        .content-block:last-child {
+            margin-bottom: 0;
+        }
+
+        .block-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 1.3rem;
+        }
+
+        .block-icon.reels {
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+        }
+
+        .block-icon.texto {
+            background: linear-gradient(135deg, #3b82f6, #06b6d4);
+        }
+
+        .block-icon.carrossel {
+            background: linear-gradient(135deg, #ec4899, #8b5cf6);
+        }
+
+        .block-icon.quiz {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .block-content {
+            flex: 1;
+        }
+
+        .block-type {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--accent-light);
+            margin-bottom: 4px;
+        }
+
+        .block-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .block-text {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .block-reason {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-style: italic;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid var(--border);
+        }
+
+        .modulo-divider {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 12px 20px;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            margin: 24px 0 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .stat-box {
+            background: var(--bg-tertiary);
+            padding: 16px;
+            border-radius: var(--radius-md);
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-light);
+        }
+
+        .stat-text {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: var(--bg-tertiary);
+            padding: 16px;
+            border-radius: var(--radius-md);
+            margin-bottom: 20px;
+        }
+
+        .file-icon {
+            font-size: 2rem;
+        }
+
+        .file-details {
+            flex: 1;
+        }
+
+        .file-name {
+            font-weight: 600;
+        }
+
+        .file-size {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Hero -->
+        <section class="hero" style="padding: 40px 0;">
+            <h1 class="hero-title" style="font-size: 2.5rem;">Atualizar Curso</h1>
+            <p class="hero-subtitle">Converta seu material existente (PDF, Word, transcricao) para o formato de curso Instagram</p>
+        </section>
+
+        <!-- Input -->
+        <div class="card mb-3">
+            <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+                <div class="upload-icon">📄</div>
+                <div class="upload-text">Arraste um arquivo ou clique para selecionar</div>
+                <div class="upload-hint">PDF, Word, TXT (max 10MB)</div>
+                <input type="file" id="fileInput" accept=".pdf,.doc,.docx,.txt" style="display: none;" onchange="handleFileSelect(event)">
+            </div>
+
+            <div class="or-divider">ou cole o texto diretamente</div>
+
+            <div class="form-group">
+                <label class="form-label">Conteudo do curso existente</label>
+                <textarea id="inputText" style="min-height: 200px;" placeholder="Cole aqui o conteudo do seu curso, transcricao de video, ou qualquer material que voce quer converter para o formato Instagram...
+
+O sistema vai analisar o conteudo e sugerir como dividir em:
+- Reels (videos curtos)
+- Carrosseis (slides informativos)
+- Textos (explicacoes)
+- Quizzes (revisao)"></textarea>
+            </div>
+
+            <div class="config-row mt-3">
+                <div class="config-group">
+                    <label class="config-label">Numero de modulos</label>
+                    <select id="numModulos">
+                        <option value="auto">Automatico (baseado no conteudo)</option>
+                        <option value="2">2 modulos</option>
+                        <option value="3">3 modulos</option>
+                        <option value="4">4 modulos</option>
+                        <option value="5">5 modulos</option>
+                    </select>
+                </div>
+                <div class="config-group">
+                    <label class="config-label">Incluir quiz</label>
+                    <select id="incluirQuiz">
+                        <option value="sim">Sim, gerar quiz automaticamente</option>
+                        <option value="nao">Nao incluir quiz</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn btn-primary btn-lg mt-3" onclick="converterCurso()">
+                <svg viewBox="0 0 24 24" width="20" height="20"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+                Analisar e Converter
+            </button>
+        </div>
+
+        <!-- Output -->
+        <div id="outputArea">
+            <div class="card">
+                <div class="output-placeholder">
+                    <svg viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+                    <p>O curso convertido aparecera aqui</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/common.js"></script>
+    <script>
+        // Renderizar header
+        renderHeader('atualizar-curso');
+
+        // Drag and drop
+        const uploadArea = document.getElementById('uploadArea');
+
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            if (file) {
+                processFile(file);
+            }
+        });
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                processFile(file);
+            }
+        }
+
+        function processFile(file) {
+            // Por enquanto, apenas TXT e leitura basica
+            if (file.type === 'text/plain' || file.name.endsWith('.txt')) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    document.getElementById('inputText').value = e.target.result;
+                    mostrarNotificacao('Arquivo carregado!', 'success');
+                };
+                reader.readAsText(file);
+            } else {
+                mostrarNotificacao('Por enquanto, apenas arquivos TXT sao suportados. Cole o texto diretamente.', 'warning');
+            }
+        }
+
+        async function converterCurso() {
+            const texto = document.getElementById('inputText').value.trim();
+            const outputArea = document.getElementById('outputArea');
+            const numModulos = document.getElementById('numModulos').value;
+            const incluirQuiz = document.getElementById('incluirQuiz').value === 'sim';
+
+            if (!texto) {
+                outputArea.innerHTML = `
+                    <div class="card">
+                        <div class="output-placeholder">
+                            <svg viewBox="0 0 24 24" style="fill: var(--warning);"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                            <p>Insira o conteudo do curso para converter</p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            if (!APIConfig.key) {
+                outputArea.innerHTML = `
+                    <div class="card">
+                        <div class="output-placeholder">
+                            <svg viewBox="0 0 24 24" style="fill: var(--error);"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                            <p style="color: var(--error);">API nao configurada</p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            // Loading
+            outputArea.innerHTML = `
+                <div class="card">
+                    <div class="output-placeholder">
+                        <div class="loading" style="font-size: 3rem;">🔄</div>
+                        <p>Analisando e convertendo conteudo...</p>
+                        <p class="text-muted" style="font-size: 0.85rem;">Isso pode levar alguns segundos</p>
+                    </div>
+                </div>
+            `;
+
+            const systemPrompt = `Voce e um especialista em transformar conteudo tradicional em cursos formato Instagram.
+Analise o conteudo e converta para o modelo: Reels, Carrosseis, Textos e Quizzes.
+Sempre responda em portugues brasileiro.
+Retorne APENAS o JSON solicitado, sem markdown.`;
+
+            const userPrompt = `Analise e converta este conteudo para formato de curso Instagram:
+
+CONTEUDO ORIGINAL:
+${texto.substring(0, 8000)}
+
+CONFIGURACOES:
+- Numero de modulos: ${numModulos === 'auto' ? 'Determine automaticamente baseado no conteudo' : numModulos}
+- Incluir quiz: ${incluirQuiz ? 'Sim' : 'Nao'}
+
+FORMATOS DISPONIVEIS:
+1. REELS - Para conceitos que funcionam bem em video curto (30-60s)
+2. CARROSSEL - Para listas, passo a passo, dicas (5-10 slides)
+3. TEXTO - Para explicacoes mais longas ou teoricas
+4. QUIZ - Para revisao de conceitos (apenas se solicitado)
+
+INSTRUCOES:
+1. Analise o conteudo e identifique os temas principais
+2. Divida em modulos logicos
+3. Para cada trecho, decida o melhor formato e justifique
+4. Reescreva o conteudo adaptado para cada formato
+5. ${incluirQuiz ? 'Crie 3-5 perguntas de quiz por modulo' : 'Nao inclua quiz'}
+
+Retorne um JSON no formato:
+{
+    "analise": "breve analise do conteudo original",
+    "total_palavras_original": 1000,
+    "modulos": [
+        {
+            "numero": 1,
+            "titulo": "titulo do modulo",
+            "blocos": [
+                {
+                    "tipo": "reels|carrossel|texto",
+                    "titulo": "titulo do bloco",
+                    "conteudo": "conteudo adaptado para o formato",
+                    "motivo": "por que este formato foi escolhido",
+                    "duracao": "30s ou 5 slides ou 2 min leitura"
+                }
+            ],
+            "quiz": ${incluirQuiz ? '[{"pergunta": "pergunta", "opcoes": ["a", "b", "c", "d"], "resposta": "a"}]' : 'null'}
+        }
+    ],
+    "estatisticas": {
+        "total_reels": 0,
+        "total_carrosseis": 0,
+        "total_textos": 0,
+        "total_quizzes": 0
+    }
+}`;
+
+            try {
+                const resposta = await chamarAPI(systemPrompt, userPrompt, 6000);
+                const jsonLimpo = resposta.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+                const dados = JSON.parse(jsonLimpo);
+
+                let html = `
+                    <div class="conversion-preview">
+                        <div class="preview-header">
+                            <span class="preview-title">Analise do Conteudo</span>
+                        </div>
+                        <div class="preview-body">
+                            <p class="mb-3">${dados.analise}</p>
+                            <div class="stats-row">
+                                <div class="stat-box">
+                                    <div class="stat-number">${dados.total_palavras_original || '?'}</div>
+                                    <div class="stat-text">Palavras originais</div>
+                                </div>
+                                <div class="stat-box">
+                                    <div class="stat-number">${dados.modulos.length}</div>
+                                    <div class="stat-text">Modulos</div>
+                                </div>
+                                <div class="stat-box">
+                                    <div class="stat-number">${dados.estatisticas?.total_reels || 0}</div>
+                                    <div class="stat-text">Reels</div>
+                                </div>
+                                <div class="stat-box">
+                                    <div class="stat-number">${dados.estatisticas?.total_carrosseis || 0}</div>
+                                    <div class="stat-text">Carrosseis</div>
+                                </div>
+                                <div class="stat-box">
+                                    <div class="stat-number">${dados.estatisticas?.total_textos || 0}</div>
+                                    <div class="stat-text">Textos</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                dados.modulos.forEach(modulo => {
+                    html += `
+                        <div class="modulo-divider">
+                            <span>Modulo ${modulo.numero}: ${modulo.titulo}</span>
+                            <span>${modulo.blocos.length} blocos</span>
+                        </div>
+                    `;
+
+                    modulo.blocos.forEach(bloco => {
+                        const icone = bloco.tipo === 'reels' ? '🎬' :
+                                     bloco.tipo === 'carrossel' ? '🎠' : '📝';
+                        html += `
+                            <div class="content-block">
+                                <div class="block-icon ${bloco.tipo}">${icone}</div>
+                                <div class="block-content">
+                                    <div class="block-type">${bloco.tipo} - ${bloco.duracao}</div>
+                                    <div class="block-title">${bloco.titulo}</div>
+                                    <div class="block-text">${bloco.conteudo}</div>
+                                    <div class="block-reason">💡 ${bloco.motivo}</div>
+                                </div>
+                            </div>
+                        `;
+                    });
+
+                    if (modulo.quiz && modulo.quiz.length > 0) {
+                        html += `
+                            <div class="content-block">
+                                <div class="block-icon quiz">🧠</div>
+                                <div class="block-content">
+                                    <div class="block-type">QUIZ - ${modulo.quiz.length} perguntas</div>
+                                    <div class="block-title">Revisao do Modulo</div>
+                        `;
+                        modulo.quiz.forEach((q, i) => {
+                            html += `<div class="block-text" style="margin-bottom: 8px;"><strong>${i + 1}.</strong> ${q.pergunta}</div>`;
+                        });
+                        html += `
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+
+                outputArea.innerHTML = html;
+
+            } catch (error) {
+                outputArea.innerHTML = `
+                    <div class="card">
+                        <div class="output-placeholder">
+                            <svg viewBox="0 0 24 24" style="fill: var(--error);"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                            <p style="color: var(--error);">Erro ao converter curso</p>
+                            <p class="text-muted">${error.message}</p>
+                            <button onclick="converterCurso()" class="btn btn-primary mt-2">Tentar novamente</button>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>
