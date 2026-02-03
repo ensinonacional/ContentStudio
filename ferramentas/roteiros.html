@@ -515,20 +515,16 @@
                     <div class="config-group">
                         <label class="config-label">Tipo de conteudo</label>
                         <select id="tipoConteudo">
-                            <optgroup label="📱 Redes Sociais">
-                                <option value="stories">Stories (15-60s)</option>
-                                <option value="reels">Reels / TikTok (15-90s)</option>
-                                <option value="shorts">YouTube Shorts (até 60s)</option>
-                                <option value="carrossel">Carrossel (legenda)</option>
-                                <option value="thread">Thread / Texto</option>
-                            </optgroup>
-                            <optgroup label="🎬 Videos Longos">
-                                <option value="youtube">YouTube</option>
-                                <option value="venda">Video de Venda</option>
-                                <option value="curso">Aula / Curso</option>
-                                <option value="institucional">Institucional</option>
-                                <option value="podcast">Podcast</option>
-                            </optgroup>
+                            <option value="stories">Stories</option>
+                            <option value="reels">Reels / TikTok</option>
+                            <option value="shorts">YouTube Shorts</option>
+                            <option value="carrossel">Carrossel (legenda)</option>
+                            <option value="thread">Thread / Texto</option>
+                            <option value="youtube">YouTube</option>
+                            <option value="venda">Video de Venda</option>
+                            <option value="curso">Aula / Curso</option>
+                            <option value="institucional">Institucional</option>
+                            <option value="podcast">Podcast</option>
                         </select>
                     </div>
                     <div class="config-group">
@@ -643,110 +639,53 @@
                     </div>
                 </div>
 
-                <!-- Configuracoes especificas para Redes Sociais -->
-                <div id="configRedesSociais" style="display: none;">
-                    <div class="section-title">📱 Configurações para Redes Sociais</div>
+                <!-- TREND - SEMPRE VISÍVEL -->
+                <div class="section-title">🔥 Trend</div>
 
-                    <!-- TREND TOGGLE -->
-                    <div class="config-row">
-                        <div class="config-group span-2">
-                            <div class="trend-toggle" id="trendToggle" onclick="toggleTrend()">
-                                <span class="trend-toggle-icon">🔥</span>
-                                <div>
-                                    <div class="trend-toggle-label">Usar Trend Atual</div>
-                                    <div class="trend-toggle-desc">Adaptar o conteúdo para uma trend viral do momento</div>
-                                </div>
+                <div class="config-row">
+                    <div class="config-group span-2">
+                        <div class="trend-toggle" id="trendToggle" onclick="toggleTrend()">
+                            <span class="trend-toggle-icon">🔥</span>
+                            <div>
+                                <div class="trend-toggle-label">Usar Trend Atual</div>
+                                <div class="trend-toggle-desc">Adaptar o conteúdo para uma trend viral do momento</div>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Opcoes de Trend (aparece quando ativado) -->
-                    <div id="trendOptions" style="display: none;">
-                        <div class="config-row">
-                            <div class="config-group">
-                                <label class="config-label">Tipo de Trend</label>
-                                <select id="tipoTrend">
-                                    <option value="audio">Áudio/Música Viral</option>
-                                    <option value="formato">Formato de Vídeo</option>
-                                    <option value="desafio">Desafio/Challenge</option>
-                                    <option value="meme">Meme/Referência</option>
-                                    <option value="transicao">Transição Criativa</option>
-                                    <option value="dueto">Dueto/Stitch</option>
-                                    <option value="storytime">Storytime</option>
-                                    <option value="povstyle">POV Style</option>
-                                    <option value="getready">Get Ready With Me</option>
-                                    <option value="ranking">Ranking/Tier List</option>
-                                </select>
-                            </div>
-                            <div class="config-group">
-                                <label class="config-label">Estilo da Trend</label>
-                                <select id="estiloTrend">
-                                    <option value="educativo">Educativo na Trend</option>
-                                    <option value="humoristico">Humorístico</option>
-                                    <option value="inspirador">Inspirador</option>
-                                    <option value="revelador">Revelador/Expondo</option>
-                                    <option value="relatable">Relatable (identificação)</option>
-                                    <option value="satisfatorio">Satisfatório/ASMR visual</option>
-                                </select>
-                            </div>
-                            <div class="config-group">
-                                <label class="config-label">Referência (opcional)</label>
-                                <input type="text" id="referenciaTrend" placeholder="Ex: 'POV você é...' ou nome do áudio">
-                            </div>
-                        </div>
-                    </div>
-
+                <!-- Opcoes de Trend (aparece quando ativado) -->
+                <div id="trendOptions" style="display: none;">
                     <div class="config-row">
                         <div class="config-group">
-                            <label class="config-label">Objetivo do post</label>
-                            <select id="objetivoPost">
-                                <option value="engajamento">Gerar engajamento</option>
-                                <option value="educar">Educar / Ensinar</option>
-                                <option value="autoridade">Mostrar autoridade</option>
-                                <option value="vender">Gerar vendas</option>
-                                <option value="comunidade">Construir comunidade</option>
-                                <option value="viral">Potencial viral</option>
-                                <option value="conexao">Criar conexão emocional</option>
+                            <label class="config-label">Tipo de Trend</label>
+                            <select id="tipoTrend">
+                                <option value="audio">Áudio/Música Viral</option>
+                                <option value="formato">Formato de Vídeo</option>
+                                <option value="desafio">Desafio/Challenge</option>
+                                <option value="meme">Meme/Referência</option>
+                                <option value="transicao">Transição Criativa</option>
+                                <option value="dueto">Dueto/Stitch</option>
+                                <option value="storytime">Storytime</option>
+                                <option value="povstyle">POV Style</option>
+                                <option value="getready">Get Ready With Me</option>
+                                <option value="ranking">Ranking/Tier List</option>
                             </select>
                         </div>
                         <div class="config-group">
-                            <label class="config-label">Estilo de linguagem</label>
-                            <select id="estiloLinguagem">
-                                <option value="natural">Natural / Autêntico</option>
-                                <option value="provocador">Provocador / Ousado</option>
-                                <option value="inspirador">Inspirador / Motivacional</option>
-                                <option value="tecnico">Técnico / Especialista</option>
-                                <option value="storytelling">Storytelling / Narrativo</option>
-                                <option value="direto">Direto / Sem rodeio</option>
-                                <option value="criativo">Criativo / Original</option>
+                            <label class="config-label">Estilo da Trend</label>
+                            <select id="estiloTrend">
+                                <option value="educativo">Educativo na Trend</option>
+                                <option value="humoristico">Humorístico</option>
+                                <option value="inspirador">Inspirador</option>
+                                <option value="revelador">Revelador/Expondo</option>
+                                <option value="relatable">Relatable (identificação)</option>
+                                <option value="satisfatorio">Satisfatório/ASMR visual</option>
                             </select>
                         </div>
                         <div class="config-group">
-                            <label class="config-label">Incluir hashtags</label>
-                            <select id="incluirHashtags">
-                                <option value="nao">Não incluir</option>
-                                <option value="poucas">3-5 hashtags</option>
-                                <option value="muitas">8-15 hashtags</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="config-row">
-                        <div class="config-group">
-                            <label class="config-label">Emojis</label>
-                            <select id="incluirEmojis">
-                                <option value="nao">Sem emojis</option>
-                                <option value="poucos">Poucos (1-3)</option>
-                                <option value="moderado">Moderado</option>
-                            </select>
-                        </div>
-                        <div class="config-group">
-                            <label class="config-label">Menção</label>
-                            <input type="text" id="mencaoPost" placeholder="Ex: @seucanal">
-                        </div>
-                        <div class="config-group">
-                            <label class="config-label">Nicho/Área</label>
-                            <input type="text" id="nichoPost" placeholder="Ex: Marketing Digital, Fitness">
+                            <label class="config-label">Referência (opcional)</label>
+                            <input type="text" id="referenciaTrend" placeholder="Ex: 'POV você é...' ou nome do áudio">
                         </div>
                     </div>
                 </div>
@@ -883,24 +822,16 @@ Pode ser uma ideia, um artigo, uma transcricao ou qualquer conteudo que voce que
             }
         }
 
-        // Mostrar/esconder configuracoes de redes sociais
+        // Ajustar duracao padrao baseado no tipo de conteudo
         document.getElementById('tipoConteudo').addEventListener('change', function() {
             const tipo = this.value;
-            const configRedesSociais = document.getElementById('configRedesSociais');
-            const tipoConfig = tiposVideoConfig[tipo];
+            const duracaoInput = document.getElementById('duracaoVideo');
 
-            if (tipoConfig && tipoConfig.isRedeSocial) {
-                configRedesSociais.style.display = 'block';
-                // Ajustar duracao padrao baseado no tipo
-                const duracaoInput = document.getElementById('duracaoVideo');
-                if (tipo === 'stories') duracaoInput.value = 30;
-                else if (tipo === 'reels') duracaoInput.value = 30;
-                else if (tipo === 'shorts') duracaoInput.value = 45;
-                else if (tipo === 'carrossel' || tipo === 'thread') {
-                    document.getElementById('numVideos').value = 5;
-                }
-            } else {
-                configRedesSociais.style.display = 'none';
+            if (tipo === 'stories') duracaoInput.value = 30;
+            else if (tipo === 'reels') duracaoInput.value = 30;
+            else if (tipo === 'shorts') duracaoInput.value = 45;
+            else if (tipo === 'carrossel' || tipo === 'thread') {
+                document.getElementById('numVideos').value = 5;
             }
         });
 
@@ -1052,13 +983,10 @@ Pode ser uma ideia, um artigo, uma transcricao ou qualquer conteudo que voce que
             const pontosCruciais = document.getElementById('pontosCruciais').value.trim();
             const formatoSaida = document.getElementById('formatoSaida').value;
 
-            // Configuracoes de redes sociais
-            const objetivoPost = document.getElementById('objetivoPost')?.value || 'engajamento';
-            const estiloLinguagem = document.getElementById('estiloLinguagem')?.value || 'natural';
-            const incluirHashtags = document.getElementById('incluirHashtags')?.value || 'nao';
-            const incluirEmojis = document.getElementById('incluirEmojis')?.value || 'nao';
-            const mencaoPost = document.getElementById('mencaoPost')?.value.trim() || '';
-            const nichoPost = document.getElementById('nichoPost')?.value.trim() || '';
+            // Configuracoes extras (valores padrao)
+            const objetivoPost = 'engajamento';
+            const estiloLinguagem = 'natural';
+            const nichoPost = '';
 
             // Configuracoes de Trend
             const tipoTrend = document.getElementById('tipoTrend')?.value || 'audio';
