@@ -282,6 +282,40 @@
                 grid-column: span 1;
             }
         }
+
+        /* Estilos para configuracoes de redes sociais */
+        #configRedesSociais {
+            animation: fadeIn 0.3s ease;
+            padding-top: 10px;
+        }
+
+        #configRedesSociais .section-title {
+            color: var(--accent-light);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Badge para tipos de conteudo */
+        .video-badge.carrossel {
+            background: linear-gradient(135deg, #f472b6, #c084fc);
+        }
+
+        .video-badge.thread {
+            background: linear-gradient(135deg, #60a5fa, #34d399);
+        }
+
+        /* Optgroup styling */
+        select optgroup {
+            font-weight: 600;
+            color: var(--text-secondary);
+            background: var(--bg-tertiary);
+        }
+
+        select option {
+            font-weight: 400;
+            padding: 8px;
+        }
     </style>
 </head>
 <body>
@@ -312,13 +346,20 @@
                     <div class="config-group">
                         <label class="config-label">Tipo de conteudo</label>
                         <select id="tipoConteudo">
-                            <option value="stories">Stories</option>
-                            <option value="reels">Reels / TikTok</option>
-                            <option value="youtube">YouTube</option>
-                            <option value="venda">Video de Venda</option>
-                            <option value="curso">Aula / Curso</option>
-                            <option value="institucional">Institucional</option>
-                            <option value="podcast">Podcast</option>
+                            <optgroup label="📱 Redes Sociais">
+                                <option value="stories">Stories (15-60s)</option>
+                                <option value="reels">Reels / TikTok (15-90s)</option>
+                                <option value="shorts">YouTube Shorts (até 60s)</option>
+                                <option value="carrossel">Carrossel (legenda)</option>
+                                <option value="thread">Thread / Texto</option>
+                            </optgroup>
+                            <optgroup label="🎬 Videos Longos">
+                                <option value="youtube">YouTube</option>
+                                <option value="venda">Video de Venda</option>
+                                <option value="curso">Aula / Curso</option>
+                                <option value="institucional">Institucional</option>
+                                <option value="podcast">Podcast</option>
+                            </optgroup>
                         </select>
                     </div>
                     <div class="config-group">
@@ -430,6 +471,63 @@
                     <div class="config-group span-2">
                         <label class="config-label highlight">Pontos cruciais - O que nao pode faltar</label>
                         <textarea id="pontosCruciais" class="textarea-highlight" placeholder="Ex: Mencionar o desconto de 50%, mostrar o antes e depois, falar do prazo limitado..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Configuracoes especificas para Redes Sociais -->
+                <div id="configRedesSociais" style="display: none;">
+                    <div class="section-title">📱 Configurações para Redes Sociais</div>
+
+                    <div class="config-row">
+                        <div class="config-group">
+                            <label class="config-label">Objetivo do post</label>
+                            <select id="objetivoPost">
+                                <option value="engajamento">Gerar engajamento</option>
+                                <option value="educar">Educar / Ensinar</option>
+                                <option value="autoridade">Mostrar autoridade</option>
+                                <option value="vender">Gerar vendas</option>
+                                <option value="comunidade">Construir comunidade</option>
+                                <option value="viral">Potencial viral</option>
+                            </select>
+                        </div>
+                        <div class="config-group">
+                            <label class="config-label">Estilo de linguagem</label>
+                            <select id="estiloLinguagem">
+                                <option value="natural">Natural / Autêntico</option>
+                                <option value="provocador">Provocador / Ousado</option>
+                                <option value="inspirador">Inspirador / Motivacional</option>
+                                <option value="tecnico">Técnico / Especialista</option>
+                                <option value="storytelling">Storytelling / Narrativo</option>
+                                <option value="direto">Direto / Sem rodeio</option>
+                            </select>
+                        </div>
+                        <div class="config-group">
+                            <label class="config-label">Incluir hashtags</label>
+                            <select id="incluirHashtags">
+                                <option value="nao">Não incluir</option>
+                                <option value="poucas">3-5 hashtags</option>
+                                <option value="muitas">8-15 hashtags</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="config-row">
+                        <div class="config-group">
+                            <label class="config-label">Emojis</label>
+                            <select id="incluirEmojis">
+                                <option value="nao">Sem emojis</option>
+                                <option value="poucos">Poucos (1-3)</option>
+                                <option value="moderado">Moderado</option>
+                            </select>
+                        </div>
+                        <div class="config-group">
+                            <label class="config-label">Menção</label>
+                            <input type="text" id="mencaoPost" placeholder="Ex: @seucanal">
+                        </div>
+                        <div class="config-group">
+                            <label class="config-label">Nicho/Área</label>
+                            <input type="text" id="nichoPost" placeholder="Ex: Marketing Digital, Fitness">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -546,6 +644,28 @@ Pode ser uma ideia, um artigo, uma transcricao ou qualquer conteudo que voce que
             }
         }
 
+        // Mostrar/esconder configuracoes de redes sociais
+        document.getElementById('tipoConteudo').addEventListener('change', function() {
+            const tipo = this.value;
+            const configRedesSociais = document.getElementById('configRedesSociais');
+            const tipoConfig = tiposVideoConfig[tipo];
+
+            if (tipoConfig && tipoConfig.isRedeSocial) {
+                configRedesSociais.style.display = 'block';
+                // Ajustar duracao padrao baseado no tipo
+                const duracaoInput = document.getElementById('duracaoVideo');
+                if (tipo === 'stories') duracaoInput.value = 30;
+                else if (tipo === 'reels') duracaoInput.value = 30;
+                else if (tipo === 'shorts') duracaoInput.value = 45;
+                else if (tipo === 'carrossel' || tipo === 'thread') {
+                    // Para texto, ajustar numero de "slides" ou posts
+                    document.getElementById('numVideos').value = 5;
+                }
+            } else {
+                configRedesSociais.style.display = 'none';
+            }
+        });
+
         // ==================== CONFIGURACOES ====================
 
         // ==================== CONFIGURACOES DE TIPOS DE VIDEO ====================
@@ -553,47 +673,154 @@ Pode ser uma ideia, um artigo, uma transcricao ou qualquer conteudo que voce que
             stories: {
                 nome: 'Stories',
                 descricao: 'Conexao e proximidade',
-                instrucoes: `STORIES - E como se voce tivesse pegando o celular pra contar algo pra um amigo.
-Sem producao, sem frescura. So voce sendo voce.
-Pode mostrar bastidor, contar do seu dia, dar sua opiniao.
-A pessoa do outro lado quer sentir que ta conversando com voce de verdade.`
+                isRedeSocial: true,
+                instrucoes: `STORIES - Conteúdo íntimo e direto. A pessoa está passando os stories rápido.
+
+ESTRUTURA IDEAL:
+- Começa com algo que faz parar (pergunta, dado, afirmação forte)
+- Desenvolve UMA ideia só
+- Fecha com ação ou reflexão
+
+CARACTERÍSTICAS:
+- Tom de conversa, como se estivesse falando direto pra câmera
+- Frases curtas e diretas
+- Pode ser mais pessoal, mostrar opinião
+- A pessoa quer sentir conexão, não aula
+
+EVITE: Introduções longas, múltiplos assuntos, tom de palestra`
             },
             reels: {
                 nome: 'Reels / TikTok',
-                descricao: 'Rapido e direto',
-                instrucoes: `REELS - Aqui cada segundo conta.
-Comeca ja no assunto, sem enrolacao.
-Uma ideia so por video. Frase curta, pensamento claro.
-Se a pessoa nao entender em 3 segundos o que voce ta falando, ela ja foi embora.`
+                descricao: 'Viral e envolvente',
+                isRedeSocial: true,
+                instrucoes: `REELS/TIKTOK - O algoritmo premia retenção. Cada segundo conta.
+
+ESTRUTURA IDEAL:
+- HOOK nos primeiros 2 segundos (frase que prende)
+- Entrega rápida de valor
+- Loop ou fechamento que faz querer rever
+
+CARACTERÍSTICAS:
+- Uma ideia por vídeo, BEM desenvolvida
+- Ritmo dinâmico, sem momentos mortos
+- Frases de impacto, fáceis de lembrar
+- Linguagem atual, mas com autoridade
+
+FORMATOS QUE FUNCIONAM:
+- "X coisas que você não sabia sobre..."
+- "O erro que todo mundo comete..."
+- "Como fazer X em Y passos"
+- Desmistificação de algo comum
+
+EVITE: Enrolação, múltiplos assuntos, tom professoral demais`
+            },
+            shorts: {
+                nome: 'YouTube Shorts',
+                descricao: 'Educativo e rápido',
+                isRedeSocial: true,
+                instrucoes: `YOUTUBE SHORTS - Público busca aprender algo rápido.
+
+ESTRUTURA IDEAL:
+- Promessa clara no início
+- Explicação direta e visual
+- Entrega completa em até 60s
+
+CARACTERÍSTICAS:
+- Mais educativo que Reels/TikTok
+- Pode ter um pouco mais de profundidade
+- Tom de especialista acessível
+- Valorize dados e fatos
+
+FORMATOS QUE FUNCIONAM:
+- Explicações rápidas de conceitos
+- "Por que isso acontece?"
+- Curiosidades que surpreendem
+- Dicas práticas com resultado imediato
+
+EVITE: Entretenimento puro, dancinhas, conteúdo raso`
+            },
+            carrossel: {
+                nome: 'Carrossel',
+                descricao: 'Texto para legenda',
+                isRedeSocial: true,
+                instrucoes: `CARROSSEL - Legenda que complementa as imagens.
+
+ESTRUTURA IDEAL:
+- Primeira linha é o gancho (aparece no feed)
+- Desenvolve a ideia com clareza
+- Cada parágrafo pode ser um slide mental
+- CTA claro no final
+
+CARACTERÍSTICAS:
+- Texto escaneável (parágrafos curtos)
+- Pode usar emojis com moderação
+- Tom educativo ou inspirador
+- Convida a salvar e compartilhar
+
+FORMATO DE SAÍDA:
+- Não é roteiro falado, é TEXTO para legenda
+- Pode ter bullet points
+- Hashtags sugeridas no final
+- Estrutura clara por "slides"
+
+EVITE: Textos muito longos, linguagem de vídeo, falta de estrutura`
+            },
+            thread: {
+                nome: 'Thread / Texto',
+                descricao: 'Sequência de posts',
+                isRedeSocial: true,
+                instrucoes: `THREAD - Sequência de textos que contam uma história ou ensinam.
+
+ESTRUTURA IDEAL:
+- Tweet/post 1: Gancho forte (promessa do que vai aprender)
+- Posts do meio: Desenvolvimento com um ponto por post
+- Último post: Resumo + CTA
+
+CARACTERÍSTICAS:
+- Cada post funciona sozinho mas conecta ao próximo
+- Use números: "1/7", "2/7"
+- Frases de transição entre posts
+- Tom de quem está compartilhando descobertas
+
+FORMATO DE SAÍDA:
+- Texto separado por posts
+- Indicação clara de quebra entre posts
+- Aproximadamente 280 caracteres por post (Twitter) ou mais (LinkedIn/Threads)
+
+EVITE: Posts muito longos, perder o fio da narrativa, não ter conclusão`
             },
             youtube: {
                 nome: 'YouTube',
                 descricao: 'Mais espaco pra desenvolver',
-                instrucoes: `YOUTUBE - Aqui voce tem mais tempo.
-Pode explicar com calma, dar contexto, contar historias.
-Mas ainda assim, nada de enrolacao. Respeita o tempo da pessoa.
-Desenvolve o raciocinio de forma organizada.`
+                isRedeSocial: false,
+                instrucoes: `YOUTUBE - Aqui você tem mais tempo.
+Pode explicar com calma, dar contexto, contar histórias.
+Mas ainda assim, nada de enrolação. Respeita o tempo da pessoa.
+Desenvolve o raciocínio de forma organizada.`
             },
             venda: {
                 nome: 'Video de Venda',
                 descricao: 'Mostrar a solucao',
-                instrucoes: `VENDA - A pessoa tem um problema. Voce tem a solucao.
-Mostra que voce entende a dor dela. Nao fica empurrando produto.
-Fala dos beneficios, do que vai mudar na vida dela.
-Sem pressao fake. So clareza sobre o que voce oferece.`
+                isRedeSocial: false,
+                instrucoes: `VENDA - A pessoa tem um problema. Você tem a solução.
+Mostra que você entende a dor dela. Não fica empurrando produto.
+Fala dos benefícios, do que vai mudar na vida dela.
+Sem pressão fake. Só clareza sobre o que você oferece.`
             },
             curso: {
                 nome: 'Aula / Curso',
                 descricao: 'Ensinar de verdade',
-                instrucoes: `AULA - O texto ja tem os detalhes tecnicos. O aluno ja leu.
-Seu trabalho e trazer o que e interessante, o que surpreende.
+                isRedeSocial: false,
+                instrucoes: `AULA - O texto já tem os detalhes técnicos. O aluno já leu.
+Seu trabalho é trazer o que é interessante, o que surpreende.
 Fala como professor que ama o assunto.
-Cada video tem que ensinar algo que a pessoa vai lembrar.`
+Cada vídeo tem que ensinar algo que a pessoa vai lembrar.`
             },
             institucional: {
                 nome: 'Institucional',
                 descricao: 'Profissional mas acessivel',
-                instrucoes: `INSTITUCIONAL - Transmite confianca sem ser robotico.
+                isRedeSocial: false,
+                instrucoes: `INSTITUCIONAL - Transmite confiança sem ser robótico.
 Mostra o valor da empresa de forma clara.
 Linguagem mais cuidada, mas ainda humana.
 Nada de frases corporativas vazias.`
@@ -601,10 +828,11 @@ Nada de frases corporativas vazias.`
             podcast: {
                 nome: 'Podcast',
                 descricao: 'Conversa entre amigos',
-                instrucoes: `PODCAST - E uma conversa.
-Pode divagar um pouco, contar historia, dar opiniao.
-Ritmo mais tranquilo, como se tivesse tomando um cafe.
-Aprofunda no que e interessante.`
+                isRedeSocial: false,
+                instrucoes: `PODCAST - É uma conversa.
+Pode divagar um pouco, contar história, dar opinião.
+Ritmo mais tranquilo, como se tivesse tomando um café.
+Aprofunda no que é interessante.`
             }
         };
 
@@ -729,6 +957,14 @@ Vai no ponto, sem enrolacao.`
             const pontosCruciais = document.getElementById('pontosCruciais').value.trim();
             const formatoSaida = document.getElementById('formatoSaida').value;
 
+            // Configuracoes de redes sociais
+            const objetivoPost = document.getElementById('objetivoPost')?.value || 'engajamento';
+            const estiloLinguagem = document.getElementById('estiloLinguagem')?.value || 'natural';
+            const incluirHashtags = document.getElementById('incluirHashtags')?.value || 'nao';
+            const incluirEmojis = document.getElementById('incluirEmojis')?.value || 'nao';
+            const mencaoPost = document.getElementById('mencaoPost')?.value.trim() || '';
+            const nichoPost = document.getElementById('nichoPost')?.value.trim() || '';
+
             // Mostrar loading
             btnConvert.classList.add('generating');
             outputArea.innerHTML = `
@@ -743,8 +979,88 @@ Vai no ponto, sem enrolacao.`
             const tipoCTATexto = tipoCTA !== 'nenhum' ? ctasConfig[tipoCTA].texto : '';
             const tipoVideoInfo = tiposVideoConfig[tipo] || tiposVideoConfig.reels;
             const tomInfo = tonsConfig[tom] || tonsConfig.conversacional;
+            const isRedeSocial = tipoVideoInfo.isRedeSocial || false;
 
-            const systemPrompt = `Você é um professor que domina o assunto e ama ensinar. Você fala com autoridade, mas de forma acessível. Não é distante nem arrogante, é alguém que sabe do que está falando e quer genuinamente que o outro aprenda.
+            // Configuracoes de estilo para redes sociais
+            const estilosLinguagemConfig = {
+                natural: 'Fale de forma autêntica, como você realmente falaria. Sem forçar, sem parecer ensaiado.',
+                provocador: 'Seja ousado, desafie o senso comum. Frases que fazem pensar e até incomodam um pouco.',
+                inspirador: 'Eleve a pessoa, mostre possibilidades. Conecte com propósito e significado.',
+                tecnico: 'Mostre domínio técnico, use termos da área. Credibilidade através do conhecimento.',
+                storytelling: 'Conte histórias, use narrativa. Prenda pelo enredo, não só pela informação.',
+                direto: 'Sem rodeios, vai no ponto. Cada palavra tem que ter peso.'
+            };
+
+            const objetivosConfig = {
+                engajamento: 'Crie conteúdo que gere comentários e compartilhamentos. Faça perguntas, provoque reflexão.',
+                educar: 'Ensine algo valioso de forma clara. A pessoa deve sair sabendo fazer algo novo.',
+                autoridade: 'Demonstre domínio do assunto. Traga dados, insights exclusivos, perspectivas únicas.',
+                vender: 'Gere desejo pelo produto/serviço de forma natural. Mostre transformação, não features.',
+                comunidade: 'Crie senso de pertencimento. Use "nós", "nossa comunidade", conecte pessoas.',
+                viral: 'Crie algo compartilhável. Frases de impacto, formato fácil de repostar.'
+            };
+
+            const hashtagsConfig = {
+                nao: '',
+                poucas: 'Inclua 3-5 hashtags relevantes no final, focadas no nicho.',
+                muitas: 'Inclua 8-15 hashtags estratégicas: mix de populares e específicas do nicho.'
+            };
+
+            const emojisConfig = {
+                nao: 'NÃO use emojis.',
+                poucos: 'Use 1-3 emojis estratégicos para dar ênfase.',
+                moderado: 'Use emojis para separar ideias e dar personalidade, mas com moderação.'
+            };
+
+            // System prompt diferenciado para redes sociais
+            let systemPrompt;
+
+            if (isRedeSocial) {
+                systemPrompt = `Você é um especialista em conteúdo para redes sociais que entende profundamente o que funciona em cada plataforma.
+
+=== TIPO DE CONTEÚDO: ${tipoVideoInfo.nome.toUpperCase()} ===
+${tipoVideoInfo.instrucoes}
+
+=== OBJETIVO: ${objetivosConfig[objetivoPost]} ===
+
+=== ESTILO: ${estilosLinguagemConfig[estiloLinguagem]} ===
+
+=== REGRAS PARA REDES SOCIAIS ===
+
+1. PRIMEIRA LINHA É TUDO
+   - No feed, só aparece a primeira linha
+   - Tem que fazer a pessoa PARAR de rolar
+   - Pode ser: pergunta provocadora, dado surpreendente, afirmação forte
+
+2. ESCANEABILIDADE
+   - Parágrafos curtos (1-3 linhas)
+   - Espaço entre blocos de texto
+   - ${tipo === 'carrossel' ? 'Estruture como slides mentais' : tipo === 'thread' ? 'Cada post é uma ideia completa' : 'Ritmo dinâmico, sem pausas mortas'}
+
+3. LINGUAGEM
+   - ${emojisConfig[incluirEmojis]}
+   - Autêntico, não robótico
+   - Frases que as pessoas querem compartilhar
+   - PROIBIDO: clichês de marketing, frases genéricas, linguagem de vendedor
+
+4. ENGAJAMENTO NATURAL
+   - Não peça likes de forma desesperada
+   - Convide à conversa de forma genuína
+   - Crie identificação com a audiência
+
+5. ACENTOS CORRETOS
+   - "você", "é", "então", "também", "aí", "até"
+   - Português correto transmite credibilidade
+
+${nichoPost ? `6. NICHO: ${nichoPost} - Adapte a linguagem e exemplos para esse público` : ''}
+${mencaoPost ? `7. MENÇÃO: Inclua ${mencaoPost} de forma natural quando apropriado` : ''}
+
+${hashtagsConfig[incluirHashtags]}
+
+Responda em português brasileiro COM ACENTOS.
+Retorne APENAS JSON, sem markdown.`;
+            } else {
+                systemPrompt = `Você é um professor que domina o assunto e ama ensinar. Você fala com autoridade, mas de forma acessível. Não é distante nem arrogante, é alguém que sabe do que está falando e quer genuinamente que o outro aprenda.
 
 === SEU ESTILO ===
 
@@ -815,8 +1131,106 @@ PERCEBA: Tom de autoridade, conteúdo de valor, fala fluida com pausas, acentos 
 
 Responda em português brasileiro COM ACENTOS.
 Retorne APENAS JSON, sem markdown.`;
+            }
 
-            const userPrompt = `TEXTO BASE PARA TRANSFORMAR EM ROTEIRO:
+            // User prompt diferenciado para redes sociais vs videos longos
+            let userPrompt;
+
+            if (isRedeSocial && (tipo === 'carrossel' || tipo === 'thread')) {
+                // Prompt específico para TEXTO (carrossel/thread)
+                userPrompt = `TEXTO BASE PARA TRANSFORMAR EM CONTEÚDO:
+"""
+${texto}
+"""
+
+CONFIGURAÇÕES:
+- Formato: ${tipoVideoInfo.nome}
+- Quantidade: ${numVideos} ${tipo === 'carrossel' ? 'slides' : 'posts'}
+- Objetivo: ${objetivoPost}
+- Estilo: ${estiloLinguagem}
+${nichoPost ? '- Nicho: ' + nichoPost : ''}
+${tipoGancho !== 'nenhum' ? '- Gancho: ' + tipoGancho : '- Primeiro slide/post deve ser o gancho'}
+${tipoCTA !== 'nenhum' ? '- CTA: ' + tipoCTA : '- Último slide/post com chamada para ação'}
+${pontosCruciais ? '- Incluir obrigatoriamente: ' + pontosCruciais : ''}
+
+IMPORTANTE:
+- ${tipo === 'carrossel' ? 'Crie texto para LEGENDA do carrossel, não para os slides em si' : 'Crie uma sequência de posts conectados'}
+- Primeira linha precisa ser impactante (aparece no feed)
+- ${emojisConfig[incluirEmojis]}
+- ${hashtagsConfig[incluirHashtags]}
+
+Retorne em JSON:
+{
+    "videos": [
+        {
+            "numero": 1,
+            "titulo": "${tipo === 'carrossel' ? 'Legenda do Carrossel' : 'Thread: Título'}",
+            "narrativa": "Texto completo ${tipo === 'carrossel' ? 'da legenda' : 'da thread'}",
+            "visual": "${tipo === 'carrossel' ? 'Sugestão do que colocar em cada slide' : 'Dica de imagem/mídia para acompanhar'}",
+            "duracao": 0,
+            "hashtags": "hashtags sugeridas (se solicitado)"
+        }
+    ]
+}`;
+            } else if (isRedeSocial) {
+                // Prompt para vídeos curtos de redes sociais
+                userPrompt = `TEXTO BASE PARA TRANSFORMAR EM ROTEIRO:
+"""
+${texto}
+"""
+
+CONFIGURAÇÕES:
+- Tipo: ${tipoVideoInfo.nome}
+- Objetivo: ${objetivoPost}
+- Estilo: ${estiloLinguagem}
+- Quantidade: ${numVideos} vídeo(s)
+- Duração: ${duracaoVideo} segundos cada
+- PALAVRAS POR VÍDEO: entre ${Math.round(duracaoVideo * 2.15)} e ${Math.round(duracaoVideo * 2.5)} palavras (CONTE!)
+${nichoPost ? '- Nicho: ' + nichoPost : ''}
+${tipoGancho !== 'nenhum' ? '- Gancho: ' + tipoGancho : '- Começa direto com hook forte'}
+${tipoCTA !== 'nenhum' ? '- CTA: ' + tipoCTA : '- Termina com frase de impacto ou loop'}
+${pontosCruciais ? '- Incluir obrigatoriamente: ' + pontosCruciais : ''}
+
+ESTRUTURA PARA ${tipo.toUpperCase()}:
+
+1. HOOK (primeiros 2-3 segundos)
+   - Frase que faz parar de rolar
+   - Pode ser pergunta, dado, afirmação forte
+   - NÃO: "Fala galera", "E aí pessoal", "Nesse vídeo"
+
+2. DESENVOLVIMENTO
+   - UMA ideia bem desenvolvida
+   - Ritmo dinâmico, sem momentos mortos
+   - Frases curtas e de impacto
+
+3. FECHAMENTO
+   - Frase memorável ou
+   - Pergunta que gera comentário ou
+   - Loop que faz querer rever
+
+REGRAS:
+- ${emojisConfig[incluirEmojis]}
+- Acentos corretos: "você", "é", "então", "também"
+- Fala fluida para gravar: pausas naturais, quebras de linha
+- Quantidade: ${Math.round(duracaoVideo * 2.15)} a ${Math.round(duracaoVideo * 2.5)} palavras
+
+Retorne em JSON:
+{
+    "videos": [
+        {
+            "numero": 1,
+            "titulo": "Título curto e impactante",
+            "narrativa": "Roteiro com hook forte no início. Pausas marcadas por quebras de linha.\\n\\nSegundo bloco de texto.\\n\\nFechamento memorável.",
+            "visual": "Sugestão de enquadramento e elementos visuais",
+            "duracao": ${duracaoVideo}
+        }
+    ]
+}
+
+${hashtagsConfig[incluirHashtags] ? 'Adicione campo "hashtags" no JSON se solicitado.' : ''}`;
+            } else {
+                // Prompt original para vídeos longos
+                userPrompt = `TEXTO BASE PARA TRANSFORMAR EM ROTEIRO:
 """
 ${texto}
 """
@@ -920,7 +1334,7 @@ Posições para o título: [ABERTURA], [FUNDAMENTO], [APROFUNDANDO], [NA PRÁTIC
 
                 videoCounter = 0; // Reseta contador para novos vídeos
                 dados.videos.forEach(video => {
-                    roteiro += renderizarVideoNovo(video, formatoSaida);
+                    roteiro += renderizarVideoNovo(video, formatoSaida, tipo);
                 });
 
                 outputArea.innerHTML = roteiro;
@@ -1006,24 +1420,43 @@ Posições para o título: [ABERTURA], [FUNDAMENTO], [APROFUNDANDO], [NA PRÁTIC
 
         let videoCounter = 0;
 
-        function renderizarVideoNovo(video, formato) {
+        function renderizarVideoNovo(video, formato, tipo) {
             videoCounter++;
             const videoId = `video-narrativa-${videoCounter}`;
             const titulo = video.titulo || `Video ${video.numero}`;
             const narrativa = video.narrativa || '';
             const visual = video.visual || '';
             const duracao = video.duracao || 60;
+            const hashtags = video.hashtags || '';
+            const tipoAtual = tipo || document.getElementById('tipoConteudo').value;
+            const isTexto = tipoAtual === 'carrossel' || tipoAtual === 'thread';
 
             let html = '';
 
-            if (formato === 'script') {
-                // Só a narrativa
+            // Label especifico por tipo
+            const labelTexto = isTexto ? (tipoAtual === 'carrossel' ? 'Legenda' : 'Thread') : 'Roteiro';
+            const labelVisual = isTexto ? (tipoAtual === 'carrossel' ? 'Slides sugeridos' : 'Mídia sugerida') : 'Visual';
+
+            if (formato === 'script' || isTexto) {
+                // Só o texto principal
                 html = `
                     <div class="scene">
                         <div class="scene-row">
-                            <div class="scene-label narration">Roteiro</div>
+                            <div class="scene-label narration">${labelTexto}</div>
                             <div class="scene-text narration" id="${videoId}" style="white-space: pre-wrap; line-height: 1.7;">${narrativa}</div>
                         </div>
+                        ${visual && isTexto ? `
+                        <div class="scene-row" style="margin-top: 12px;">
+                            <div class="scene-label visual">${labelVisual}</div>
+                            <div class="scene-text visual">${visual}</div>
+                        </div>
+                        ` : ''}
+                        ${hashtags ? `
+                        <div class="scene-row" style="margin-top: 12px;">
+                            <div class="scene-label" style="color: var(--accent-light);">Hashtags</div>
+                            <div class="scene-text" style="border-color: var(--accent-light); color: var(--text-secondary);">${hashtags}</div>
+                        </div>
+                        ` : ''}
                     </div>
                 `;
             } else if (formato === 'cenario') {
@@ -1038,6 +1471,12 @@ Posições para o título: [ABERTURA], [FUNDAMENTO], [APROFUNDANDO], [NA PRÁTIC
                             <div class="scene-label narration">Roteiro</div>
                             <div class="scene-text narration" id="${videoId}" style="white-space: pre-wrap; line-height: 1.7;">${narrativa}</div>
                         </div>
+                        ${hashtags ? `
+                        <div class="scene-row" style="margin-top: 12px;">
+                            <div class="scene-label" style="color: var(--accent-light);">Hashtags</div>
+                            <div class="scene-text" style="border-color: var(--accent-light); color: var(--text-secondary);">${hashtags}</div>
+                        </div>
+                        ` : ''}
                     </div>
                 `;
             } else {
@@ -1052,9 +1491,18 @@ Posições para o título: [ABERTURA], [FUNDAMENTO], [APROFUNDANDO], [NA PRÁTIC
                             <div class="scene-label visual">Visual</div>
                             <div class="scene-text visual">${visual}</div>
                         </div>
+                        ${hashtags ? `
+                        <div class="scene-row" style="margin-top: 12px;">
+                            <div class="scene-label" style="color: var(--accent-light);">Hashtags</div>
+                            <div class="scene-text" style="border-color: var(--accent-light); color: var(--text-secondary);">${hashtags}</div>
+                        </div>
+                        ` : ''}
                     </div>
                 `;
             }
+
+            // Badge diferente para texto vs video
+            const badgeText = isTexto ? (tipoAtual === 'carrossel' ? 'Carrossel' : 'Thread') : `${duracao}s`;
 
             return `
                 <div class="video-block">
@@ -1065,7 +1513,7 @@ Posições para o título: [ABERTURA], [FUNDAMENTO], [APROFUNDANDO], [NA PRÁTIC
                                 <svg viewBox="0 0 24 24" width="14" height="14" fill="white"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
                                 Copiar
                             </button>
-                            <span class="video-badge">${duracao}s</span>
+                            <span class="video-badge">${badgeText}</span>
                         </div>
                     </div>
                     <div class="video-body">${html}</div>

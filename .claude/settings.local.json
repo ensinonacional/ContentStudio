@@ -4,7 +4,11 @@
       "Bash(open:*)",
       "Bash(git -C /Users/revermkt/Documents/GitHub/NovoProjeto status)",
       "Bash(git init:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git -C /Users/revermkt/Documents/GitHub/NovoProjeto commit -m \"$\\(cat <<''EOF''\nContentStudio - Plataforma de Criação de Conteúdo\n\n- Landing page com 6 ferramentas\n- Gerador de Roteiros com IA \\(DeepSeek\\)\n- Gerador de Imagens \\(Stories/Carrossel\\)\n- Vídeos Narrados\n- Criar Curso completo\n- Atualizar Curso\n- Teleprompter\n- Sistema de bloqueio por senha\n- Tema dark/light\n- Design responsivo\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(gh repo create:*)",
+      "Bash(brew install:*)",
+      "Bash(gh auth:*)"
     ]
   }
 }
