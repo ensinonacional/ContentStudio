@@ -1617,42 +1617,90 @@ Posições: [ABERTURA], [FUNDAMENTO], [APROFUNDANDO], [NA PRÁTICA], [FECHAMENTO
             const outputArea = document.getElementById('outputArea');
             const roteiroAtual = outputArea.innerText;
             const btn = document.getElementById('btnApplyRefine');
+            const formatoSaida = document.getElementById('formatoSaida').value;
 
             btn.disabled = true;
             btn.innerHTML = '⏳ Refinando...';
 
             const refinamentosMap = {
-                'mais-curto': 'Reduza mantendo o essencial.',
-                'mais-longo': 'Expanda com mais detalhes.',
-                'mais-informal': 'Torne mais casual.',
-                'mais-formal': 'Torne mais profissional.',
-                'mais-energia': 'Adicione mais energia.',
-                'mais-calmo': 'Torne mais tranquilo.',
-                'mais-vendedor': 'Torne mais persuasivo.',
-                'mais-educativo': 'Foque em ensinar.',
-                'gancho-forte': 'Melhore o início.',
-                'cta-forte': 'Melhore o final.',
-                'mais-viral': 'Torne mais compartilhável e viral.',
-                'mais-original': 'Traga um ângulo único e criativo.'
+                'mais-curto': 'Reduza o texto mantendo apenas o essencial. Corte palavras desnecessárias.',
+                'mais-longo': 'Expanda com mais detalhes, exemplos e explicações.',
+                'mais-informal': 'Torne mais casual, como uma conversa entre amigos.',
+                'mais-formal': 'Torne mais profissional e cuidado.',
+                'mais-energia': 'Adicione mais energia, entusiasmo e ritmo acelerado.',
+                'mais-calmo': 'Torne mais tranquilo, pausado e reflexivo.',
+                'mais-vendedor': 'Torne mais persuasivo, com gatilhos de venda.',
+                'mais-educativo': 'Foque em ensinar, explicar e dar valor.',
+                'gancho-forte': 'Melhore o início para prender mais atenção nos primeiros segundos.',
+                'cta-forte': 'Melhore o final com uma chamada para ação mais forte.',
+                'mais-viral': 'Torne mais compartilhável, com frases de impacto e identificação.',
+                'mais-original': 'Traga um ângulo único, criativo e inesperado.'
             };
 
             const instrucao = selectedRefineOption ? refinamentosMap[selectedRefineOption] : customText;
 
+            const systemPromptRefine = `Você é um DIRETOR CRIATIVO especialista em refinar roteiros para redes sociais.
+
+REGRAS ABSOLUTAS:
+- Mantenha a MESMA ESTRUTURA do roteiro original
+- Aplique APENAS a melhoria solicitada
+- Use acentos corretos (você, é, então, também)
+- Mantenha a mesma duração aproximada
+- Retorne APENAS JSON válido, sem markdown
+
+Se o roteiro tem CENAS, mantenha as cenas.
+Se o roteiro tem NARRATIVA simples, mantenha narrativa simples.`;
+
+            const userPromptRefine = `MELHORIA SOLICITADA: ${instrucao}
+
+ROTEIRO ATUAL:
+${roteiroAtual}
+
+FORMATO DE SAÍDA (mantenha este formato exato):
+${formatoSaida === 'cenas' ? `{
+    "videos": [{
+        "numero": 1,
+        "titulo": "Título",
+        "cenas": [
+            {
+                "numero": 1,
+                "tempo": "0-5s",
+                "visual": "descrição visual",
+                "acao": "ação",
+                "narracao": "texto para falar",
+                "texto_tela": "texto na tela"
+            }
+        ],
+        "duracao": 60,
+        "hashtags": "hashtags"
+    }]
+}` : `{
+    "videos": [{
+        "numero": 1,
+        "titulo": "Título",
+        "narrativa": "Roteiro completo",
+        "visual": "Sugestões visuais",
+        "duracao": 60,
+        "hashtags": "hashtags"
+    }]
+}`}
+
+Aplique a melhoria e retorne o JSON atualizado:`;
+
             try {
-                const resposta = await chamarAPI(
-                    'Você é um especialista em refinar roteiros. Interprete pedidos simples e aplique melhorias profissionais.',
-                    `MELHORIA: ${instrucao}\n\nROTEIRO ATUAL:\n${roteiroAtual}\n\nRetorne o JSON refinado.`
-                );
+                const resposta = await chamarAPI(systemPromptRefine, userPromptRefine);
 
                 const jsonLimpo = resposta.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
                 const dados = JSON.parse(jsonLimpo);
 
                 let roteiro = outputArea.innerHTML.split('<div class="video-block">')[0];
+                const tipoAtual = document.getElementById('tipoConteudo').value;
+
                 dados.videos.forEach(video => {
-                    if (video.cenas) {
-                        roteiro += renderizarVideoCenas(video, 'reels');
+                    if (video.cenas && video.cenas.length > 0) {
+                        roteiro += renderizarVideoCenas(video, tipoAtual);
                     } else {
-                        roteiro += renderizarVideoNovo(video, 'completo', 'reels');
+                        roteiro += renderizarVideoNovo(video, formatoSaida, tipoAtual);
                     }
                 });
 
