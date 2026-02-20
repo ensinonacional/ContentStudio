@@ -1501,10 +1501,16 @@
             _cacheTimestamp: 0,
 
             // ====== 0a. OPENVERSE (SEM KEY - busca keyword real, 800M+ imagens CC) ======
+            _openverseBlocked: false,
             async buscarOpenverse(query, count = 10) {
+                if (this._openverseBlocked) return [];
                 try {
-                    // source=flickr para fotos mais aesthetic, aspect_ratio=tall para formato vertical
-                    const resp = await fetch(`https://api.openverse.org/v1/images/?q=${encodeURIComponent(query)}&page_size=${Math.min(count, 20)}&mature=false&source=flickr`);
+                    const resp = await fetch(`https://api.openverse.org/v1/images/?q=${encodeURIComponent(query)}&page_size=${Math.min(count, 20)}&mature=false`);
+                    if (resp.status === 429) {
+                        console.warn('[Openverse] Rate limit atingido, desabilitando para esta sessao');
+                        this._openverseBlocked = true;
+                        return [];
+                    }
                     if (!resp.ok) return [];
                     const data = await resp.json();
                     return (data.results || []).map(img => ({
@@ -1522,8 +1528,7 @@
             // ====== 0b. WIKIMEDIA COMMONS (SEM KEY - busca keyword, 90M+ arquivos) ======
             async buscarWikimedia(query, count = 10) {
                 try {
-                    // Filtrar por fotos JPEG (evita SVGs, diagramas, etc)
-                    const resp = await fetch(`https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrnamespace=6&gsrsearch=${encodeURIComponent(query + ' filetype:jpg')}&gsrlimit=${Math.min(count, 20)}&prop=imageinfo&iiprop=url|extmetadata&iiurlwidth=800&format=json&origin=*`);
+                    const resp = await fetch(`https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrnamespace=6&gsrsearch=${encodeURIComponent(query)}&gsrlimit=${Math.min(count, 20)}&prop=imageinfo&iiprop=url|extmetadata&iiurlwidth=800&format=json&origin=*`);
                     if (!resp.ok) return [];
                     const data = await resp.json();
                     if (!data.query || !data.query.pages) return [];
@@ -1717,10 +1722,24 @@
                 promessas.push(this.buscarWikimedia(temaEN, 20));
 
                 const results = await Promise.allSettled(promessas);
-                const todas = [];
+                let todas = [];
                 for (const r of results) {
                     if (r.status === 'fulfilled' && r.value.length > 0) {
                         todas.push(...r.value);
+                    }
+                }
+                // Se nao achou nada, tentar com termos mais curtos (sem aesthetic)
+                if (todas.length === 0) {
+                    console.log('[ImageAPIs] Nenhuma imagem, tentando termos mais curtos...');
+                    const termosCurtos = temaEN.split(/\s+/).slice(0, 2).join(' ');
+                    const retry = await Promise.allSettled([
+                        this.buscarWikimedia(termosCurtos, 20),
+                        this.buscarOpenverse(termosCurtos, 20)
+                    ]);
+                    for (const r of retry) {
+                        if (r.status === 'fulfilled' && r.value.length > 0) {
+                            todas.push(...r.value);
+                        }
                     }
                 }
                 this._cacheImagens = {};
@@ -1781,7 +1800,9 @@
                         }
                     }
                     // Fallback: buscar direto no Wikimedia (rate limit generoso)
-                    const wikiImgs = await this.buscarWikimedia(termoEN, 5);
+                    // Usar termos mais curtos (2-3 palavras) para melhor resultado
+                    const termoCurto = termoEN.split(/\s+/).filter(t => !['aesthetic','minimal','flatlay','bokeh','soft','light','warm','cozy'].includes(t.toLowerCase())).slice(0, 3).join(' ') || termoEN.split(/\s+/).slice(0, 2).join(' ');
+                    const wikiImgs = await this.buscarWikimedia(termoCurto, 5);
                     if (wikiImgs.length > 0) return wikiImgs[0];
                     return null;
                 }
