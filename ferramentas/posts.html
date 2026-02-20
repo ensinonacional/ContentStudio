@@ -1761,11 +1761,11 @@
                 if (this.getFlickrKey()) promessas.push(this.buscarFlickr(temaSimples + ' aesthetic', 20));
                 // APIs gratuitas: buscar com termos CURTOS para melhor relevancia
                 promessas.push(this.buscarOpenverse(tema2palavras, 20));
-                // Wikimedia: buscar com 2 variações para mais resultados
-                promessas.push(this.buscarWikimedia(tema2palavras + ' photo', 15));
-                promessas.push(this.buscarWikimedia(tema1palavra, 10));
-                // Picsum: sempre ter fotos bonitas como fallback
-                promessas.push(this.buscarPicsum(10));
+                promessas.push(this.buscarOpenverse(tema1palavra, 10));
+                // Wikimedia: buscar menos (qualidade inconsistente)
+                promessas.push(this.buscarWikimedia(tema2palavras + ' photo', 8));
+                // Picsum: fotos bonitas de alta qualidade como base visual
+                promessas.push(this.buscarPicsum(15));
 
                 const results = await Promise.allSettled(promessas);
                 let todas = [];
@@ -1795,10 +1795,25 @@
                         }
                     }
                 }
-                // Priorizar: imagens relevantes primeiro, Picsum por ultimo
-                const comRelevancia = todas.filter(i => i.source !== 'Picsum');
-                const picsum = todas.filter(i => i.source === 'Picsum');
-                todas = [...comRelevancia, ...picsum];
+                // Ordenar por qualidade: Stock APIs > Openverse > Picsum > Wikimedia
+                // Intercalar para variedade visual
+                const porFonte = {};
+                for (const img of todas) {
+                    const grupo = ['Pexels','Pixabay','Unsplash','Flickr'].includes(img.source) ? 'stock'
+                        : img.source === 'Openverse' ? 'openverse'
+                        : img.source === 'Picsum' ? 'picsum' : 'wikimedia';
+                    if (!porFonte[grupo]) porFonte[grupo] = [];
+                    porFonte[grupo].push(img);
+                }
+                // Intercalar: stock, openverse, picsum, wikimedia
+                todas = [];
+                const grupos = ['stock', 'openverse', 'picsum', 'wikimedia'];
+                const maxLen = Math.max(...grupos.map(g => (porFonte[g] || []).length), 0);
+                for (let i = 0; i < maxLen; i++) {
+                    for (const g of grupos) {
+                        if (porFonte[g] && i < porFonte[g].length) todas.push(porFonte[g][i]);
+                    }
+                }
 
                 this._cacheImagens = {};
                 this._cacheImagens[temaEN] = todas;
