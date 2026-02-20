@@ -11,41 +11,6 @@ const FERRAMENTAS = [
         descricao: 'Transforme textos em roteiros profissionais para videos',
         icone: 'movie',
         url: 'ferramentas/roteiros.html'
-    },
-    {
-        id: 'imagens',
-        nome: 'Imagens',
-        descricao: 'Crie stories e carrosseis com legendas prontas',
-        icone: 'image',
-        url: 'ferramentas/imagens.html'
-    },
-    {
-        id: 'videos',
-        nome: 'Videos Narrados',
-        descricao: 'Gere videos com narracao a partir de texto',
-        icone: 'mic',
-        url: 'ferramentas/videos.html'
-    },
-    {
-        id: 'criar-curso',
-        nome: 'Criar Curso',
-        descricao: 'Crie cursos completos divididos em modulos',
-        icone: 'book',
-        url: 'ferramentas/criar-curso.html'
-    },
-    {
-        id: 'atualizar-curso',
-        nome: 'Atualizar Curso',
-        descricao: 'Converta PDF, Word ou video em formato de curso',
-        icone: 'refresh',
-        url: 'ferramentas/atualizar-curso.html'
-    },
-    {
-        id: 'teleprompter',
-        nome: 'Teleprompter',
-        descricao: 'Ferramenta para leitura durante gravacao',
-        icone: 'tv',
-        url: 'ferramentas/teleprompter.html'
     }
 ];
 
@@ -81,15 +46,13 @@ function renderHeader(paginaAtiva = '') {
         <nav class="navbar">
             <div class="navbar-container">
                 <a href="${basePath}index.html" class="navbar-brand">
-                    <div class="navbar-logo">
-                        ${ICONS.logo}
-                    </div>
-                    <span class="navbar-title">ContentStudio</span>
+                    <div class="navbar-logo" style="font-weight:800;font-size:18px;color:white;">D</div>
+                    <span class="navbar-title">StudioDias</span>
                 </a>
 
                 <div class="navbar-nav">
                     <div class="dropdown" id="dropdownFerramentas">
-                        <button class="dropdown-toggle" onclick="toggleDropdown('dropdownFerramentas')">
+                        <button class="dropdown-toggle" onclick="toggleDropdown('dropdownFerramentas', event)">
                             <span>Ferramentas</span>
                             ${ICONS.chevronDown}
                         </button>
@@ -130,8 +93,8 @@ function renderHeader(paginaAtiva = '') {
     updateThemeIcon();
 }
 
-function toggleDropdown(id) {
-    event.stopPropagation();
+function toggleDropdown(id, e) {
+    if (e) e.stopPropagation();
     const dropdown = document.getElementById(id);
     const isActive = dropdown.classList.contains('active');
 
@@ -147,7 +110,7 @@ function toggleDropdown(id) {
 // ==================== TEMA ====================
 
 function getTheme() {
-    return localStorage.getItem('theme') || 'dark';
+    return localStorage.getItem('theme') || 'light';
 }
 
 function setTheme(theme) {
@@ -404,15 +367,18 @@ function mostrarNotificacao(mensagem, tipo = 'success') {
     notif.textContent = mensagem;
     document.body.appendChild(notif);
 
-    // Adicionar animacao CSS
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes slideInRight {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-    `;
-    document.head.appendChild(style);
+    // Adicionar animacao CSS (apenas uma vez)
+    if (!document.getElementById('notificacao-anim-style')) {
+        const style = document.createElement('style');
+        style.id = 'notificacao-anim-style';
+        style.textContent = `
+            @keyframes slideInRight {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+    }
 
     // Remover apos 3s
     setTimeout(() => {
@@ -440,9 +406,11 @@ async function copiarElemento(elementId) {
 
 // ==================== API ====================
 
-const APIConfig = {
+var APIConfig = {
+    DEFAULT_KEY: 'sk-09a878aae36f404791219ebc494c98cc',
     get key() {
-        return localStorage.getItem('deepseek_api_key') || '';
+        const saved = localStorage.getItem('deepseek_api_key');
+        return (saved && saved.trim()) ? saved.trim() : this.DEFAULT_KEY;
     },
     set key(value) {
         localStorage.setItem('deepseek_api_key', value);

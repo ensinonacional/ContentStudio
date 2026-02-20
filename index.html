@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ContentStudio - Plataforma de Criacao de Conteudo</title>
+    <title>StudioDias - Plataforma de Criacao de Conteudo</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -14,19 +14,14 @@
     <div class="main-container">
         <!-- Hero Section -->
         <section class="hero">
-            <div class="hero-badge">
-                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-                Plataforma Completa
-            </div>
-            <h1 class="hero-title">ContentStudio</h1>
+            <h1 class="hero-title">StudioDias</h1>
             <p class="hero-subtitle">
-                Crie roteiros, imagens, videos e cursos completos com inteligencia artificial.
-                Tudo que voce precisa para produzir conteudo profissional.
+                Crie roteiros profissionais para videos com inteligencia artificial.
             </p>
         </section>
 
         <!-- Tools Grid -->
-        <section class="tools-grid">
+        <section class="tools-grid" style="max-width: 480px; margin: 0 auto;">
             <!-- Roteiros -->
             <a href="ferramentas/roteiros.html" class="tool-card">
                 <div class="tool-icon">
@@ -42,91 +37,11 @@
                     <svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
                 </span>
             </a>
-
-            <!-- Imagens -->
-            <a href="ferramentas/imagens.html" class="tool-card">
-                <div class="tool-icon" style="background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);">
-                    <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
-                </div>
-                <h3 class="tool-title">Imagens</h3>
-                <p class="tool-description">
-                    Crie stories e carrosseis com legendas prontas.
-                    Textos otimizados para engajamento no Instagram.
-                </p>
-                <span class="tool-arrow">
-                    Comecar
-                    <svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
-                </span>
-            </a>
-
-            <!-- Videos Narrados -->
-            <a href="ferramentas/videos.html" class="tool-card">
-                <div class="tool-icon" style="background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);">
-                    <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>
-                </div>
-                <h3 class="tool-title">Videos Narrados</h3>
-                <p class="tool-description">
-                    Gere videos com narracao a partir de texto.
-                    Roteiros com timestamps e sugestoes de imagens.
-                </p>
-                <span class="tool-arrow">
-                    Comecar
-                    <svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
-                </span>
-            </a>
-
-            <!-- Criar Curso -->
-            <a href="ferramentas/criar-curso.html" class="tool-card">
-                <div class="tool-icon" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
-                    <svg viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/></svg>
-                </div>
-                <h3 class="tool-title">Criar Curso</h3>
-                <p class="tool-description">
-                    Crie cursos completos divididos em modulos.
-                    Com Reels, carrosseis, textos e quizzes.
-                </p>
-                <span class="tool-arrow">
-                    Comecar
-                    <svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
-                </span>
-            </a>
-
-            <!-- Atualizar Curso -->
-            <a href="ferramentas/atualizar-curso.html" class="tool-card">
-                <div class="tool-icon" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
-                    <svg viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
-                </div>
-                <h3 class="tool-title">Atualizar Curso</h3>
-                <p class="tool-description">
-                    Converta PDF, Word ou video longo em formato de curso
-                    otimizado para Instagram.
-                </p>
-                <span class="tool-arrow">
-                    Comecar
-                    <svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
-                </span>
-            </a>
-
-            <!-- Teleprompter -->
-            <a href="ferramentas/teleprompter.html" class="tool-card">
-                <div class="tool-icon" style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);">
-                    <svg viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z"/></svg>
-                </div>
-                <h3 class="tool-title">Teleprompter</h3>
-                <p class="tool-description">
-                    Ferramenta para leitura durante gravacao.
-                    Controle de velocidade, espelho e tela cheia.
-                </p>
-                <span class="tool-arrow">
-                    Comecar
-                    <svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
-                </span>
-            </a>
         </section>
 
         <!-- Footer -->
         <footer class="footer">
-            <p>ContentStudio - Sua plataforma de criacao de conteudo</p>
+            <p>StudioDias - Sua plataforma de criacao de conteudo</p>
         </footer>
     </div>
 

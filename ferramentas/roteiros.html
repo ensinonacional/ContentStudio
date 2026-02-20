@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roteiros - ContentStudio</title>
+    <title>Roteiros - StudioDias</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -12,21 +12,21 @@
     <style>
         /* Estilos especificos da ferramenta */
         .textarea-highlight {
-            background: linear-gradient(135deg, var(--accent-glow), transparent);
+            background: var(--accent-glow);
             border-color: var(--accent);
         }
 
         .video-block {
-            background: var(--bg-tertiary);
+            background: var(--bg-card);
             border-radius: var(--radius-md);
-            margin-bottom: 16px;
+            margin-bottom: 12px;
             overflow: hidden;
             border: 1px solid var(--border);
         }
 
         .video-header {
-            background: var(--gradient-primary);
-            padding: 12px 18px;
+            background: var(--accent);
+            padding: 10px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -35,24 +35,24 @@
         .video-title {
             font-weight: 600;
             color: white;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         .video-badge {
             background: rgba(255,255,255,0.2);
-            padding: 4px 12px;
-            border-radius: var(--radius-lg);
-            font-size: 0.8rem;
+            padding: 3px 10px;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
             color: white;
         }
 
         .video-body {
-            padding: 18px;
+            padding: 14px;
         }
 
         .scene {
-            margin-bottom: 18px;
-            padding-bottom: 18px;
+            margin-bottom: 14px;
+            padding-bottom: 14px;
             border-bottom: 1px solid var(--border);
         }
 
@@ -63,119 +63,142 @@
         }
 
         .scene-row {
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .scene-label {
-            font-size: 0.7rem;
-            font-weight: 700;
+            font-size: 0.68rem;
+            font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 4px;
+            letter-spacing: 0.3px;
+            margin-bottom: 3px;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
         }
 
         .scene-label::before {
             content: '';
-            width: 6px;
-            height: 6px;
+            width: 5px;
+            height: 5px;
             border-radius: 50%;
         }
 
         .scene-label.hook { color: var(--warning); }
         .scene-label.hook::before { background: var(--warning); }
-        .scene-label.visual { color: #c084fc; }
-        .scene-label.visual::before { background: #c084fc; }
-        .scene-label.narration { color: var(--accent-light); }
-        .scene-label.narration::before { background: var(--accent-light); }
+        .scene-label.visual { color: #a855f7; }
+        .scene-label.visual::before { background: #a855f7; }
+        .scene-label.narration { color: var(--accent); }
+        .scene-label.narration::before { background: var(--accent); }
         .scene-label.cta { color: var(--success); }
         .scene-label.cta::before { background: var(--success); }
 
         .scene-text {
-            font-size: 0.9rem;
-            padding: 10px 14px;
+            font-size: 0.85rem;
+            padding: 8px 12px;
             border-radius: var(--radius-sm);
-            background: var(--bg-secondary);
-            border-left: 3px solid var(--border);
+            background: var(--bg-tertiary);
+            border-left: 2px solid var(--border);
         }
 
         .scene-text.hook { border-color: var(--warning); font-weight: 500; }
-        .scene-text.visual { border-color: #c084fc; font-style: italic; color: var(--text-secondary); }
-        .scene-text.narration { border-color: var(--accent-light); }
+        .scene-text.visual { border-color: #a855f7; font-style: italic; color: var(--text-secondary); }
+        .scene-text.narration { border-color: var(--accent); }
         .scene-text.cta { border-color: var(--success); font-weight: 500; }
 
-        .scene-time {
-            font-size: 0.8rem;
+        .btn-edit {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            opacity: 0.25;
+            transition: opacity 0.2s;
+            z-index: 10;
+            padding: 2px;
+            line-height: 1;
             color: var(--text-muted);
-            margin-top: 10px;
+            font-size: 11px;
+        }
+        .btn-edit:hover { opacity: 0.7; }
+        .btn-edit-small { font-size: 10px; }
+
+        .texto-editavel.editando {
+            outline: 1px dashed var(--text-muted);
+            cursor: text;
+        }
+
+        .scene-time {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 8px;
         }
 
         .script-header {
-            margin-bottom: 20px;
-            padding-bottom: 16px;
-            border-bottom: 2px solid var(--border);
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
         }
 
         .script-title {
-            font-size: 1.15rem;
-            font-weight: 700;
+            font-size: 1rem;
+            font-weight: 600;
             margin-bottom: 6px;
         }
 
         .script-meta {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 6px;
         }
 
         .script-meta span {
             background: var(--bg-tertiary);
-            padding: 4px 10px;
-            border-radius: var(--radius-sm);
-            font-size: 0.85rem;
+            padding: 3px 8px;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
             color: var(--text-muted);
         }
 
         .ai-badge {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            background: var(--gradient-secondary);
-            padding: 4px 10px;
-            border-radius: var(--radius-sm);
-            font-size: 0.75rem;
+            gap: 5px;
+            background: var(--accent);
+            padding: 3px 8px;
+            border-radius: var(--radius-full);
+            font-size: 0.7rem;
             font-weight: 600;
             color: white;
-            margin-left: 8px;
+            margin-left: 6px;
         }
 
         .ai-badge svg {
-            width: 12px;
-            height: 12px;
+            width: 10px;
+            height: 10px;
             fill: white;
         }
 
         .important-box {
-            background: linear-gradient(135deg, var(--accent-glow), transparent);
-            border: 1px solid var(--accent);
-            border-radius: var(--radius-md);
-            padding: 16px;
-            margin-bottom: 20px;
+            background: var(--accent-glow);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 12px;
+            margin-bottom: 16px;
         }
 
         .important-box-title {
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: var(--accent-light);
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--accent);
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 8px;
+            letter-spacing: 0.3px;
+            margin-bottom: 6px;
         }
 
         .important-box-content {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: var(--text-primary);
         }
 
@@ -184,80 +207,79 @@
             display: none;
             background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: var(--radius-xl);
-            margin-top: 24px;
+            border-radius: var(--radius-lg);
+            margin-top: 20px;
             overflow: hidden;
-            box-shadow: var(--shadow-md);
         }
 
         .refine-panel.active {
             display: block;
-            animation: fadeIn 0.3s ease;
+            animation: fadeIn 0.2s ease;
         }
 
         .refine-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 18px 24px;
+            padding: 14px 18px;
             background: var(--bg-tertiary);
             border-bottom: 1px solid var(--border);
         }
 
         .refine-title {
-            font-size: 1rem;
+            font-size: 0.9rem;
             font-weight: 600;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         .refine-title svg {
-            width: 20px;
-            height: 20px;
-            fill: var(--accent-light);
+            width: 16px;
+            height: 16px;
+            fill: var(--accent);
         }
 
         .refine-counter {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: var(--text-secondary);
             background: var(--bg-input);
-            padding: 6px 14px;
-            border-radius: var(--radius-lg);
+            padding: 4px 10px;
+            border-radius: var(--radius-full);
             border: 1px solid var(--border);
         }
 
         .refine-counter span {
-            color: var(--accent-light);
-            font-weight: 700;
+            color: var(--accent);
+            font-weight: 600;
         }
 
         .refine-body {
-            padding: 24px;
+            padding: 18px;
         }
 
         .refine-options {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
-            margin: 18px 0 20px;
+            gap: 8px;
+            margin: 12px 0 16px;
         }
 
         .refine-chip {
-            padding: 10px 18px;
-            background: var(--bg-input);
-            border: 2px solid var(--border);
-            border-radius: var(--radius-lg);
-            font-size: 0.9rem;
+            padding: 6px 14px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
             font-weight: 500;
             color: var(--text-secondary);
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.15s;
         }
 
         .refine-chip:hover {
             border-color: var(--accent);
-            color: var(--text-primary);
+            color: var(--accent);
         }
 
         .refine-chip.selected {
@@ -268,18 +290,233 @@
 
         .refine-actions {
             display: flex;
-            gap: 14px;
-            margin-top: 20px;
+            gap: 10px;
+            margin-top: 16px;
         }
 
         .panel-actions {
             display: flex;
-            gap: 6px;
+            gap: 4px;
+        }
+
+        /* Accordion Avancado */
+        .config-accordion {
+            border-top: 1px solid var(--border);
+            margin-top: 16px;
+        }
+
+        .config-accordion-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding: 14px 0;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            color: var(--text-secondary);
+            transition: color var(--transition-fast);
+        }
+
+        .config-accordion-toggle:hover {
+            color: var(--text-primary);
+        }
+
+        .config-accordion-toggle .toggle-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.82rem;
+            font-weight: 600;
+        }
+
+        .config-accordion-toggle svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        .config-accordion-toggle .toggle-arrow {
+            width: 20px;
+            height: 20px;
+            fill: var(--text-muted);
+            transition: transform 0.25s ease;
+        }
+
+        .config-accordion-toggle.open .toggle-arrow {
+            transform: rotate(180deg);
+        }
+
+        .config-accordion-body {
+            display: none;
+            padding-bottom: 6px;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .config-accordion-body.open {
+            display: block;
+        }
+
+        /* Config melhorado */
+        .config-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 12px;
+        }
+
+        .config-section .config-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .config-label-new {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        .config-label-new.highlight {
+            color: var(--accent);
+        }
+
+        /* Select melhorado */
+        select.select-styled {
+            padding: 10px 36px 10px 14px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border: 1.5px solid var(--border);
+            background-color: var(--bg-input);
+            transition: all 0.2s ease;
+        }
+
+        select.select-styled:hover {
+            border-color: var(--accent);
+        }
+
+        select.select-styled:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
+        /* Input melhorado */
+        input.input-styled {
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border: 1.5px solid var(--border);
+            transition: all 0.2s ease;
+        }
+
+        input.input-styled:hover {
+            border-color: var(--accent);
+        }
+
+        input.input-styled:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
+        /* Input number compacto */
+        .input-compact {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .input-compact input[type="number"] {
+            width: 72px;
+            text-align: center;
+            padding: 10px 8px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: 1.5px solid var(--border);
+            transition: all 0.2s ease;
+        }
+
+        .input-compact input[type="number"]:hover {
+            border-color: var(--accent);
+        }
+
+        .input-compact input[type="number"]:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
+        .input-compact .suffix {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* Textarea avancado */
+        textarea.textarea-styled {
+            padding: 12px 14px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            border: 1.5px solid var(--border);
+            min-height: 80px;
+            transition: all 0.2s ease;
+            line-height: 1.6;
+        }
+
+        textarea.textarea-styled:hover {
+            border-color: var(--accent);
+        }
+
+        textarea.textarea-styled:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
+        textarea.textarea-styled.textarea-highlight {
+            background: var(--accent-glow);
+            border-color: var(--accent);
+        }
+
+        /* Botao gerar melhorado */
+        .btn-convert {
+            width: 44px;
+            height: 44px;
+            background: var(--accent);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0, 113, 227, 0.3);
+        }
+
+        .btn-convert:hover {
+            background: var(--accent-dark);
+            transform: scale(1.08);
+            box-shadow: 0 4px 14px rgba(0, 113, 227, 0.4);
+        }
+
+        .btn-convert:active {
+            transform: scale(0.95);
         }
 
         @media (max-width: 600px) {
             .config-group.span-2 {
                 grid-column: span 1;
+            }
+            .config-section {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .config-section {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -287,175 +524,168 @@
 <body>
     <div class="page-container">
         <!-- Hero -->
-        <section class="hero" style="padding: 40px 0;">
-            <h1 class="hero-title" style="font-size: 2.5rem;">Roteiros</h1>
+        <section class="hero">
+            <h1 class="hero-title">Roteiros</h1>
             <p class="hero-subtitle">Transforme textos em roteiros profissionais prontos para gravar</p>
         </section>
 
         <!-- Config Section -->
         <div class="card mb-3">
-            <!-- Abas de Configuracao -->
-            <div class="config-tabs">
-                <button class="config-tab active" onclick="switchConfigTab('basico')" id="tabBasico">
-                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-                    Basico
-                </button>
-                <button class="config-tab" onclick="switchConfigTab('avancado')" id="tabAvancado">
-                    <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
-                    Avancado
-                </button>
-            </div>
-
-            <!-- Aba Basico -->
-            <div class="config-tab-content active" id="contentBasico">
-                <div class="config-row">
-                    <div class="config-group">
-                        <label class="config-label">Tipo de conteudo</label>
-                        <select id="tipoConteudo">
-                            <option value="stories">Stories</option>
-                            <option value="reels">Reels / TikTok</option>
-                            <option value="youtube">YouTube</option>
-                            <option value="venda">Video de Venda</option>
-                            <option value="curso">Aula / Curso</option>
-                            <option value="institucional">Institucional</option>
-                            <option value="podcast">Podcast</option>
-                        </select>
+            <!-- Basico -->
+            <div class="config-section">
+                <div class="config-group">
+                    <label class="config-label-new">Tipo de conteudo</label>
+                    <select class="select-styled" id="tipoConteudo">
+                        <option value="stories">Stories</option>
+                        <option value="reels">Reels / TikTok</option>
+                        <option value="youtube">YouTube</option>
+                        <option value="venda">Video de Venda</option>
+                        <option value="curso">Aula / Curso</option>
+                        <option value="institucional">Institucional</option>
+                        <option value="podcast">Podcast</option>
+                    </select>
+                </div>
+                <div class="config-group">
+                    <label class="config-label-new">Tom</label>
+                    <select class="select-styled" id="tomConteudo">
+                        <option value="conversacional">Conversacional</option>
+                        <option value="amigavel">Amigavel</option>
+                        <option value="profissional">Profissional</option>
+                        <option value="energetico">Energetico</option>
+                        <option value="inspirador">Inspirador</option>
+                        <option value="educativo">Educativo</option>
+                        <option value="urgente">Urgente</option>
+                    </select>
+                </div>
+                <div class="config-group">
+                    <label class="config-label-new">Videos</label>
+                    <div class="input-compact">
+                        <input type="number" class="input-styled" id="numVideos" value="1" min="1" max="10">
+                        <span class="suffix">video(s)</span>
                     </div>
-                    <div class="config-group">
-                        <label class="config-label">Tom</label>
-                        <select id="tomConteudo">
-                            <option value="conversacional">Conversacional</option>
-                            <option value="amigavel">Amigavel</option>
-                            <option value="profissional">Profissional</option>
-                            <option value="energetico">Energetico</option>
-                            <option value="inspirador">Inspirador</option>
-                            <option value="educativo">Educativo</option>
-                            <option value="urgente">Urgente</option>
-                        </select>
+                </div>
+                <div class="config-group">
+                    <label class="config-label-new">Duracao</label>
+                    <div class="input-compact">
+                        <input type="number" class="input-styled" id="duracaoVideo" value="60" min="15" max="600" step="15">
+                        <span class="suffix">seg</span>
                     </div>
-                    <div class="config-group">
-                        <label class="config-label">Videos</label>
-                        <div class="input-row">
-                            <input type="number" id="numVideos" value="1" min="1" max="10">
-                            <span class="input-suffix">video(s)</span>
-                        </div>
-                    </div>
-                    <div class="config-group">
-                        <label class="config-label">Duracao</label>
-                        <div class="input-row">
-                            <input type="number" id="duracaoVideo" value="60" min="15" max="600" step="15">
-                            <span class="input-suffix">segundos</span>
-                        </div>
-                    </div>
-                    <div class="config-group">
-                        <label class="config-label">Formato de saida</label>
-                        <select id="formatoSaida">
-                            <option value="completo">Completo (Visual + Narracao)</option>
-                            <option value="script">So Script (apenas fala)</option>
-                            <option value="cenario">Cenario e Narrativa</option>
-                        </select>
-                    </div>
+                </div>
+                <div class="config-group">
+                    <label class="config-label-new">Formato de saida</label>
+                    <select class="select-styled" id="formatoSaida">
+                        <option value="script">Script (so a fala)</option>
+                        <option value="cenas" selected>Cenas (dividida)</option>
+                        <option value="direcao">Cenas + Direcao</option>
+                    </select>
                 </div>
             </div>
 
-            <!-- Aba Avancado -->
-            <div class="config-tab-content" id="contentAvancado">
-                <div class="config-row">
-                    <div class="config-group">
-                        <label class="config-label">Seu nome / Canal</label>
-                        <input type="text" id="nomeCanal" placeholder="Ex: Maria Silva">
+            <!-- Accordion Avancado -->
+            <div class="config-accordion">
+                <button class="config-accordion-toggle" onclick="toggleAvancado()" id="toggleAvancado">
+                    <div class="toggle-left">
+                        <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                        Avancado
                     </div>
-                    <div class="config-group">
-                        <label class="config-label">Assunto do video</label>
-                        <input type="text" id="assuntoVideo" placeholder="Ex: Marketing Digital">
+                    <svg class="toggle-arrow" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                </button>
+                <div class="config-accordion-body" id="avancadoBody">
+                    <div class="config-section" style="margin-bottom: 14px;">
+                        <div class="config-group">
+                            <label class="config-label-new">Seu nome / Canal</label>
+                            <input type="text" class="input-styled" id="nomeCanal" placeholder="Ex: Maria Silva">
+                        </div>
+                        <div class="config-group">
+                            <label class="config-label-new">Assunto do video</label>
+                            <input type="text" class="input-styled" id="assuntoVideo" placeholder="Ex: Marketing Digital">
+                        </div>
+                        <div class="config-group">
+                            <label class="config-label-new">Plataforma</label>
+                            <select class="select-styled" id="redeSocial">
+                                <option value="ensinonacional" selected>Ensino Nacional</option>
+                                <option value="instagram">Instagram</option>
+                                <option value="tiktok">TikTok</option>
+                                <option value="youtube">YouTube</option>
+                                <option value="linkedin">LinkedIn</option>
+                                <option value="facebook">Facebook</option>
+                                <option value="twitter">X / Twitter</option>
+                                <option value="outro">Outro</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="config-group">
-                        <label class="config-label">Plataforma</label>
-                        <select id="redeSocial">
-                            <option value="ensinonacional" selected>Ensino Nacional</option>
-                            <option value="instagram">Instagram</option>
-                            <option value="tiktok">TikTok</option>
-                            <option value="youtube">YouTube</option>
-                            <option value="linkedin">LinkedIn</option>
-                            <option value="facebook">Facebook</option>
-                            <option value="twitter">X / Twitter</option>
-                            <option value="outro">Outro</option>
-                        </select>
-                    </div>
-                </div>
 
-                <div class="section-title">Elementos do Roteiro</div>
+                    <div class="section-title" style="margin-top: 10px;">Elementos do Roteiro</div>
 
-                <div class="config-row">
-                    <div class="config-group">
-                        <label class="config-label">Tipo de gancho</label>
-                        <select id="tipoGancho">
-                            <option value="nenhum" selected>Sem gancho</option>
-                            <option value="duvida">Gerar duvida</option>
-                            <option value="desafio">Desafiar o espectador</option>
-                            <option value="storytelling">Storytelling / Historia</option>
-                            <option value="estatistica">Estatistica impactante</option>
-                            <option value="pergunta">Pergunta direta</option>
-                            <option value="controverso">Afirmacao controversa</option>
-                            <option value="problema">Apresentar problema</option>
-                            <option value="curiosidade">Despertar curiosidade</option>
-                            <option value="promessa">Promessa de resultado</option>
-                            <option value="erro">Erro comum</option>
-                            <option value="segredo">Revelar segredo</option>
-                            <option value="urgencia">Criar urgencia</option>
-                        </select>
+                    <div class="config-section" style="margin-bottom: 14px;">
+                        <div class="config-group">
+                            <label class="config-label-new">Tipo de gancho</label>
+                            <select class="select-styled" id="tipoGancho">
+                                <option value="nenhum" selected>Sem gancho</option>
+                                <option value="duvida">Gerar duvida</option>
+                                <option value="desafio">Desafiar o espectador</option>
+                                <option value="storytelling">Storytelling / Historia</option>
+                                <option value="estatistica">Estatistica impactante</option>
+                                <option value="pergunta">Pergunta direta</option>
+                                <option value="controverso">Afirmacao controversa</option>
+                                <option value="problema">Apresentar problema</option>
+                                <option value="curiosidade">Despertar curiosidade</option>
+                                <option value="promessa">Promessa de resultado</option>
+                                <option value="erro">Erro comum</option>
+                                <option value="segredo">Revelar segredo</option>
+                                <option value="urgencia">Criar urgencia</option>
+                            </select>
+                        </div>
+                        <div class="config-group">
+                            <label class="config-label-new">Chamada para acao (CTA)</label>
+                            <select class="select-styled" id="tipoCTA">
+                                <option value="nenhum" selected>Sem CTA</option>
+                                <option value="comentar">Comenta aqui</option>
+                                <option value="curtir">Curte esse video</option>
+                                <option value="compartilhar">Compartilha com alguem</option>
+                                <option value="seguir">Segue para mais</option>
+                                <option value="inscrever">Se inscreve no canal</option>
+                                <option value="salvar">Salva para depois</option>
+                                <option value="link">Clica no link da bio</option>
+                                <option value="proxima">Veja a proxima aula</option>
+                                <option value="ativar">Ativa as notificacoes</option>
+                                <option value="baixar">Baixa o material</option>
+                                <option value="comprar">Garanta o seu agora</option>
+                                <option value="contato">Chama no direct/WhatsApp</option>
+                                <option value="marcar">Marca um amigo</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="config-group">
-                        <label class="config-label">Chamada para acao (CTA)</label>
-                        <select id="tipoCTA">
-                            <option value="nenhum" selected>Sem CTA</option>
-                            <option value="comentar">Comenta aqui</option>
-                            <option value="curtir">Curte esse video</option>
-                            <option value="compartilhar">Compartilha com alguem</option>
-                            <option value="seguir">Segue para mais</option>
-                            <option value="inscrever">Se inscreve no canal</option>
-                            <option value="salvar">Salva para depois</option>
-                            <option value="link">Clica no link da bio</option>
-                            <option value="proxima">Veja a proxima aula</option>
-                            <option value="ativar">Ativa as notificacoes</option>
-                            <option value="baixar">Baixa o material</option>
-                            <option value="comprar">Garanta o seu agora</option>
-                            <option value="contato">Chama no direct/WhatsApp</option>
-                            <option value="marcar">Marca um amigo</option>
-                        </select>
-                    </div>
-                </div>
 
-                <div class="config-row">
-                    <div class="config-group span-2">
-                        <label class="config-label highlight">Pontos cruciais - O que nao pode faltar</label>
-                        <textarea id="pontosCruciais" class="textarea-highlight" placeholder="Ex: Mencionar o desconto de 50%, mostrar o antes e depois, falar do prazo limitado..."></textarea>
+                    <div class="config-group" style="margin-bottom: 14px;">
+                        <label class="config-label-new highlight">Pontos cruciais - O que nao pode faltar</label>
+                        <textarea class="textarea-styled textarea-highlight" id="pontosCruciais" placeholder="Ex: Mencionar o desconto de 50%, mostrar o antes e depois, falar do prazo limitado..."></textarea>
                     </div>
-                </div>
 
-                <!-- TREND -->
-                <div class="section-title">🔥 Trend Viral</div>
-                <div class="config-row">
-                    <div class="config-group">
-                        <label class="config-label">Usar Trend</label>
-                        <select id="usarTrend">
-                            <option value="nao" selected>Não usar trend</option>
-                            <option value="sim">Adaptar para trend atual</option>
-                        </select>
-                    </div>
-                    <div class="config-group" id="tipoTrendGroup" style="display: none;">
-                        <label class="config-label">Tipo de Trend</label>
-                        <select id="tipoTrend">
-                            <option value="audio">Áudio/Música Viral</option>
-                            <option value="formato">Formato de Vídeo (POV, Get Ready, etc)</option>
-                            <option value="desafio">Desafio/Challenge</option>
-                            <option value="meme">Meme/Referência</option>
-                            <option value="transicao">Transição Criativa</option>
-                        </select>
-                    </div>
-                    <div class="config-group" id="referenciaTrendGroup" style="display: none;">
-                        <label class="config-label">Referência (opcional)</label>
-                        <input type="text" id="referenciaTrend" placeholder="Ex: nome do áudio ou trend específica">
+                    <!-- TREND -->
+                    <div class="section-title">🔥 Trend Viral</div>
+                    <div class="config-section">
+                        <div class="config-group">
+                            <label class="config-label-new">Usar Trend</label>
+                            <select class="select-styled" id="usarTrend">
+                                <option value="nao" selected>Nao usar trend</option>
+                                <option value="sim">Adaptar para trend atual</option>
+                            </select>
+                        </div>
+                        <div class="config-group" id="tipoTrendGroup" style="display: none;">
+                            <label class="config-label-new">Tipo de Trend</label>
+                            <select class="select-styled" id="tipoTrend">
+                                <option value="audio">Audio/Musica Viral</option>
+                                <option value="formato">Formato de Video (POV, Get Ready, etc)</option>
+                                <option value="desafio">Desafio/Challenge</option>
+                                <option value="meme">Meme/Referencia</option>
+                                <option value="transicao">Transicao Criativa</option>
+                            </select>
+                        </div>
+                        <div class="config-group" id="referenciaTrendGroup" style="display: none;">
+                            <label class="config-label-new">Referencia (opcional)</label>
+                            <input type="text" class="input-styled" id="referenciaTrend" placeholder="Ex: nome do audio ou trend especifica">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -533,6 +763,8 @@ Pode ser uma ideia, um artigo, uma transcricao ou qualquer conteudo que voce que
                     <div class="refine-chip" data-refine="mais-educativo">Mais educativo</div>
                     <div class="refine-chip" data-refine="gancho-forte">Gancho mais forte</div>
                     <div class="refine-chip" data-refine="cta-forte">CTA mais forte</div>
+                    <div class="refine-chip" data-refine="mais-emocional">Mais emocional</div>
+                    <div class="refine-chip" data-refine="mais-direto">Mais direto</div>
                 </div>
 
                 <div class="form-group">
@@ -564,19 +796,13 @@ Pode ser uma ideia, um artigo, uma transcricao ou qualquer conteudo que voce que
             document.getElementById('referenciaTrendGroup').style.display = usarTrend ? 'block' : 'none';
         });
 
-        // ==================== CONTROLE DE ABAS ====================
+        // ==================== CONTROLE DO ACCORDION ====================
 
-        function switchConfigTab(tabName) {
-            document.querySelectorAll('.config-tab').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.config-tab-content').forEach(content => content.classList.remove('active'));
-
-            if (tabName === 'basico') {
-                document.getElementById('tabBasico').classList.add('active');
-                document.getElementById('contentBasico').classList.add('active');
-            } else {
-                document.getElementById('tabAvancado').classList.add('active');
-                document.getElementById('contentAvancado').classList.add('active');
-            }
+        function toggleAvancado() {
+            const toggle = document.getElementById('toggleAvancado');
+            const body = document.getElementById('avancadoBody');
+            toggle.classList.toggle('open');
+            body.classList.toggle('open');
         }
 
         // ==================== CONFIGURACOES ====================
@@ -585,59 +811,213 @@ Pode ser uma ideia, um artigo, uma transcricao ou qualquer conteudo que voce que
         const tiposVideoConfig = {
             stories: {
                 nome: 'Stories',
-                descricao: 'Conexao e proximidade',
-                instrucoes: `STORIES - E como se voce tivesse pegando o celular pra contar algo pra um amigo.
-Sem producao, sem frescura. So voce sendo voce.
-Pode mostrar bastidor, contar do seu dia, dar sua opiniao.
-A pessoa do outro lado quer sentir que ta conversando com voce de verdade.`
+                descricao: 'Conexão, proximidade e persuasão',
+                instrucoes: `STORIES — CONVERSA ÍNTIMA COM ESTRATÉGIA
+
+=== FILOSOFIA ===
+Stories é o formato mais HUMANO das redes sociais. A pessoa está ali, no sofá, vendo quem ela segue. Você precisa parecer alguém que ela conhece, que entrou pra contar algo que acabou de descobrir.
+
+MAS por trás dessa naturalidade existe ESTRATÉGIA. Cada story tem um objetivo: gerar conexão, construir autoridade, criar desejo ou levar pra ação.
+
+=== NATURALIDADE + PERSUASÃO ===
+- Fale como se tivesse pegado o celular pra contar algo pra um amigo próximo, mas com intenção por trás de cada frase
+- Use gatilhos mentais de forma SUTIL: escassez ("pouca gente sabe"), prova social ("todo mundo que testou"), reciprocidade ("vou te dar de graça")
+- A pessoa não pode PERCEBER que está sendo persuadida, ela tem que sentir que está recebendo valor genuíno
+- Mostre bastidores, vulnerabilidade e opinião, essas são as armas mais fortes do stories porque geram CONFIANÇA
+
+=== CONTEÚDO DE VALOR REAL (NÃO ENROLAÇÃO) ===
+- Cada story precisa entregar algo: um insight, uma dica prática, um ponto de vista diferente, uma informação que a pessoa não tinha
+- PROIBIDO: stories genéricos tipo "bom dia gente" ou "tô aqui pra falar sobre X"
+- A pessoa tem que sair pensando "que dica boa" ou "nunca tinha pensado nisso"
+- Se não tem valor real, não poste. Menos conteúdo bom > muito conteúdo vazio
+
+=== ESTRUTURA DE RETENÇÃO ===
+- Story 1: Gancho que gera curiosidade ("deixa eu te contar uma coisa que descobri...")
+- Stories do meio: Entrega de valor com loops abertos ("e o melhor vem agora...")
+- Story final: CTA natural que não parece venda ("se isso fez sentido, me manda um 🔥")
+
+=== O QUE NÃO FAZER ===
+- NÃO soe como vendedor, soe como amigo que recomenda
+- NÃO enrole, vá direto ao ponto com naturalidade
+- NÃO seja genérico, cada frase precisa ter peso e propósito`
             },
             reels: {
                 nome: 'Reels / TikTok',
-                descricao: 'Rapido e direto',
-                instrucoes: `REELS - Aqui cada segundo conta.
-Comeca ja no assunto, sem enrolacao.
-Uma ideia so por video. Frase curta, pensamento claro.
-Se a pessoa nao entender em 3 segundos o que voce ta falando, ela ja foi embora.`
+                descricao: 'Magnético, humano e estratégico',
+                instrucoes: `REELS / TIKTOK — CONTEÚDO MAGNÉTICO COM ESTRATÉGIA DE RETENÇÃO
+
+=== FILOSOFIA ===
+O Reels não é uma aula, não é um pitch, é uma CONVERSA que prende. Você está falando com UMA pessoa, como se ela estivesse na sua frente. O objetivo é que ela saia pensando "nossa, eu não sabia disso", salve o vídeo e queira ver o próximo.
+
+A diferença entre um Reels que bomba e um que morre é: CONTEÚDO DE VALOR REAL + ENTREGA HUMANA + ESTRUTURA DE RETENÇÃO. Tem muito criador entregando embalagem bonita sem nada dentro. Você entrega substância.
+
+=== OS PRIMEIROS 2-3 SEGUNDOS (DECISIVOS) ===
+A pessoa está scrollando. Você tem 2 segundos pra fazer ela PARAR. O gancho precisa ser IRRESISTÍVEL:
+- Comece pelo RESULTADO ou dado mais impactante, nunca pela introdução
+- Crie um LOOP ABERTO: a pessoa PRECISA saber o que vem depois
+- Use PATTERN INTERRUPT: algo inesperado que quebra o padrão do feed
+- Tom de voz diferente do resto: mais baixo (segredo), mais alto (urgência), ou pausa antes de falar
+
+Ganchos que FUNCIONAM em 2025:
+- Começar com a CONSEQUÊNCIA: "Isso aqui fez eu perder 3 meses, e ninguém me avisou"
+- Usar CONTRASTE: "Todo mundo faz X, mas o certo é Y, e eu vou te provar"
+- PROVOCAÇÃO inteligente: "Se você ainda faz isso, para agora"
+- CURIOSIDADE pura: "Tem um detalhe aqui que muda tudo, e quase ninguém percebe"
+
+=== TOM HUMANO COM INTENÇÃO ESTRATÉGICA ===
+- Fale PARA a pessoa, não SOBRE o assunto. Use "você" o tempo todo
+- Seja VULNERÁVEL quando fizer sentido: "eu também errava nisso", "demorei pra entender"
+- Crie a sensação de SEGREDO COMPARTILHADO: "pouca gente sabe disso, mas..."
+- Alterne entre INFORMAÇÃO e CONEXÃO EMOCIONAL: dado → reflexão → dado → provocação
+- Use gatilhos mentais SUTIS: autoridade ("depois de X anos fazendo isso"), escassez ("isso pouca gente ensina"), prova social ("quem aplicou isso viu resultado")
+
+=== CONTEÚDO DE VALOR REAL — A PARTE MAIS IMPORTANTE ===
+- A pessoa tem que aprender algo que NÃO acharia facilmente no Google
+- Traga a perspectiva de quem VIVEU aquilo, não de quem leu sobre
+- Dê INFORMAÇÃO ESPECÍFICA: números, dados, exemplos reais, comparações concretas
+- PROIBIDO frases genéricas tipo "é muito importante", "você precisa saber", "faz toda diferença"
+- Cada frase precisa ter SUBSTÂNCIA. Se tirar a frase e o vídeo fica igual, ela não deveria estar ali
+- A pessoa deve terminar o vídeo MAIS INTELIGENTE do que começou
+
+=== ESTRUTURA DE RETENÇÃO (MARKETING) ===
+Cada cena precisa ter um MOTIVO para a pessoa continuar assistindo:
+- Cena 1 (Gancho): Loop aberto que gera curiosidade IMEDIATA
+- Cena 2 (Contexto): Dá informação mas abre OUTRO loop — nunca entregue tudo de uma vez
+- Cena 3+ (Valor): Entrega conteúdo de forma surpreendente, com micro-ganchos entre cenas
+- Cena final (Fechamento): Frase de impacto + CTA que gera ação natural
+
+=== GATILHOS DE ENGAJAMENTO (ALGORITMO) ===
+- COMPARTILHAMENTO: "preciso mandar isso pra alguém" → conteúdo que resolve problema comum
+- SALVAMENTO: "vou precisar rever isso" → conteúdo com passos ou dados densos
+- COMENTÁRIO: termine com algo que gera OPINIÃO ou IDENTIFICAÇÃO
+- REPLAY: revele algo surpreendente no final que faz querer rever
+- Evite dar a resposta completa no início (mantém retenção até o final)
+
+=== O QUE NÃO FAZER ===
+- NÃO comece com "Oi gente" ou "Fala galera" — perde 50% da audiência nos 2 primeiros segundos
+- NÃO diga "nesse vídeo vou te ensinar" — comece ENSINANDO direto
+- NÃO use tom de palestrante ou professor formal — soe como gente de verdade
+- NÃO enrole: se uma frase não adiciona valor, corte
+- NÃO seja genérico: cada frase precisa ter PESO, DADO ou INSIGHT
+- NÃO copie formato dos outros sem adicionar sua perspectiva única`
             },
             youtube: {
                 nome: 'YouTube',
-                descricao: 'Mais espaco pra desenvolver',
-                instrucoes: `YOUTUBE - Aqui voce tem mais tempo.
-Pode explicar com calma, dar contexto, contar historias.
-Mas ainda assim, nada de enrolacao. Respeita o tempo da pessoa.
-Desenvolve o raciocinio de forma organizada.`
+                descricao: 'Profundidade com estratégia',
+                instrucoes: `YOUTUBE — CONTEÚDO PROFUNDO COM RETENÇÃO ESTRATÉGICA
+
+=== FILOSOFIA ===
+No YouTube você tem mais tempo, e isso é uma ARMA, não uma desculpa pra enrolar. Cada minuto precisa justificar a pessoa estar ali em vez de ver outro vídeo. O diferencial é PROFUNDIDADE com RITMO.
+
+=== ESTRUTURA DE RETENÇÃO PARA YOUTUBE ===
+- Primeiros 30 segundos: GANCHO + PROMESSA clara do que a pessoa vai aprender
+- Não diga "antes de começar, se inscreve" — entregue valor PRIMEIRO, peça depois
+- A cada 2-3 minutos: crie um MICRO-GANCHO ("e agora vem a parte que ninguém fala...")
+- Use OPEN LOOPS: antecipe o que vem depois sem revelar ("daqui a pouco eu vou te mostrar algo que muda tudo isso")
+- Fechamento: resuma o valor entregue + CTA natural
+
+=== CONTEÚDO DE VALOR + PERSUASÃO ===
+- Desenvolva cada ponto com PROFUNDIDADE: contexto → explicação → exemplo real → aplicação prática
+- Use STORYTELLING estratégico: conte histórias que ilustrem o ponto E conectem emocionalmente
+- Traga dados, pesquisas e referências que a pessoa não encontraria sozinha
+- Conecte os pontos de forma que a pessoa sinta que está montando um quebra-cabeça
+- A pessoa deve sair pensando "esse canal entrega mais que curso pago"
+
+=== TOM HUMANO ===
+- Fale como alguém que domina o assunto e quer genuinamente ajudar
+- Seja direto, sem rodeios, sem enrolação, respeitando o tempo da pessoa
+- Use humor NATURAL quando couber, nunca forçado
+- Mostre vulnerabilidade quando relevante: erros, aprendizados, mudanças de opinião`
             },
             venda: {
                 nome: 'Video de Venda',
-                descricao: 'Mostrar a solucao',
-                instrucoes: `VENDA - A pessoa tem um problema. Voce tem a solucao.
-Mostra que voce entende a dor dela. Nao fica empurrando produto.
-Fala dos beneficios, do que vai mudar na vida dela.
-Sem pressao fake. So clareza sobre o que voce oferece.`
+                descricao: 'Persuasão com valor real',
+                instrucoes: `VÍDEO DE VENDA — PERSUASÃO BASEADA EM VALOR E EMPATIA
+
+=== FILOSOFIA ===
+A pessoa tem um problema, você tem a solução. Mas ela não quer ser VENDIDA, ela quer ser CONVENCIDA. A melhor venda acontece quando a pessoa sente que DESCOBRIU a solução sozinha, você só mostrou o caminho.
+
+=== ESTRUTURA PERSUASIVA (MARKETING) ===
+1. IDENTIFICAÇÃO: Mostre que você ENTENDE a dor dela melhor do que ela mesma ("sabe quando você tenta X e parece que nada funciona?")
+2. AGITAÇÃO: Amplifique o problema com consequências reais ("e o pior é que quanto mais tempo passa, mais difícil fica")
+3. AUTORIDADE: Mostre por que VOCÊ pode ajudar, com provas ("depois de ajudar X pessoas com isso, eu percebi um padrão")
+4. SOLUÇÃO: Apresente a solução focando em TRANSFORMAÇÃO, não em features ("o que muda é que você vai de X pra Y")
+5. PROVA: Resultados concretos, depoimentos, antes e depois
+6. CTA: Urgência REAL, não fake. Escassez VERDADEIRA, não inventada
+
+=== GATILHOS MENTAIS (USE COM ÉTICA) ===
+- RECIPROCIDADE: Entregue valor ANTES de pedir algo
+- PROVA SOCIAL: Mostre que outros já fizeram e deu certo
+- AUTORIDADE: Demonstre conhecimento profundo, não só títulos
+- ESCASSEZ: Só use se for REAL (vagas limitadas, bônus por tempo)
+- ANTECIPAÇÃO: Crie expectativa sobre o que a pessoa vai conquistar
+
+=== CONTEÚDO DE VALOR MESMO NA VENDA ===
+- O vídeo de venda deve ENSINAR algo mesmo pra quem não comprar
+- PROIBIDO: pressão fake, contagem regressiva inventada, "últimas vagas" mentira
+- A pessoa deve pensar "se o conteúdo grátis é assim, imagina o pago"
+- Fale dos BENEFÍCIOS e da TRANSFORMAÇÃO, não das características do produto`
             },
             curso: {
                 nome: 'Aula / Curso',
                 descricao: 'Ensinar de verdade',
-                instrucoes: `AULA - O texto ja tem os detalhes tecnicos. O aluno ja leu.
-Seu trabalho e trazer o que e interessante, o que surpreende.
-Fala como professor que ama o assunto.
-Cada video tem que ensinar algo que a pessoa vai lembrar.`
+                instrucoes: `AULA / CURSO — ENSINO COM PROFUNDIDADE E CLAREZA
+
+=== FILOSOFIA ===
+O aluno está ali pra APRENDER. Seu trabalho é pegar o conteúdo técnico e transformar em algo que ele vai entender, lembrar e aplicar. Fale como professor que ama o assunto e quer genuinamente que o aluno domine aquilo.
+
+=== ABORDAGEM ===
+- O texto já tem os detalhes técnicos, o aluno já leu
+- Seu trabalho é trazer o que é interessante, o que surpreende, o que conecta
+- Cada vídeo tem que ensinar algo que a pessoa vai lembrar
+- Use analogias do dia a dia pra explicar conceitos complexos
+- Estrutura: o que é → por que importa → como funciona → exemplo prático → resumo
+
+=== TOM ===
+- Professor acessível que domina o assunto
+- Paciente mas nunca enrolado
+- Respeita a inteligência do aluno
+- Sem jargão desnecessário, sem simplificar demais`
             },
             institucional: {
                 nome: 'Institucional',
-                descricao: 'Profissional mas acessivel',
-                instrucoes: `INSTITUCIONAL - Transmite confianca sem ser robotico.
-Mostra o valor da empresa de forma clara.
-Linguagem mais cuidada, mas ainda humana.
-Nada de frases corporativas vazias.`
+                descricao: 'Profissional e humano',
+                instrucoes: `INSTITUCIONAL — PROFISSIONAL MAS ACESSÍVEL
+
+=== FILOSOFIA ===
+Transmitir confiança e credibilidade sem soar robótico ou corporativo. A empresa é feita de PESSOAS, e pessoas se conectam com pessoas.
+
+=== ABORDAGEM ===
+- Mostre o valor da empresa de forma clara e tangível
+- Linguagem mais cuidada, mas ainda humana e acessível
+- Foque nos RESULTADOS e no IMPACTO, não em frases corporativas vazias
+- Use dados concretos e exemplos reais
+- A pessoa deve pensar "essa empresa sabe o que faz e se importa de verdade"`
             },
             podcast: {
                 nome: 'Podcast',
-                descricao: 'Conversa entre amigos',
-                instrucoes: `PODCAST - E uma conversa.
-Pode divagar um pouco, contar historia, dar opiniao.
-Ritmo mais tranquilo, como se tivesse tomando um cafe.
-Aprofunda no que e interessante.`
+                descricao: 'Conversa profunda com propósito',
+                instrucoes: `PODCAST — CONVERSA PROFUNDA COM ESTRATÉGIA
+
+=== FILOSOFIA ===
+Podcast é o formato mais ÍNTIMO de conteúdo. A pessoa está com fone de ouvido, é como se você estivesse falando direto no ouvido dela. Use isso a seu favor.
+
+=== NATURALIDADE + INTENÇÃO ===
+- É uma conversa, pode divagar um pouco, contar história, dar opinião forte
+- Ritmo mais tranquilo, como se estivesse tomando um café com a pessoa
+- MAS cada divagação tem um PROPÓSITO: ilustrar um ponto, gerar conexão ou criar curiosidade
+- Aprofunde no que é interessante, não passe rápido pelo que tem valor
+
+=== CONTEÚDO DE VALOR ===
+- Podcast é o formato onde você pode ir MAIS FUNDO em um assunto
+- Traga perspectivas únicas, experiências pessoais, bastidores, opiniões controversas (com fundamento)
+- A pessoa deve terminar o episódio sentindo que ganhou algo: uma ideia nova, uma perspectiva diferente, uma motivação real
+- PROIBIDO enrolação: se não tem nada de valor pra dizer, termine
+
+=== ENGAJAMENTO ===
+- Faça perguntas retóricas que a pessoa responde mentalmente
+- Conte histórias com arcos narrativos: setup → conflito → resolução → aprendizado
+- Deixe ganchos pro próximo episódio de forma natural`
             }
         };
 
@@ -645,79 +1025,99 @@ Aprofunda no que e interessante.`
         const tonsConfig = {
             conversacional: {
                 nome: 'Conversacional',
-                instrucoes: `Fala como se tivesse batendo papo. Nada forcado.
-Usa "voce", "a gente". Frases do jeito que a gente fala no dia a dia.
-Proximo mas sem forcar intimidade.`
+                instrucoes: `Fale como se estivesse num café com a pessoa. É uma CONVERSA, não uma apresentação.
+Usa "você", "a gente", "olha só", "a real é que", "sabe o que eu percebi".
+Varia o ritmo: às vezes acelera quando tá empolgado, às vezes pausa pra dar peso.
+Mostre que você é GENTE: conte experiências, admita erros, tenha opinião.
+A pessoa tem que esquecer que está vendo um conteúdo e sentir que está conversando com alguém interessante.
+Use humor natural quando couber, nunca forçado.`
             },
             amigavel: {
                 nome: 'Amigavel',
-                instrucoes: `Acolhedor, de boa. Como um amigo explicando algo.
-Palavras leves, positivas. Mostra que ta ali pra ajudar.
-Sem julgamento, sem pressao.`
+                instrucoes: `Tom acolhedor de quem está ali pra ajudar DE VERDADE.
+Demonstra empatia REAL: reconhece a dificuldade antes de dar a solução ("eu sei que isso parece confuso, mas fica comigo").
+Passa segurança: "é mais simples do que parece", "você vai ver que faz sentido".
+Nunca julga, nunca pressiona. É como aquele amigo que tem paciência e explica até você entender.
+A pessoa tem que se sentir ACOLHIDA e CAPAZ ao mesmo tempo.`
             },
             profissional: {
                 nome: 'Profissional',
-                instrucoes: `Linguagem mais cuidada, mas ainda humana.
-Transmite competencia sem ser frio.
-Direto, claro, sem enrolacao.`
+                instrucoes: `Linguagem polida mas NUNCA robótica. Transmite autoridade com NATURALIDADE.
+Vocabulário preciso mas acessível. Sem jargão desnecessário.
+Estrutura lógica: apresenta o ponto, desenvolve com clareza, conclui com firmeza.
+Passa credibilidade: usa dados, pesquisas, exemplos concretos e referências.
+O tom é de alguém que DOMINA o assunto e não precisa provar nada — só mostra com evidências.
+Ainda assim, é humano. Tem opinião, tem posicionamento, tem personalidade.`
             },
             energetico: {
                 nome: 'Energetico',
-                instrucoes: `Ritmo mais acelerado. Frases curtas.
-Transmite entusiasmo genuino, nao forcado.
-Empolgacao de verdade, nao de vendedor.`
+                instrucoes: `Ritmo DINÂMICO com variação. Não é gritar o tempo todo, é saber quando EXPLODIR e quando fazer PAUSA.
+Começa com IMPACTO: uma frase curta e certeira que prende.
+Transmite urgência positiva: "isso muda o jogo", "presta atenção nesse detalhe".
+Empolgação GENUÍNA de quem descobriu algo e quer compartilhar.
+Alterne entre energia alta e pausa dramática pra dar contraste e manter atenção.
+A pessoa tem que sentir sua empolgação e pensar "se ele tá tão animado, deve ser bom".`
             },
             inspirador: {
                 nome: 'Inspirador',
-                instrucoes: `Eleva a pessoa, mostra possibilidades.
-Nao e autoajuda cliche. E mostrar que da pra fazer.
-Conecta com o que importa de verdade.`
+                instrucoes: `Conecta com o SONHO da pessoa, mas com os PÉS NO CHÃO.
+Alterna entre realidade (problema atual) e visão (onde ela pode chegar). Mostra o CAMINHO, não só o destino.
+Usa histórias REAIS: de quem já fez, de como você começou, de erros que viraram acertos.
+PROIBIDO autoajuda genérica. Cada frase inspiradora precisa ter um EXEMPLO CONCRETO junto.
+A pessoa deve sair pensando "eu consigo, e agora eu sei COMO". Não só "que bonito".
+É sobre possibilidade REAL baseada em evidência, não em wishful thinking.`
             },
             educativo: {
                 nome: 'Educativo',
-                instrucoes: `Tom de professor que ama o que ensina.
-Explica de forma clara, com exemplos reais.
-Paciente, didatico, mas sem tratar a pessoa como burra.`
+                instrucoes: `Tom de quem AMA o assunto e quer genuinamente que o outro aprenda.
+Explica de forma SIMPLES sem simplificar demais. Usa analogias do dia a dia.
+Estrutura: o que é → por que importa → como funciona → exemplo prático.
+Antecipa dúvidas: "você pode estar pensando 'mas e se...' — e é aí que entra o ponto".
+Dá aquela sensação de "nossa, não sabia disso" — conteúdo de VALOR REAL.
+Paciente mas nunca enrolado. Respeita a inteligência da pessoa.`
             },
             urgente: {
                 nome: 'Urgente',
-                instrucoes: `Direto, sem rodeio. Mostra por que isso importa agora.
-Nao e desespero fake. E clareza sobre prioridade.
-Vai no ponto, sem enrolacao.`
+                instrucoes: `Direto no ponto. Zero enrolação. Cada segundo conta.
+Começa com impacto: "Presta atenção", "Isso é sério", "Para tudo".
+Tom firme com AUTORIDADE, não desespero. A urgência vem da IMPORTÂNCIA do assunto, não de gritar.
+Frases certeiras com dados concretos. Sem floreio, sem introdução longa.
+Mostra consequência real: "se você não fizer isso, vai acontecer X".
+A pessoa tem que sentir que PRECISA agir, não que está sendo manipulada.`
             }
         };
 
         const ganchosConfig = {
             nenhum: { texto: '', visual: '' },
-            duvida: { texto: 'Voce sabia que a maioria das pessoas erra nisso?', visual: 'Expressao de duvida' },
-            desafio: { texto: 'Aposto que voce nao consegue fazer isso...', visual: 'Expressao desafiadora' },
-            storytelling: { texto: 'Deixa eu te contar uma historia...', visual: 'Close no rosto' },
-            estatistica: { texto: '90% das pessoas nao sabem disso...', visual: 'Numero grande na tela' },
-            pergunta: { texto: 'Voce ja se perguntou por que isso acontece?', visual: 'Expressao curiosa' },
-            controverso: { texto: 'Isso que vou falar vai contra tudo que voce acredita...', visual: 'Expressao seria' },
-            problema: { texto: 'Se voce tem esse problema, presta atencao...', visual: 'X vermelho' },
-            curiosidade: { texto: 'O que eu vou mostrar agora vai te surpreender...', visual: 'Suspense' },
-            promessa: { texto: 'Em 60 segundos voce vai aprender algo que vai mudar seu jogo...', visual: 'Contagem regressiva' },
-            erro: { texto: 'Esse e o erro numero 1 que as pessoas cometem...', visual: 'Alerta' },
-            segredo: { texto: 'Vou revelar um segredo que poucos conhecem...', visual: 'Gesto de silencio' },
-            urgencia: { texto: 'Para tudo que voce esta fazendo agora...', visual: 'Gesto de pare' }
+            duvida: { texto: 'Gere uma dúvida genuína na cabeça da pessoa sobre algo que ela acha que sabe, mas não sabe direito', visual: 'Expressão de dúvida' },
+            desafio: { texto: 'Desafie o espectador a questionar algo que ele faz no automático, mostrando que existe um jeito melhor', visual: 'Expressão desafiadora' },
+            storytelling: { texto: 'Comece contando uma situação real e específica que o espectador se identifique, como se fosse um bastidor', visual: 'Close no rosto, tom íntimo' },
+            estatistica: { texto: 'Abra com um dado ou número impactante e REAL que faça a pessoa parar pra pensar', visual: 'Número grande na tela' },
+            pergunta: { texto: 'Faça uma pergunta direta e específica que a pessoa responde mentalmente com "é, eu também..."', visual: 'Expressão curiosa' },
+            controverso: { texto: 'Comece com uma afirmação que vai contra o senso comum, mas que você vai provar com argumentos sólidos', visual: 'Expressão séria, pausa antes de falar' },
+            problema: { texto: 'Descreva um problema específico que a pessoa vive, com tanta precisão que ela pense "ele tá falando de mim"', visual: 'Expressão empática' },
+            curiosidade: { texto: 'Crie um loop aberto irresistível, mencionando algo surpreendente que só vai ser revelado no decorrer do vídeo', visual: 'Suspense, pausa dramática' },
+            promessa: { texto: 'Faça uma promessa concreta e específica do que a pessoa vai aprender ou ganhar até o final do vídeo', visual: 'Tom confiante' },
+            erro: { texto: 'Comece pelo erro mais comum e específico que as pessoas cometem nesse assunto, mostrando a consequência', visual: 'Alerta, tom de quem já viu isso acontecer' },
+            segredo: { texto: 'Compartilhe algo que pouca gente sabe ou fala sobre, como se fosse informação privilegiada', visual: 'Tom baixo, como segredo, se aproxima da câmera' },
+            urgencia: { texto: 'Crie senso de urgência real sobre o assunto, mostrando por que a pessoa precisa prestar atenção AGORA', visual: 'Tom firme, gesto de pare' }
         };
 
         const ctasConfig = {
             nenhum: { texto: '', visual: '' },
-            comentar: { texto: 'Comenta aqui o que voce achou!', visual: 'Icone de comentario' },
-            curtir: { texto: 'Deixa o like se esse conteudo te ajudou!', visual: 'Coracao animado' },
-            compartilhar: { texto: 'Manda pra alguem que precisa ver isso!', visual: 'Icone de compartilhar' },
-            seguir: { texto: 'Segue aqui pra nao perder nenhum conteudo!', visual: 'Botao seguir' },
-            inscrever: { texto: 'Se inscreve no canal e ativa o sininho!', visual: 'Botao inscrever-se' },
-            salvar: { texto: 'Salva esse video pra ver depois!', visual: 'Icone de salvar' },
-            link: { texto: 'Link na bio pra voce saber mais!', visual: 'Seta apontando pra cima' },
-            proxima: { texto: 'Na proxima aula eu vou te mostrar o passo seguinte...', visual: 'Preview' },
-            ativar: { texto: 'Ativa as notificacoes pra nao perder nada!', visual: 'Sino animado' },
-            baixar: { texto: 'Baixa o material gratuito no link!', visual: 'Icone de download' },
-            comprar: { texto: 'Garanta o seu agora antes que acabe!', visual: 'Botao de compra' },
-            contato: { texto: 'Me chama no direct que eu te ajudo!', visual: 'Icone de mensagem' },
-            marcar: { texto: 'Marca aquele amigo que precisa ver isso!', visual: 'Icone de arroba' }
+            comentar: { texto: 'Termine com algo que gere opinião ou identificação, e convide a pessoa a comentar de forma natural, sem parecer pedido forçado', visual: 'Ícone de comentário' },
+            curtir: { texto: 'Peça o like de forma natural, conectando com o valor que foi entregue no vídeo', visual: 'Coração' },
+            compartilhar: { texto: 'Termine de um jeito que a pessoa pense "preciso mandar isso pra alguém", e sugira compartilhar naturalmente', visual: 'Ícone de compartilhar' },
+            seguir: { texto: 'Convide a seguir mencionando o que vem de conteúdo próximo, criando antecipação', visual: 'Botão seguir' },
+            inscrever: { texto: 'Peça inscrição conectando com o valor entregue, mostrando que tem mais conteúdo assim vindo', visual: 'Botão inscrever-se' },
+            salvar: { texto: 'Sugira salvar o vídeo porque o conteúdo é denso e vale rever, de forma natural', visual: 'Ícone de salvar' },
+            link: { texto: 'Direcione para o link da bio de forma natural, conectando com um próximo passo ou material complementar', visual: 'Seta apontando pra cima' },
+            proxima: { texto: 'Crie um gancho para a próxima aula/vídeo, deixando curiosidade sobre o que vem a seguir', visual: 'Preview' },
+            ativar: { texto: 'Peça para ativar notificações conectando com conteúdo futuro que a pessoa não vai querer perder', visual: 'Sino' },
+            baixar: { texto: 'Mencione um material complementar gratuito no link, mostrando o valor extra que a pessoa ganha', visual: 'Ícone de download' },
+            comprar: { texto: 'Faça o CTA de venda de forma ética, focando na transformação e não na pressão, com urgência real', visual: 'Botão de compra' },
+            contato: { texto: 'Convide a pessoa a chamar no direct/WhatsApp de forma acolhedora, mostrando que quer ajudar', visual: 'Ícone de mensagem' },
+            marcar: { texto: 'Sugira marcar alguém que precisa ver esse conteúdo, de forma natural e específica ao assunto', visual: 'Ícone de arroba' }
         };
 
         // ==================== GERACAO DE ROTEIRO ====================
@@ -760,7 +1160,9 @@ Vai no ponto, sem enrolacao.`
             const tipoGancho = document.getElementById('tipoGancho').value;
             const tipoCTA = document.getElementById('tipoCTA').value;
             const pontosCruciais = document.getElementById('pontosCruciais').value.trim();
-            const formatoSaida = document.getElementById('formatoSaida').value;
+            let formatoSaida = document.getElementById('formatoSaida').value;
+
+            const isReelsTiktok = (tipo === 'reels' || tipo === 'stories');
 
             // Configuracoes de Trend
             const usarTrend = document.getElementById('usarTrend').value === 'sim';
@@ -782,13 +1184,17 @@ Vai no ponto, sem enrolacao.`
             const tipoVideoInfo = tiposVideoConfig[tipo] || tiposVideoConfig.reels;
             const tomInfo = tonsConfig[tom] || tonsConfig.conversacional;
 
-            const systemPrompt = `Você é um professor que domina o assunto e ama ensinar. Você fala com autoridade, mas de forma acessível. Não é distante nem arrogante, é alguém que sabe do que está falando e quer genuinamente que o outro aprenda.
+            let systemPrompt = `Você é um COMUNICADOR que domina o assunto, entende de marketing e fala como GENTE DE VERDADE. Você combina conhecimento profundo com uma entrega HUMANA e ESTRATÉGICA. Cada palavra tem propósito: ou ensina algo, ou conecta emocionalmente, ou persuade de forma ética.
 
 === SEU ESTILO ===
 
-Pense em um professor universitário que é referência na área, mas que consegue explicar de forma clara. Ele tem credibilidade porque conhece profundamente o assunto, e tem carisma porque fala de forma natural e envolvente.
+Você NÃO é um robô que despeja informação. Você é alguém que VIVEU o assunto, entende as dores da audiência e sabe como transformar conhecimento em CONTEÚDO QUE PRENDE.
 
-Você transmite confiança. Quando você fala, a pessoa sente que está aprendendo com alguém que realmente entende.
+Sua arma principal é: CONTEÚDO DE VALOR REAL. Num mundo onde todo mundo fala e poucos entregam, você entrega SUBSTÂNCIA. A pessoa tem que sair do seu conteúdo MAIS INTELIGENTE do que entrou.
+
+Você usa estratégia de marketing e persuasão de forma NATURAL e ÉTICA. Não é manipulação, é comunicação inteligente: saber quando criar curiosidade, quando gerar identificação, quando provocar e quando entregar.
+
+Você transmite confiança porque DOMINA o assunto, e gera conexão porque fala como uma pessoa de verdade, com vulnerabilidade, opinião e personalidade.
 
 === TIPO DE VÍDEO: ${tipoVideoInfo.nome.toUpperCase()} ===
 ${tipoVideoInfo.instrucoes}
@@ -802,54 +1208,82 @@ ${tomInfo.instrucoes}
    - "você", "é", "então", "também", "aí", "até"
    - Escreva português correto, isso transmite credibilidade
 
-2. FALA FLUIDA PARA TELEPROMPTER
-   - Vírgulas criam pausas curtas e dão ritmo
-   - A cada 2-3 frases, PULE UMA LINHA para respirar
-   - O texto precisa fluir naturalmente quando lido em voz alta
+2. FALA FLUIDA PARA TELEPROMPTER — REGRA MAIS IMPORTANTE
+   - PREFIRA VÍRGULAS em vez de pontos finais. Vírgulas criam pausas curtas e dão ritmo CONTÍNUO à fala, como uma conversa real.
+   - O ponto final CORTA o raciocínio e deixa a fala robótica, fragmentada e travada. Use ponto final APENAS quando realmente mudar de assunto ou ideia.
+   - CONECTE as frases com vírgulas e conectivos, formando períodos LONGOS e fluidos, como a gente fala de verdade.
+   - A cada 2-3 períodos longos, PULE UMA LINHA para respirar.
+   - O texto precisa fluir naturalmente quando lido em voz alta, sem paradas bruscas.
+   - REGRA: Para cada 1 ponto final, use pelo menos 4-5 vírgulas. A fala deve ser CONTÍNUA.
+   - ERRADO: "Isso é importante. Muita gente não sabe. O problema é que ninguém fala sobre isso."
+   - CERTO: "Isso é importante, e muita gente não sabe, o problema é que ninguém fala sobre isso, e quando você entende, muda tudo"
 
-3. CONECTIVOS NATURAIS
-   - "e" para conectar ideias
-   - "é" quando for verbo ser
+3. CONECTIVOS NATURAIS (USE SEMPRE para evitar pontos)
+   - "e" para conectar ideias em vez de usar ponto
+   - "que" para estender o raciocínio
+   - "porque" para justificar sem cortar
    - "então" para consequência
    - "mas" para contraste
    - "só que" para ressalva
    - "o interessante é que" para destacar
    - "e isso é importante porque" para dar peso
+   - "e aí" para sequência natural
+   - "ou seja" para explicar de outro jeito
 
-4. TOM DE AUTORIDADE ACESSÍVEL
-   - Fale com segurança, você domina o assunto
-   - Seja claro e direto, sem rodeios
-   - Natural mas profissional
-   - PROIBIDO: gírias infantis como "danada", "massa", "show", "top"
-   - PROIBIDO: excesso de informalidade que tire a credibilidade
-   - Seja o professor que inspira respeito e admiração
+4. TOM HUMANO E NATURAL
+   - Fale como GENTE, não como roteiro pronto. A pessoa tem que sentir que está ouvindo alguém REAL
+   - Use "você" o tempo todo, fale PARA a pessoa, não SOBRE o assunto
+   - Mostre vulnerabilidade quando fizer sentido: "eu também errava nisso", "demorei pra entender"
+   - Tenha OPINIÃO: gente que não se posiciona não prende ninguém
+   - PROIBIDO: soar como apresentador de TV, palestrante de palco ou robô corporativo
+   - PROIBIDO: gírias forçadas que não são naturais
 
-5. CONTEÚDO DE VALOR
-   - Cada frase precisa ensinar algo ou construir o raciocínio
-   - Traga informações que surpreendem e enriquecem
-   - Faça conexões que o aluno não faria sozinho
-   - O aluno deve terminar pensando "isso fez sentido, aprendi algo"
+5. CONTEÚDO DE VALOR REAL — REGRA FUNDAMENTAL
+   - Num mundo onde TODO MUNDO fala, poucos ENTREGAM. Você entrega SUBSTÂNCIA
+   - Cada frase precisa ter PESO: ou ensina algo novo, ou muda uma perspectiva, ou dá um insight prático
+   - PROIBIDO frases genéricas: "é muito importante", "você precisa saber", "faz toda diferença" — isso é ENCHIMENTO
+   - Traga DADOS ESPECÍFICOS, exemplos concretos, comparações que a pessoa ENTENDE
+   - A pessoa deve terminar o conteúdo MAIS INTELIGENTE do que começou
+   - Se uma frase não adiciona valor real, CORTE. Menos conteúdo bom > muito conteúdo vazio
 
-6. SEM CLICHÊS
+6. ESTRATÉGIA DE PERSUASÃO (MARKETING ÉTICO)
+   - Use gatilhos mentais de forma SUTIL e NATURAL: curiosidade, escassez, prova social, autoridade, reciprocidade
+   - Crie LOOPS ABERTOS: abra curiosidade que só fecha mais pra frente
+   - Gere IDENTIFICAÇÃO antes de ensinar: "sabe quando você tenta X e não funciona?"
+   - A pessoa não pode PERCEBER que está sendo persuadida, ela tem que sentir que está recebendo valor
+   - ANTECIPE objeções: "você pode estar pensando que isso não funciona pra você, mas..."
+
+7. SEM CLICHÊS
    - Nada de "Você sabia que..."
    - Nada de "Já parou pra pensar..."
    - Nada de "Nesse vídeo vou te ensinar..."
-   - Comece direto no conteúdo, com autoridade
+   - Nada de "Isso vai mudar sua vida" sem provar
+   - Comece direto no CONTEÚDO, com autoridade e naturalidade
+
+8. TÍTULO E TEXTO DEVEM TER A MESMA FORÇA — REGRA CRÍTICA
+   - O título do vídeo é um GANCHO. A primeira frase do texto TEM que ser tão forte quanto o título ou MAIS.
+   - Se o título cria curiosidade (ex: "O que a Netflix NÃO quer que você saiba"), o texto NÃO pode começar com algo fraco e genérico.
+   - DUAS OPÇÕES:
+     a) O título FAZ PARTE da fala: a pessoa fala o título como primeira frase e emenda no conteúdo. Ex: título "O erro que todo mundo comete" → fala começa com "Tem um erro que todo mundo comete, e eu aposto que você já fez isso..."
+     b) O texto COMEÇA com a mesma energia do título: se o título é forte, a primeira frase do texto precisa ser AINDA MAIS forte, porque é o que a pessoa vai OUVIR.
+   - PROIBIDO: título impactante + texto que começa com pergunta genérica ("Você já passou por isso?"). O texto tem que ENTREGAR na mesma intensidade do título.
+   - O título nunca deve ser MELHOR que o início do texto. Se o título prende, o texto tem que PRENDER MAIS.
 
 === TEMPO ===
 - 130-150 palavras = 1 minuto falando
 - ${duracaoVideo} segundos = ENTRE ${Math.round(duracaoVideo * 2.15)} E ${Math.round(duracaoVideo * 2.5)} PALAVRAS
 - CONTE as palavras e respeite o limite
 
-=== EXEMPLO DE NARRATIVA CORRETA ===
+=== EXEMPLO DE NARRATIVA CORRETA (NATURAL + ESTRATÉGICA + VÍRGULAS) ===
 
-"A maioria das pessoas comete um erro comum aqui, e é um erro que faz toda a diferença no resultado final.
+Título: "O erro que destrói 90% dos iniciantes"
+Fala: "Tem um erro que destrói 90% dos iniciantes, e o pior é que ninguém fala sobre isso, porque parece um detalhe pequeno, mas quando você entende o que está por trás, percebe que é exatamente o que separa quem avança de quem fica travado meses no mesmo lugar.
 
-O ponto é o seguinte: quando você entende como isso funciona na essência, percebe que a aplicação é muito mais simples do que parece. E isso não é teoria, é o que separa quem consegue resultado de quem fica travado.
+E eu sei disso porque eu cometi esse erro durante muito tempo, e quando alguém finalmente me mostrou o que eu estava fazendo de errado, a mudança foi quase imediata, porque não era sobre fazer mais, era sobre fazer DIFERENTE, e a diferença é sutil mas muda tudo.
 
-Tem um detalhe técnico que poucas pessoas conhecem. Esse detalhe explica por que algumas abordagens funcionam e outras não. E quando você entende isso, sua forma de pensar o assunto muda completamente."
+O ponto é o seguinte, a maioria das pessoas foca na parte errada do processo, e quando você corrige isso, os resultados começam a aparecer de forma natural, sem forçar nada, e eu vou te mostrar exatamente o que mudar."
 
-PERCEBA: Tom de autoridade, conteúdo de valor, fala fluida com pausas, acentos corretos, sem gírias infantis.
+PERCEBA: O título FAZ PARTE da fala — a primeira frase REPETE e EXPANDE o título. Tom HUMANO (eu cometi, eu sei). Vírgulas conectando tudo. CONTEÚDO real. Gancho forte desde a primeira palavra. NUNCA o título é mais forte que o texto.
 
 Responda em português brasileiro COM ACENTOS.
 Retorne APENAS JSON, sem markdown.`;
@@ -887,16 +1321,17 @@ ${texto}
 CONFIGURAÇÕES:
 - Tipo de vídeo: ${tipoVideoInfo.nome}
 - Tom: ${tomInfo.nome}
+- Plataforma: ${rede === 'ensinonacional' ? 'Ensino Nacional (plataforma educacional, tom mais didático e profissional)' : rede === 'instagram' ? 'Instagram (linguagem próxima, visual, engajamento)' : rede === 'tiktok' ? 'TikTok (autêntico, trend-friendly, ganchos fortes)' : rede === 'youtube' ? 'YouTube (profundidade, retenção longa, SEO)' : rede === 'linkedin' ? 'LinkedIn (profissional, autoridade, networking)' : rede === 'facebook' ? 'Facebook (compartilhável, acessível, amplo)' : rede === 'twitter' ? 'X/Twitter (conciso, opinião, direto)' : 'Genérico'}
 - Quantidade: ${numVideos} vídeo(s)
 - Duração: ${duracaoVideo} segundos cada
 - PALAVRAS POR VÍDEO: entre ${Math.round(duracaoVideo * 2.15)} e ${Math.round(duracaoVideo * 2.5)} palavras (CONTE!)
-${tipoGancho !== 'nenhum' ? '- Gancho: ' + tipoGancho : '- SEM gancho - começa direto no conteúdo'}
-${tipoCTA !== 'nenhum' ? '- CTA: ' + tipoCTA : '- SEM CTA - termina quando acabar o assunto'}
+${tipoGancho !== 'nenhum' ? '- Gancho (' + tipoGancho + '): Comece o vídeo com um gancho do tipo "' + ganchosConfig[tipoGancho].texto + '". Adapte ao assunto, NÃO use essa frase literalmente, crie uma versão original e específica pro conteúdo.' : '- SEM gancho - começa direto no conteúdo com autoridade'}
+${tipoCTA !== 'nenhum' ? '- CTA (' + tipoCTA + '): Termine com uma chamada para ação no estilo "' + ctasConfig[tipoCTA].texto + '". Adapte ao contexto de forma NATURAL, não force.' : '- SEM CTA - termina quando acabar o assunto'}
 ${pontosCruciais ? '- Incluir obrigatoriamente: ' + pontosCruciais : ''}
 
 COMO ESCREVER O ROTEIRO:
 
-Você é um professor que domina esse assunto. Vai explicar com autoridade, mas de forma clara e envolvente. O aluno precisa sentir que está aprendendo com alguém que realmente entende.
+Você domina esse assunto e sabe se comunicar como gente de verdade. Vai combinar CONHECIMENTO PROFUNDO com ENTREGA HUMANA e ESTRATÉGIA DE COMUNICAÇÃO. A pessoa precisa sentir que está aprendendo com alguém real, que viveu o assunto e sabe traduzir de forma clara.
 
 REGRAS OBRIGATÓRIAS:
 
@@ -904,52 +1339,171 @@ REGRAS OBRIGATÓRIAS:
    - "você", "é", "então", "também", "aí", "até"
    - Português correto transmite credibilidade
 
-2. FALA FLUIDA PARA TELEPROMPTER
-   - Vírgulas criam pausas curtas e dão ritmo
-   - A cada 2-3 frases, PULE UMA LINHA para respirar
-   - Conectivos: "e", "é", "então", "mas", "só que", "o interessante é que"
+2. FALA FLUIDA PARA TELEPROMPTER — MAIS IMPORTANTE
+   - PREFIRA VÍRGULAS em vez de pontos. Vírgulas conectam ideias e criam fala CONTÍNUA e natural.
+   - Pontos finais CORTAM o raciocínio e deixam a fala robótica. Use ponto APENAS para mudar de assunto.
+   - Para cada 1 ponto, use 4-5 vírgulas. Conecte frases com: "e", "que", "porque", "então", "mas", "só que", "ou seja", "e aí"
+   - A cada 2-3 períodos longos, PULE UMA LINHA para respirar
 
-3. TOM DE AUTORIDADE
-   - Fale com segurança, você domina o assunto
-   - Natural mas profissional
-   - SEM gírias infantis (danada, massa, show, top)
-   - SEM informalidade excessiva
+3. TOM HUMANO E NATURAL
+   - Fale como GENTE, não como script pronto. A pessoa tem que sentir que está ouvindo alguém REAL
+   - Use "você", fale PARA a pessoa. Mostre vulnerabilidade quando fizer sentido
+   - Tenha OPINIÃO e PERSONALIDADE, gente genérica não prende ninguém
 
-4. CONTEÚDO DE VALOR
+4. CONTEÚDO DE VALOR REAL + ESTRATÉGIA
    - Complemente o texto base, não repita o óbvio
-   - Traga informações que surpreendem e enriquecem
-   - Cada frase constrói o raciocínio
+   - Traga informações ESPECÍFICAS que surpreendem: dados, exemplos, comparações concretas
+   - PROIBIDO frases genéricas sem substância ("é muito importante", "você precisa saber")
+   - Use persuasão SUTIL: curiosidade, identificação, loops abertos, prova social
+   - Cada frase constrói o raciocínio OU conecta emocionalmente
 
 5. QUANTIDADE: ${Math.round(duracaoVideo * 2.15)} a ${Math.round(duracaoVideo * 2.5)} palavras
 
-EXEMPLO DE NARRATIVA CORRETA:
+EXEMPLO DE NARRATIVA CORRETA (HUMANA + ESTRATÉGICA + VÍRGULAS):
 
-"Quando falamos de [assunto], existe um ponto que a maioria das pessoas não percebe. E é justamente esse ponto que faz a diferença no resultado.
+Título: "O que ninguém te conta sobre produtividade"
+Fala: "O que ninguém te conta sobre produtividade é que o problema não é falta de disciplina, é que você está usando o sistema errado, e quando eu entendi isso, tudo mudou, porque eu passei anos achando que o problema era comigo, que eu não era disciplinado o suficiente, mas a real é que o método estava errado desde o início.
 
-O que acontece é o seguinte: [explicação clara]. Quando você entende isso, a aplicação se torna muito mais simples. Não é teoria, é o que funciona na prática.
+E tem um detalhe aqui que é a chave de tudo, quando você para de focar em MAIS horas e começa a focar em MENOS decisões, a produtividade dispara, porque o cérebro tem energia limitada pra tomar decisões, e cada escolha pequena que você faz durante o dia vai drenando essa energia.
 
-E tem um detalhe técnico importante aqui. Esse detalhe explica por que algumas abordagens funcionam e outras não."
+Então o segredo não é fazer mais, é ELIMINAR o que não precisa ser feito, e quando você monta um sistema que faz isso automaticamente, sobra energia pro que realmente importa, e eu vou te mostrar como."
 
-PERCEBA: Tom de autoridade, conteúdo de valor, fala fluida, acentos corretos, profissional mas acessível.
+PERCEBA: Título INCORPORADO na fala — primeira frase é o título expandido. Tom HUMANO. Vírgulas contínuas. Dados concretos (energia limitada, decisões). O texto NUNCA é mais fraco que o título.
+
+${formatoSaida === 'script' ? `
+FORMATO DE SAÍDA: SCRIPT (SÓ A FALA)
+O roteiro é um TEXTO CORRIDO pronto para ler no teleprompter.
+Sem divisão de cenas, sem instruções visuais. Apenas o que a pessoa vai falar.
+Use \\n\\n para separar parágrafos (pausas naturais na fala).
 
 Retorne em JSON:
 {
     "videos": [
         {
             "numero": 1,
-            "titulo": "[POSIÇÃO] Título descritivo",
-            "narrativa": "Texto com autoridade, fluido, acentos corretos. Entre ${Math.round(duracaoVideo * 2.15)} e ${Math.round(duracaoVideo * 2.5)} palavras.",
-            "visual": "Sugestão do que mostrar na tela",
+            "titulo": "Título descritivo",
+            "narrativa": "Texto completo da fala.\\n\\nSegundo parágrafo.\\n\\nTerceiro parágrafo.",
             "duracao": ${duracaoVideo}${usarTrend ? `,
             "trend": {
                 "tipo": "nome/descrição da trend",
-                "audio_sugerido": "nome do áudio viral (se aplicável)",
-                "como_aplicar": "instruções de como gravar usando a trend"
+                "audio_sugerido": "nome do áudio viral",
+                "como_aplicar": "como gravar usando a trend"
             }` : ''}
         }
     ]
 }
 
+REGRAS:
+- Total de palavras: entre ${Math.round(duracaoVideo * 2.15)} e ${Math.round(duracaoVideo * 2.5)}
+- PREFIRA VÍRGULAS em vez de pontos. A fala deve ser CONTÍNUA, conectando ideias com vírgulas e conectivos. Pontos só para mudar de assunto.
+- Use \\n\\n para pausas maiores entre blocos de ideias
+- O TÍTULO deve fazer parte da fala ou a fala deve começar com a MESMA FORÇA do título. NUNCA o título pode ser mais impactante que o início do texto.
+- Acentos corretos obrigatórios
+` : formatoSaida === 'cenas' ? `
+FORMATO DE SAÍDA: CENAS (FALA DIVIDIDA)
+O vídeo é dividido em CENAS. Cada cena tem a fala e a duração.
+O foco é organizar O QUE FALAR em cada momento do vídeo.
+
+${isReelsTiktok ? `
+REGRAS REELS/TIKTOK:
+- Cena 1 é o GANCHO — a frase que faz a pessoa parar de scrollar
+- Cada cena mantém a pessoa querendo ver o próximo trecho
+- A última cena fecha com impacto ou CTA natural
+` : ''}
+
+Retorne em JSON:
+{
+    "videos": [
+        {
+            "numero": 1,
+            "titulo": "Título descritivo",
+            "duracao": ${duracaoVideo},
+            "cenas": [
+                {
+                    "numero": 1,
+                    "titulo": "Nome da cena (ex: Gancho, Contexto, Valor, Fechamento)",
+                    "fala": "Texto que a pessoa vai falar nesta cena.\\n\\nSegundo parágrafo se necessário.",
+                    "duracao": 10
+                }
+            ]${usarTrend ? `,
+            "trend": {
+                "tipo": "nome/descrição da trend",
+                "audio_sugerido": "nome do áudio viral",
+                "como_aplicar": "como gravar usando a trend"
+            }` : ''}
+        }
+    ]
+}
+
+REGRAS DAS CENAS:
+- A soma das durações = ${duracaoVideo} segundos
+- Mínimo 3 cenas, máximo 8 por vídeo
+- Total de palavras de todas as falas: entre ${Math.round(duracaoVideo * 2.15)} e ${Math.round(duracaoVideo * 2.5)}
+- PREFIRA VÍRGULAS em vez de pontos. A fala deve ser CONTÍNUA e fluida, conectando ideias com vírgulas e conectivos. Pontos só para mudar de assunto.
+- O TÍTULO do vídeo deve fazer parte da fala da CENA 1 ou a cena 1 deve começar com a MESMA FORÇA do título. NUNCA o título pode ser mais impactante que a primeira fala.
+- Use \\n\\n nos campos "fala" para separar blocos de ideias
+- Acentos corretos obrigatórios
+` : `
+FORMATO DE SAÍDA: CENAS + DIREÇÃO
+O vídeo é dividido em CENAS com instruções de direção: cenário geral, tom de voz e gancho visual.
+O foco é organizar a fala E dar orientações inteligentes de gravação.
+
+CENÁRIO GERAL:
+- Defina UM cenário principal para o vídeo todo (ex: "Sentado no sofá com uma caneta na mão", "Em pé no escritório", "Close no rosto, fundo desfocado").
+- Esse cenário vai no campo "cenario" do vídeo (nível vídeo, NÃO nível cena).
+- Só sugira mudança de cenário numa cena se for REALMENTE necessário e fizer sentido.
+
+IMPORTANTE — SEJA INTELIGENTE COM AS DIREÇÕES:
+- NÃO coloque gancho visual em toda cena. Só quando faz diferença real.
+- O tom de voz NÃO precisa ser diferente em toda cena. Mude quando há virada emocional real.
+- Pense como um diretor de verdade: cada instrução existe por um MOTIVO.
+
+${isReelsTiktok ? `
+REGRAS REELS/TIKTOK:
+- Cena 1 é o GANCHO — aqui SIM vale tom de voz diferente + gancho visual forte
+- Cenas do meio: foque no conteúdo, direções só quando mudam algo
+- Cena final: feche com impacto
+` : ''}
+
+Retorne em JSON:
+{
+    "videos": [
+        {
+            "numero": 1,
+            "titulo": "Título descritivo",
+            "cenario": "Descrição do cenário principal de gravação. Ex: Sentado numa poltrona com caderno na mão, fundo clean",
+            "duracao": ${duracaoVideo},
+            "cenas": [
+                {
+                    "numero": 1,
+                    "titulo": "Nome da cena",
+                    "fala": "Texto que a pessoa vai falar.\\n\\nSegundo parágrafo se necessário.",
+                    "tom_de_voz": "Só se for DIFERENTE do tom geral. Ex: Mais baixo como segredo, Enfático, Pausado",
+                    "gancho_visual": "Só se houver algo ESPECÍFICO. Ex: Zoom in, Texto na tela, Corte para tela",
+                    "duracao": 10
+                }
+            ]${usarTrend ? `,
+            "trend": {
+                "tipo": "nome/descrição da trend",
+                "audio_sugerido": "nome do áudio viral",
+                "como_aplicar": "como gravar usando a trend"
+            }` : ''}
+        }
+    ]
+}
+
+REGRAS DAS CENAS + DIREÇÃO:
+- A soma das durações = ${duracaoVideo} segundos
+- Mínimo 3 cenas, máximo 8 por vídeo
+- Total de palavras: entre ${Math.round(duracaoVideo * 2.15)} e ${Math.round(duracaoVideo * 2.5)}
+- PREFIRA VÍRGULAS em vez de pontos. A fala deve ser CONTÍNUA e fluida, conectando ideias com vírgulas e conectivos. Pontos só para mudar de assunto.
+- O TÍTULO do vídeo deve fazer parte da fala da CENA 1 ou a cena 1 deve começar com a MESMA FORÇA do título. NUNCA o título pode ser mais impactante que a primeira fala.
+- cenario: UMA sugestão de cenário para o vídeo inteiro. Específico e visual (roupa, posição, objetos).
+- tom_de_voz: SOMENTE nas cenas onde o tom MUDA. Se segue o tom geral, use "".
+- gancho_visual: SOMENTE quando há elemento visual ESPECÍFICO e NECESSÁRIO.
+- Acentos corretos obrigatórios
+- Use \\n\\n nos campos "fala" para separar blocos de ideias
+`}
 Posições para o título: [ABERTURA], [FUNDAMENTO], [APROFUNDANDO], [NA PRÁTICA], [FECHAMENTO]`;
 
             try {
@@ -986,6 +1540,36 @@ Posições para o título: [ABERTURA], [FUNDAMENTO], [APROFUNDANDO], [NA PRÁTIC
                     `;
                 }
 
+                // Garantir que parágrafos sejam preservados nos textos
+                if (dados.videos) {
+                    dados.videos.forEach(video => {
+                        if (video.narrativa) {
+                            video.narrativa = video.narrativa
+                                .replace(/\\n\\n/g, '\n\n')
+                                .replace(/\\n/g, '\n');
+                        }
+                        if (video.cenario) {
+                            video.cenario = video.cenario
+                                .replace(/\\n\\n/g, '\n\n')
+                                .replace(/\\n/g, '\n');
+                        }
+                        if (video.cenas) {
+                            video.cenas.forEach(cena => {
+                                if (cena.fala) {
+                                    cena.fala = cena.fala
+                                        .replace(/\\n\\n/g, '\n\n')
+                                        .replace(/\\n/g, '\n');
+                                }
+                                if (cena.visual) {
+                                    cena.visual = cena.visual
+                                        .replace(/\\n\\n/g, '\n\n')
+                                        .replace(/\\n/g, '\n');
+                                }
+                            });
+                        }
+                    });
+                }
+
                 videoCounter = 0; // Reseta contador para novos vídeos
                 dados.videos.forEach(video => {
                     roteiro += renderizarVideoNovo(video, formatoSaida);
@@ -1006,66 +1590,6 @@ Posições para o título: [ABERTURA], [FUNDAMENTO], [APROFUNDANDO], [NA PRÁTIC
             } finally {
                 btnConvert.classList.remove('generating');
             }
-        }
-
-        function renderizarVideo(video, duracao, formato) {
-            let html = '';
-
-            video.cenas.forEach(cena => {
-                const labelClass = cena.tipo === 'gancho' ? 'hook' : cena.tipo === 'cta' ? 'cta' : 'narration';
-                const labelText = cena.tipo === 'gancho' ? 'Gancho' : cena.tipo === 'cta' ? 'CTA' : 'Narracao';
-
-                if (formato === 'script') {
-                    html += `
-                        <div class="scene">
-                            <div class="scene-row">
-                                <div class="scene-label ${labelClass}">${labelText}</div>
-                                <div class="scene-text ${labelClass}">"${cena.fala}"</div>
-                            </div>
-                        </div>
-                    `;
-                } else if (formato === 'cenario') {
-                    html += `
-                        <div class="scene">
-                            <div class="scene-row">
-                                <div class="scene-label visual">Cenario</div>
-                                <div class="scene-text visual">${cena.visual}</div>
-                            </div>
-                            <div class="scene-row">
-                                <div class="scene-label ${labelClass}">Narrativa</div>
-                                <div class="scene-text ${labelClass}">"${cena.fala}"</div>
-                            </div>
-                            <div class="scene-time">⏱ ${cena.duracao}s</div>
-                        </div>
-                    `;
-                } else {
-                    html += `
-                        <div class="scene">
-                            <div class="scene-row">
-                                <div class="scene-label ${labelClass}">${labelText}</div>
-                                <div class="scene-text ${labelClass}">"${cena.fala}"</div>
-                            </div>
-                            <div class="scene-row">
-                                <div class="scene-label visual">Visual</div>
-                                <div class="scene-text visual">${cena.visual}</div>
-                            </div>
-                            <div class="scene-time">⏱ ${cena.duracao}s</div>
-                        </div>
-                    `;
-                }
-            });
-
-            const formatoLabel = formato === 'script' ? 'So Script' : formato === 'cenario' ? 'Cenario + Narrativa' : 'Completo';
-
-            return `
-                <div class="video-block">
-                    <div class="video-header">
-                        <span class="video-title">Video ${video.numero}</span>
-                        <span class="video-badge">${duracao}s - ${formatoLabel}</span>
-                    </div>
-                    <div class="video-body">${html}</div>
-                </div>
-            `;
         }
 
         function capitalize(s) {
@@ -1101,40 +1625,91 @@ Posições para o título: [ABERTURA], [FUNDAMENTO], [APROFUNDANDO], [NA PRÁTIC
             }
 
             if (formato === 'script') {
-                // Só a narrativa
-                html = `
+                // SCRIPT — Só a fala, texto corrido
+                html += `
                     <div class="scene">
-                        <div class="scene-row">
-                            <div class="scene-label narration">Roteiro</div>
-                            <div class="scene-text narration" id="${videoId}" style="white-space: pre-wrap; line-height: 1.7;">${narrativa}</div>
+                        <div class="scene-row" style="position: relative;">
+                            <button class="btn-edit" onclick="ativarEdicao(this)" title="Editar texto">✏️</button>
+                            <div class="scene-text narration texto-editavel" id="${videoId}" style="white-space: pre-wrap; line-height: 1.8; font-size: 0.95rem; padding: 16px 18px;">${narrativa}</div>
                         </div>
                     </div>
                 `;
-            } else if (formato === 'cenario') {
-                // Visual + Narrativa
-                html = `
-                    <div class="scene">
-                        <div class="scene-row">
-                            <div class="scene-label visual">Visual</div>
-                            <div class="scene-text visual">${visual}</div>
+            } else if ((formato === 'cenas' || formato === 'direcao') && video.cenas && video.cenas.length > 0) {
+                // CENAS ou CENAS + DIREÇÃO
+                const temDirecao = (formato === 'direcao');
+                const cenario = video.cenario || '';
+
+                // Mostrar cenário geral (só no formato direção)
+                if (temDirecao && cenario) {
+                    html += `
+                    <div style="background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(16, 185, 129, 0.05)); border: 1px solid rgba(34, 197, 94, 0.3); border-radius: 8px; padding: 14px; margin-bottom: 16px; position: relative;">
+                        <button class="btn-edit" onclick="ativarEdicao(this)" title="Editar cenário">✏️</button>
+                        <div style="font-weight: 600; color: #22c55e; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; font-size: 0.85rem;">
+                            🎬 Cenário
                         </div>
-                        <div class="scene-row" style="margin-top: 12px;">
-                            <div class="scene-label narration">Roteiro</div>
-                            <div class="scene-text narration" id="${videoId}" style="white-space: pre-wrap; line-height: 1.7;">${narrativa}</div>
-                        </div>
+                        <div class="texto-editavel" style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">${cenario}</div>
                     </div>
-                `;
+                    `;
+                }
+
+                html += video.cenas.map((cena, i) => {
+                    const isGancho = (i === 0 || (cena.titulo && cena.titulo.toLowerCase().includes('gancho')));
+                    const isFechamento = (cena.titulo && cena.titulo.toLowerCase().includes('fecha'));
+                    const borderColor = isGancho ? 'var(--warning)' : isFechamento ? 'var(--success)' : 'var(--accent)';
+
+                    let cenaHtml = `
+                    <div class="scene" style="border-left: 3px solid ${borderColor}; padding-left: 16px; margin-bottom: 20px; ${isGancho ? 'background: linear-gradient(135deg, rgba(251, 191, 36, 0.05), transparent); border-radius: 0 8px 8px 0; padding: 16px;' : ''}">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span style="background: ${isGancho ? 'linear-gradient(135deg, #f59e0b, #ef4444)' : 'var(--gradient-1)'}; color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700;">${cena.numero || (i + 1)}</span>
+                                <span style="font-weight: 600; color: var(--text-primary); font-size: 0.95rem;">${cena.titulo || 'Cena ' + (i + 1)}</span>
+                                ${isGancho ? '<span style="background: linear-gradient(135deg, #f59e0b, #ef4444); color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 600;">DECISIVO</span>' : ''}
+                            </div>
+                            <span style="font-size: 0.8rem; color: var(--text-muted); background: var(--bg-tertiary); padding: 4px 10px; border-radius: 6px;">⏱ ${cena.duracao || '?'}s</span>
+                        </div>`;
+
+                    // Tom de voz — só no formato direção e quando tem conteúdo real
+                    if (temDirecao && cena.tom_de_voz && cena.tom_de_voz.trim() !== '') {
+                        cenaHtml += `
+                        <div class="scene-row" style="margin-bottom: 10px; position: relative;">
+                            <button class="btn-edit btn-edit-small" onclick="ativarEdicao(this)" title="Editar">✏️</button>
+                            <div class="scene-label" style="color: #f472b6;">🎙 Tom</div>
+                            <div class="scene-text texto-editavel" style="border-color: #f472b6; background: linear-gradient(135deg, rgba(244, 114, 182, 0.08), transparent); font-style: italic; font-size: 0.88rem;">${cena.tom_de_voz}</div>
+                        </div>`;
+                    }
+
+                    // Gancho visual — só no formato direção e quando tem conteúdo real
+                    if (temDirecao && cena.gancho_visual && cena.gancho_visual.trim() !== '') {
+                        cenaHtml += `
+                        <div class="scene-row" style="margin-bottom: 10px; position: relative;">
+                            <button class="btn-edit btn-edit-small" onclick="ativarEdicao(this)" title="Editar">✏️</button>
+                            <div class="scene-label" style="color: var(--warning);">👁 Visual</div>
+                            <div class="scene-text texto-editavel" style="border-color: var(--warning); background: linear-gradient(135deg, rgba(251, 191, 36, 0.08), transparent); font-size: 0.88rem;">${cena.gancho_visual}</div>
+                        </div>`;
+                    }
+
+                    // Fala
+                    cenaHtml += `
+                        <div class="scene-row" style="position: relative;">
+                            <button class="btn-edit" onclick="ativarEdicao(this)" title="Editar fala">✏️</button>
+                            <div class="scene-label narration">💬 Fala</div>
+                            <div class="scene-text narration texto-editavel" style="white-space: pre-wrap; line-height: 1.7;">${cena.fala}</div>
+                        </div>
+                    </div>`;
+
+                    return cenaHtml;
+                }).join('');
+
+                // Texto completo para copiar (juntar todas as falas)
+                html += `<div id="${videoId}" style="display: none;"></div>`;
+
             } else {
-                // Completo
-                html = `
+                // Fallback — mostra narrativa como script
+                html += `
                     <div class="scene">
-                        <div class="scene-row">
-                            <div class="scene-label narration">Roteiro</div>
-                            <div class="scene-text narration" id="${videoId}" style="white-space: pre-wrap; line-height: 1.7;">${narrativa}</div>
-                        </div>
-                        <div class="scene-row" style="margin-top: 12px;">
-                            <div class="scene-label visual">Visual</div>
-                            <div class="scene-text visual">${visual}</div>
+                        <div class="scene-row" style="position: relative;">
+                            <button class="btn-edit" onclick="ativarEdicao(this)" title="Editar texto">✏️</button>
+                            <div class="scene-text narration texto-editavel" id="${videoId}" style="white-space: pre-wrap; line-height: 1.8; font-size: 0.95rem; padding: 16px 18px;">${narrativa}</div>
                         </div>
                     </div>
                 `;
@@ -1157,10 +1732,60 @@ Posições para o título: [ABERTURA], [FUNDAMENTO], [APROFUNDANDO], [NA PRÁTIC
             `;
         }
 
+        function ativarEdicao(btn) {
+            // Encontra o texto editável dentro do mesmo container
+            const container = btn.parentElement;
+            const texto = container.querySelector('.texto-editavel');
+
+            if (!texto) return;
+
+            // Se já está editando, desativa
+            if (texto.contentEditable === 'true') {
+                texto.contentEditable = 'false';
+                texto.classList.remove('editando');
+                btn.innerHTML = '✏️';
+                btn.title = 'Editar';
+                return;
+            }
+
+            // Ativa edição
+            texto.contentEditable = 'true';
+            texto.classList.add('editando');
+            texto.focus();
+            btn.innerHTML = '✓';
+            btn.title = 'Concluir edição';
+
+            // Ao clicar fora, desativa edição
+            const desativar = (e) => {
+                if (!container.contains(e.target)) {
+                    texto.contentEditable = 'false';
+                    texto.classList.remove('editando');
+                    btn.innerHTML = '✏️';
+                    btn.title = 'Editar';
+                    document.removeEventListener('click', desativar);
+                }
+            };
+
+            // Delay para não desativar imediatamente
+            setTimeout(() => {
+                document.addEventListener('click', desativar);
+            }, 100);
+        }
+
         function copiarNarrativa(id) {
             const elemento = document.getElementById(id);
             if (elemento) {
-                const texto = elemento.innerText;
+                let texto = elemento.innerText;
+
+                // Se o elemento está vazio (formato cenas), pega das falas
+                if (!texto.trim()) {
+                    const videoBlock = elemento.closest('.video-block');
+                    if (videoBlock) {
+                        const falas = videoBlock.querySelectorAll('.scene-text.narration.texto-editavel');
+                        texto = Array.from(falas).map(f => f.innerText.trim()).join('\n\n');
+                    }
+                }
+
                 navigator.clipboard.writeText(texto).then(() => {
                     mostrarNotificacao('Roteiro copiado!', 'success');
                 });
@@ -1265,61 +1890,235 @@ Posições para o título: [ABERTURA], [FUNDAMENTO], [APROFUNDANDO], [NA PRÁTIC
 
             // Mapear opcoes de refinamento para instrucoes claras
             const refinamentosMap = {
-                'mais-curto': 'Reduza o texto, mantendo apenas o essencial. Corte palavras desnecessarias e va direto ao ponto.',
-                'mais-longo': 'Expanda o texto com mais detalhes, exemplos e explicacoes. Aprofunde mais no assunto.',
-                'mais-informal': 'Torne mais casual e proximo. Use linguagem do dia a dia, como uma conversa entre amigos.',
-                'mais-formal': 'Torne mais profissional e polido. Use linguagem mais elaborada e seria.',
-                'mais-energia': 'Adicione mais energia e entusiasmo. Frases mais curtas, palavras de acao, mais dinamismo.',
-                'mais-calmo': 'Torne mais tranquilo e sereno. Ritmo mais lento, frases mais longas, tom mais reflexivo.',
-                'mais-vendedor': 'Torne mais persuasivo. Destaque beneficios, crie desejo, adicione urgencia de forma etica.',
-                'mais-educativo': 'Foque mais em ensinar. Explique melhor os conceitos, use mais exemplos praticos.',
-                'gancho-forte': 'Crie um inicio mais impactante que prenda a atencao imediatamente.',
-                'cta-forte': 'Crie um final mais forte com chamada para acao clara e motivadora.'
+                'mais-curto': 'Reduza o texto, mantendo apenas o essencial. Corte palavras desnecessárias e vá direto ao ponto. ESCOPO: aplique em TODAS as cenas/partes do roteiro.',
+                'mais-longo': 'Expanda o texto com mais detalhes, exemplos e explicações. Aprofunde mais no assunto. ESCOPO: aplique em TODAS as cenas/partes do roteiro.',
+                'mais-informal': 'Torne mais casual e próximo. Use linguagem do dia a dia, como uma conversa entre amigos. ESCOPO: aplique em TODAS as cenas/partes do roteiro.',
+                'mais-formal': 'Torne mais profissional e polido. Use linguagem mais elaborada e séria. ESCOPO: aplique em TODAS as cenas/partes do roteiro.',
+                'mais-energia': 'Adicione mais energia e entusiasmo. Frases mais curtas, palavras de ação, mais dinamismo. ESCOPO: aplique em TODAS as cenas/partes do roteiro.',
+                'mais-calmo': 'Torne mais tranquilo e sereno. Ritmo mais lento, frases mais longas, tom mais reflexivo. ESCOPO: aplique em TODAS as cenas/partes do roteiro.',
+                'mais-vendedor': 'Torne mais persuasivo. Destaque benefícios, crie desejo, adicione urgência de forma ética. ESCOPO: aplique em TODAS as cenas/partes do roteiro.',
+                'mais-educativo': 'Foque mais em ensinar. Explique melhor os conceitos, use mais exemplos práticos. ESCOPO: aplique em TODAS as cenas/partes do roteiro.',
+                'gancho-forte': 'Crie um início mais impactante que prenda a atenção imediatamente. ESCOPO: altere SOMENTE a primeira cena/abertura do roteiro. NÃO mexa no restante.',
+                'cta-forte': 'Crie um final mais forte com chamada para ação clara e motivadora. ESCOPO: altere SOMENTE a última cena/fechamento do roteiro. NÃO mexa no restante.',
+                'mais-emocional': 'Torne o texto mais emocional e tocante. Crie conexão com o espectador usando sentimentos reais. ESCOPO: aplique em TODAS as cenas/partes do roteiro.',
+                'mais-direto': 'Vá direto ao ponto. Remova enrolação e rodeios. Cada frase deve ter propósito claro. ESCOPO: aplique em TODAS as cenas/partes do roteiro.'
             };
 
             const instrucaoRefinamento = selectedRefineOption
                 ? refinamentosMap[selectedRefineOption]
                 : customText;
 
-            const systemPrompt = `Voce e um roteirista especialista em refinar roteiros de video.
+            // Detectar formato atual do roteiro
+            let formatoSaida = document.getElementById('formatoSaida').value;
+            const tipo = document.getElementById('tipoConteudo').value;
+            const duracaoVideo = parseInt(document.getElementById('duracaoVideo').value) || 60;
+            const isReelsTiktok = (tipo === 'reels' || tipo === 'stories');
 
-IMPORTANTE: O usuario pode descrever o que quer de forma simples ou leiga. Interprete o pedido e aplique a melhoria de forma profissional.
+            // Contar número de cenas atuais para referência
+            const cenasAtuais = document.querySelectorAll('#outputArea .scene').length;
 
-Exemplos de interpretacao:
-- "ficou ruim o comeco" = melhore a abertura, crie algo mais impactante
-- "muito grande" = reduza, va direto ao ponto
-- "parece robo" = torne mais natural e humano
-- "sem graca" = adicione mais personalidade e energia
-- "confuso" = simplifique e organize melhor as ideias
-- "travado" = melhore o ritmo, adicione virgulas e pausas naturais
-- "muito formal" = torne mais casual e proximo
-- "nao convence" = torne mais persuasivo
-- "chato" = torne mais envolvente e dinamico
+            // Definir formato JSON esperado baseado no formato de saída
+            let formatoJSON = '';
+            if (formatoSaida === 'script') {
+                formatoJSON = `
+FORMATO DE SAÍDA - JSON (SCRIPT):
+{
+    "videos": [
+        {
+            "numero": 1,
+            "titulo": "Título do vídeo",
+            "narrativa": "Texto completo da fala.\\n\\nSegundo parágrafo.\\n\\nTerceiro parágrafo.",
+            "duracao": ${duracaoVideo}
+        }
+    ]
+}
+REGRA: Use \\n\\n para separar parágrafos. Preserve a estrutura original.`;
+            } else if (formatoSaida === 'cenas') {
+                formatoJSON = `
+FORMATO DE SAÍDA - JSON (CENAS):
+{
+    "videos": [
+        {
+            "numero": 1,
+            "titulo": "Título do vídeo",
+            "duracao": ${duracaoVideo},
+            "cenas": [
+                {
+                    "numero": 1,
+                    "titulo": "Nome da cena",
+                    "fala": "Texto da fala.\\n\\nSegundo parágrafo.",
+                    "duracao": 10
+                }
+            ]
+        }
+    ]
+}
+REGRAS:
+- Mantenha EXATAMENTE o mesmo número de cenas (${cenasAtuais} cenas)
+- Cada cena DEVE ter: fala, duracao
+- Use \\n\\n para separar parágrafos no campo "fala"`;
+            } else {
+                // direcao
+                formatoJSON = `
+FORMATO DE SAÍDA - JSON (CENAS + DIREÇÃO):
+{
+    "videos": [
+        {
+            "numero": 1,
+            "titulo": "Título do vídeo",
+            "cenario": "Cenário de gravação. Ex: Sentado no sofá, segurando caderno",
+            "duracao": ${duracaoVideo},
+            "cenas": [
+                {
+                    "numero": 1,
+                    "titulo": "Nome da cena",
+                    "fala": "Texto da fala.\\n\\nSegundo parágrafo.",
+                    "tom_de_voz": "Só quando o tom MUDA. Vazio se segue o tom geral.",
+                    "gancho_visual": "Só quando há elemento visual ESPECÍFICO. Vazio se não precisa.",
+                    "duracao": 10
+                }
+            ]
+        }
+    ]
+}
+REGRAS:
+- Mantenha EXATAMENTE o mesmo número de cenas (${cenasAtuais} cenas)
+- cenario: mantenha o cenário original ou melhore se pedido
+- Cada cena DEVE ter: fala, duracao. tom_de_voz e gancho_visual são opcionais.
+- tom_de_voz: só preencha se o tom MUDA nessa cena. Se segue o tom geral, deixe "".
+- gancho_visual: só preencha quando há algo ESPECÍFICO e necessário. Não invente.
+- Use \\n\\n para separar parágrafos no campo "fala"`;
+            }
 
-Mantenha o formato do roteiro e aplique a melhoria solicitada.`;
+            const systemPrompt = `Você é um roteirista cirúrgico especialista em refinar roteiros de vídeo.
+Responda em português brasileiro COM ACENTOS CORRETOS.
+
+═══════════════════════════════════════
+REGRA #1 — SEJA CIRÚRGICO (A MAIS IMPORTANTE)
+═══════════════════════════════════════
+Você DEVE alterar SOMENTE o que o usuário pediu. O resto deve permanecer IDÊNTICO, palavra por palavra.
+
+COMO IDENTIFICAR O ESCOPO DO PEDIDO:
+1. Se o usuário menciona "começo", "início", "abertura", "gancho" → altere APENAS a primeira cena/parágrafo
+2. Se o usuário menciona "final", "fechamento", "CTA", "encerramento" → altere APENAS a última cena/parágrafo
+3. Se o usuário menciona "meio", "desenvolvimento", "corpo" → altere APENAS as cenas/parágrafos do meio
+4. Se o usuário menciona uma cena específica (ex: "cena 2", "segunda parte") → altere APENAS essa cena
+5. Se o usuário pede algo geral ("mais energia", "mais informal") sem especificar parte → aplique em TUDO
+6. Se a instrução já tem "ESCOPO:" definido → siga exatamente o escopo indicado
+
+EXEMPLOS DE APLICAÇÃO CIRÚRGICA:
+- Pedido: "melhora o gancho" → Altere SOMENTE a cena 1. Cenas 2, 3, 4... ficam IGUAIS.
+- Pedido: "o final tá fraco" → Altere SOMENTE a última cena. O resto fica IGUAL.
+- Pedido: "a cena 3 tá confusa" → Altere SOMENTE a cena 3. O resto fica IGUAL.
+- Pedido: "mais informal" (geral) → Aplique o tom informal em TODAS as cenas.
+- Pedido: "mais curto" (geral) → Reduza TODAS as cenas proporcionalmente.
+
+═══════════════════════════════════════
+REGRA #2 — PRESERVE A ESTRUTURA DE PARÁGRAFOS
+═══════════════════════════════════════
+- O campo "fala" DEVE manter quebras de parágrafo usando \\n\\n
+- NUNCA junte todo o texto em um bloco único
+- Se a fala original tinha 3 parágrafos, a versão refinada deve ter ~3 parágrafos
+- Cada parágrafo representa uma pausa natural na fala — respeite isso
+
+═══════════════════════════════════════
+REGRA #3 — INTELIGÊNCIA MÁXIMA NA INTERPRETAÇÃO
+═══════════════════════════════════════
+O usuário pode descrever o que quer de forma simples, leiga ou até vaga. Interprete com inteligência:
+
+- "ficou ruim o começo" = melhore SOMENTE a abertura/gancho (cena 1)
+- "muito grande" = reduza o texto geral, corte o desnecessário
+- "parece robô" = torne mais natural, humano, conversacional
+- "sem graça" = adicione personalidade, humor, leveza
+- "confuso" = simplifique, organize melhor a lógica
+- "travado" = melhore o ritmo, fluidez entre frases
+- "não convence" = torne mais persuasivo, com argumentos melhores
+- "chato" = torne mais envolvente, dinâmico, com variação de ritmo
+- "genérico" = adicione exemplos específicos, dados, histórias
+- "pesado" = alivie o tom, simplifique vocabulário
+- "o CTA tá fraco" = melhore SOMENTE o CTA final, não mexa no resto
+- "a transição tá estranha" = melhore SOMENTE a passagem entre cenas
+
+${isReelsTiktok ? `
+═══════════════════════════════════════
+CONTEXTO REELS/TIKTOK
+═══════════════════════════════════════
+- Mantenha o tom de aproximação e autenticidade
+- Os primeiros segundos são decisivos (não perca isso ao refinar)
+- Cada cena precisa ter um motivo para a pessoa continuar assistindo
+- O conteúdo precisa fazer a pessoa pensar "nossa, eu não sabia disso"
+- Ao refinar, não quebre a cadência de retenção do vídeo
+` : ''}
+
+RESPONDA APENAS COM JSON PURO. Sem markdown, sem \`\`\`, sem explicações.`;
 
             const userPrompt = `MELHORIA SOLICITADA: ${instrucaoRefinamento}
 
-ROTEIRO ATUAL:
+ROTEIRO ATUAL (em formato texto extraído):
 ${roteiroAtual}
 
-Aplique a melhoria mantendo o mesmo formato JSON. Retorne apenas o JSON refinado.`;
+══════════════════════════════════
+INSTRUÇÕES DE EXECUÇÃO:
+══════════════════════════════════
+1. Leia o pedido de melhoria com atenção máxima
+2. Identifique EXATAMENTE qual parte do roteiro o usuário quer mudar
+3. Altere SOMENTE essa parte — o restante deve ficar IDÊNTICO
+4. Mantenha parágrafos separados com \\n\\n nos campos de texto
+5. Mantenha a mesma quantidade de cenas/vídeos
+6. Não invente conteúdo novo a menos que o usuário peça
+7. Preserve o tom, estilo e personalidade do roteiro original nas partes não alteradas
+
+${formatoJSON}
+
+Retorne APENAS o JSON, sem markdown, sem explicações.`;
 
             try {
                 const resposta = await chamarAPI(systemPrompt, userPrompt);
                 const jsonLimpo = resposta.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
                 const dados = JSON.parse(jsonLimpo);
 
+                // Garantir que parágrafos sejam preservados nos textos
+                if (dados.videos) {
+                    dados.videos.forEach(video => {
+                        // Processar narrativa
+                        if (video.narrativa) {
+                            video.narrativa = video.narrativa
+                                .replace(/\\n\\n/g, '\n\n')
+                                .replace(/\\n/g, '\n');
+                        }
+                        // Processar cenário
+                        if (video.cenario) {
+                            video.cenario = video.cenario
+                                .replace(/\\n\\n/g, '\n\n')
+                                .replace(/\\n/g, '\n');
+                        }
+                        // Processar cenas
+                        if (video.cenas) {
+                            video.cenas.forEach(cena => {
+                                if (cena.fala) {
+                                    cena.fala = cena.fala
+                                        .replace(/\\n\\n/g, '\n\n')
+                                        .replace(/\\n/g, '\n');
+                                }
+                            });
+                        }
+                    });
+                }
+
+                // Preservar o header (tudo antes dos video-blocks)
                 let roteiro = outputArea.innerHTML.split('<div class="video-block">')[0];
+
+                // Renderizar com a função correta e formato correto
+                videoCounter = 0;
                 dados.videos.forEach(video => {
-                    roteiro += renderizarVideo(video, 60, 'completo');
+                    roteiro += renderizarVideoNovo(video, formatoSaida);
                 });
 
                 outputArea.innerHTML = roteiro;
                 refineCount++;
                 updateRefineUI();
                 limparSelecaoRefine();
-                mostrarNotificacao('Roteiro refinado!', 'success');
+                mostrarNotificacao('Roteiro refinado com sucesso!', 'success');
 
             } catch (error) {
                 mostrarNotificacao('Erro ao refinar: ' + error.message, 'error');

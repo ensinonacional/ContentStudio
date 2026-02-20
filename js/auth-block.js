@@ -3,7 +3,7 @@
 
 (function() {
     const SENHA_CORRETA = 'diasdias';
-    const STORAGE_KEY = 'contentstudio_auth';
+    const STORAGE_KEY = 'studiodias_auth';
 
     // Verifica se já está autenticado
     function isAuthenticated() {
@@ -47,7 +47,7 @@
                 .auth-logo {
                     font-size: 2rem;
                     font-weight: 800;
-                    background: linear-gradient(135deg, #6366f1, #8b5cf6, #a855f7);
+                    background: linear-gradient(135deg, #0099DD, #00B8A9, #00D4C3);
                     -webkit-background-clip: text;
                     -webkit-text-fill-color: transparent;
                     background-clip: text;
@@ -63,7 +63,7 @@
                 .auth-icon {
                     width: 60px;
                     height: 60px;
-                    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+                    background: linear-gradient(135deg, #0099DD, #00B8A9);
                     border-radius: 16px;
                     display: flex;
                     align-items: center;
@@ -106,8 +106,8 @@
                 }
 
                 .auth-input:focus {
-                    border-color: #6366f1;
-                    background: rgba(99, 102, 241, 0.1);
+                    border-color: #0099DD;
+                    background: rgba(0, 153, 221, 0.1);
                 }
 
                 .auth-input::placeholder {
@@ -118,7 +118,7 @@
                 .auth-button {
                     width: 100%;
                     padding: 14px;
-                    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+                    background: linear-gradient(135deg, #0099DD, #00B8A9);
                     border: none;
                     border-radius: 12px;
                     color: white;
@@ -160,7 +160,7 @@
             </style>
 
             <div class="auth-box">
-                <div class="auth-logo">ContentStudio</div>
+                <div class="auth-logo">StudioDias</div>
                 <div class="auth-subtitle">Plataforma de Criação de Conteúdo</div>
 
                 <div class="auth-icon">
