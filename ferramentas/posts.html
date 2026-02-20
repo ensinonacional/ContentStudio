@@ -524,7 +524,9 @@
 
         async function buscarPexels(query, page = 1, perPage = 18) {
             try {
-                const resp = await fetch(`https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&per_page=${perPage}&page=${page}`, {
+                // Pexels funciona melhor com + ao inves de %20 para multi-word
+                const q = query.trim().replace(/\s+/g, '+');
+                const resp = await fetch(`https://api.pexels.com/v1/search?query=${q}&per_page=${perPage}&page=${page}`, {
                     headers: { 'Authorization': 'nYMWBpMFOaBkaFPcoJkuAVcPMxFsGHoMg3UyzhAGjrOyYlBUkKK4kDBl' }
                 });
                 if (!resp.ok) return { photos: [], total_results: 0 };
@@ -626,7 +628,7 @@ REGRAS:
 3. Cada slide deve manter o MESMO ASSUNTO, com progresso na informacao
 4. headline: titulo curto e impactante (maximo 6 palavras)
 5. body: texto explicativo direto, maximo 3 linhas curtas
-6. busca_imagem: 2-4 palavras em INGLES para buscar foto no Pixabay RELACIONADA ao texto daquele slide
+6. busca_imagem: 1-2 palavras SIMPLES em INGLES para buscar foto (ex: "coffee", "business people", "technology", "nature", "city", "food", "money", "computer", "book")
 7. A numeracao dos slides internos e opcional - use quando fizer sentido (listas, passos, dicas)
 
 Retorne EXATAMENTE este JSON:
