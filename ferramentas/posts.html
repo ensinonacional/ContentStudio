@@ -542,18 +542,24 @@
         }
 
         async function buscarImagemParaSlide(query) {
-            // 1. Tentar Pexels primeiro
+            const queryEN = traduzirParaIngles(query);
+            console.log('[Posts] Buscando imagem para slide:', query, '->', queryEN);
+
+            // 1. Tentar Pexels primeiro (em inglês)
             try {
-                const pexData = await buscarPexels(query, 1, 5);
+                const pexData = await buscarPexels(queryEN, 1, 8);
                 if (pexData.photos && pexData.photos.length > 0) {
-                    const pick = pexData.photos[Math.floor(Math.random() * Math.min(pexData.photos.length, 3))];
+                    const pick = pexData.photos[Math.floor(Math.random() * Math.min(pexData.photos.length, 5))];
+                    console.log('[Posts] Pexels encontrou:', pick.src.large);
                     return pick.src.large2x || pick.src.large || pick.src.original;
                 }
-            } catch(e) {}
+            } catch(e) {
+                console.warn('[Posts] Pexels falhou:', e);
+            }
 
             // 2. Tentar Pixabay se tiver chave
             if (PIXABAY_KEY) {
-                const data = await buscarPixabay(query, 1, 5);
+                const data = await buscarPixabay(queryEN, 1, 5);
                 if (data.hits && data.hits.length > 0) {
                     const pick = data.hits[Math.floor(Math.random() * Math.min(data.hits.length, 3))];
                     return pick.largeImageURL || pick.webformatURL;
@@ -561,7 +567,8 @@
             }
 
             // 3. Fallback: Lorem Picsum com seed baseado na query
-            const seed = query.replace(/\s+/g, '-').toLowerCase() + '-' + Math.floor(Math.random() * 999);
+            console.log('[Posts] Usando Picsum fallback para:', query);
+            const seed = queryEN.replace(/\s+/g, '-').toLowerCase() + '-' + Math.floor(Math.random() * 999);
             return gerarPicsumURL(seed);
         }
 
@@ -916,9 +923,33 @@ Retorne EXATAMENTE este JSON:
             }
         }
 
+        // Traducoes simples PT -> EN para busca de imagens
+        const TRADUCOES_IMG = {
+            'produtividade':'productivity','trabalho':'work','escritorio':'office','negocio':'business','negocios':'business',
+            'tecnologia':'technology','computador':'computer','celular':'phone','saude':'health','comida':'food',
+            'natureza':'nature','cidade':'city','viagem':'travel','educacao':'education','dinheiro':'money',
+            'financas':'finance','marketing':'marketing','vendas':'sales','empreendedorismo':'entrepreneurship',
+            'motivacao':'motivation','sucesso':'success','lideranca':'leadership','equipe':'team','reuniao':'meeting',
+            'cafe':'coffee','livro':'book','estudo':'study','academia':'gym','exercicio':'exercise','familia':'family',
+            'casa':'home','cozinha':'kitchen','moda':'fashion','beleza':'beauty','musica':'music','arte':'art',
+            'design':'design','criatividade':'creativity','comunicacao':'communication','social':'social media',
+            'digital':'digital','internet':'internet','startup':'startup','inovacao':'innovation','tempo':'time',
+            'planejamento':'planning','organizacao':'organization','foco':'focus','mente':'mind','cerebro':'brain',
+            'meditar':'meditation','yoga':'yoga','dormir':'sleep','agua':'water','sol':'sun','praia':'beach',
+            'montanha':'mountain','floresta':'forest','animal':'animal','cachorro':'dog','gato':'cat'
+        };
+
+        function traduzirParaIngles(query) {
+            let q = query.toLowerCase().trim();
+            // Tentar traduzir palavra por palavra
+            const palavras = q.split(/\s+/);
+            const traduzidas = palavras.map(p => TRADUCOES_IMG[p] || p);
+            return traduzidas.join(' ');
+        }
+
         async function buscarImagens(page = 1) {
-            const query = document.getElementById('modalSearchInput').value.trim();
-            if (!query) return;
+            const queryOriginal = document.getElementById('modalSearchInput').value.trim();
+            if (!queryOriginal) return;
             currentPage = page;
             document.getElementById('imgGrid').innerHTML = '<p style="text-align:center;color:var(--text-muted);grid-column:1/-1;padding:20px">Buscando...</p>';
 
@@ -926,27 +957,35 @@ Retorne EXATAMENTE este JSON:
             let hits = [];
             let totalResults = 0;
 
-            // Tentar Pexels primeiro
-            const pexData = await buscarPexels(query, page, 18);
+            // Traduzir query para inglês (Pexels funciona melhor em inglês)
+            const queryEN = traduzirParaIngles(queryOriginal);
+            console.log('[Posts] Busca imagens:', queryOriginal, '->', queryEN);
+
+            // Tentar Pexels com query traduzida
+            let pexData = await buscarPexels(queryEN, page, 18);
+            // Se não achou, tentar query original
+            if ((!pexData.photos || pexData.photos.length === 0) && queryEN !== queryOriginal) {
+                pexData = await buscarPexels(queryOriginal, page, 18);
+            }
             if (pexData.photos && pexData.photos.length > 0) {
                 totalResults = pexData.total_results;
                 hits = pexData.photos.map(p => ({
                     url: p.src.large2x || p.src.large,
                     thumb: p.src.medium,
-                    alt: p.alt || query,
+                    alt: p.alt || queryOriginal,
                     credit: p.photographer + ' - Pexels'
                 }));
             }
 
             // Se Pexels falhou e tem Pixabay key, tentar Pixabay
             if (hits.length === 0 && PIXABAY_KEY) {
-                const data = await buscarPixabay(query, page, 18);
+                const data = await buscarPixabay(queryEN, page, 18);
                 if (data.hits && data.hits.length > 0) {
                     totalResults = data.totalHits;
                     hits = data.hits.map(h => ({
                         url: h.largeImageURL || h.webformatURL,
                         thumb: h.webformatURL,
-                        alt: h.tags || query,
+                        alt: h.tags || queryOriginal,
                         credit: h.user + ' - Pixabay'
                     }));
                 }
@@ -955,7 +994,7 @@ Retorne EXATAMENTE este JSON:
             const totalPages = Math.ceil(totalResults / 18) || 1;
 
             if (hits.length === 0) {
-                grid.innerHTML = '<p style="text-align:center;color:var(--text-muted);grid-column:1/-1;padding:20px">Nenhuma imagem encontrada</p>';
+                grid.innerHTML = '<p style="text-align:center;color:var(--text-muted);grid-column:1/-1;padding:20px">Nenhuma imagem encontrada. Tente buscar em ingles.</p>';
                 return;
             }
 
