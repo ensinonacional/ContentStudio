@@ -1505,7 +1505,8 @@
             async buscarOpenverse(query, count = 10) {
                 if (this._openverseBlocked) return [];
                 try {
-                    const resp = await fetch(`https://api.openverse.org/v1/images/?q=${encodeURIComponent(query)}&page_size=${Math.min(count, 20)}&mature=false`);
+                    // Filtrar por extensao jpg/png e aspect_ratio tall para posts
+                    const resp = await fetch(`https://api.openverse.org/v1/images/?q=${encodeURIComponent(query)}&page_size=${Math.min(count, 20)}&mature=false&extension=jpg,png`);
                     if (resp.status === 429) {
                         console.warn('[Openverse] Rate limit atingido, desabilitando para esta sessao');
                         this._openverseBlocked = true;
@@ -1528,12 +1529,27 @@
             // ====== 0b. WIKIMEDIA COMMONS (SEM KEY - busca keyword, 90M+ arquivos) ======
             async buscarWikimedia(query, count = 10) {
                 try {
-                    const resp = await fetch(`https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrnamespace=6&gsrsearch=${encodeURIComponent(query)}&gsrlimit=${Math.min(count, 20)}&prop=imageinfo&iiprop=url|extmetadata&iiurlwidth=800&format=json&origin=*`);
+                    // Pedir mais resultados para poder filtrar por fotos reais
+                    const pedido = Math.min(count * 3, 50);
+                    const resp = await fetch(`https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrnamespace=6&gsrsearch=${encodeURIComponent(query)}&gsrlimit=${pedido}&prop=imageinfo&iiprop=url|extmetadata|mime&iiurlwidth=800&format=json&origin=*`);
                     if (!resp.ok) return [];
                     const data = await resp.json();
                     if (!data.query || !data.query.pages) return [];
-                    return Object.values(data.query.pages)
-                        .filter(p => p.imageinfo && p.imageinfo[0] && p.imageinfo[0].thumburl)
+                    const fotos = Object.values(data.query.pages)
+                        .filter(p => {
+                            if (!p.imageinfo || !p.imageinfo[0] || !p.imageinfo[0].thumburl) return false;
+                            const info = p.imageinfo[0];
+                            const mime = info.mime || '';
+                            const url = (info.url || '').toLowerCase();
+                            const title = (p.title || '').toLowerCase();
+                            // Filtrar APENAS fotos reais (jpg/png), excluir SVG, GIF, diagramas, logos, bandeiras, mapas
+                            if (!mime.includes('jpeg') && !mime.includes('png')) return false;
+                            // Excluir imagens tipicamente nao-fotograficas
+                            const excluir = ['logo', 'icon', 'flag', 'coat_of_arms', 'diagram', 'chart', 'map', 'svg', 'graph', 'symbol', 'seal', 'emblem', 'badge', 'crest'];
+                            if (excluir.some(e => title.includes(e) || url.includes(e))) return false;
+                            return true;
+                        })
+                        .slice(0, count)
                         .map(p => {
                             const info = p.imageinfo[0];
                             const artist = info.extmetadata?.Artist?.value?.replace(/<[^>]+>/g, '') || 'Wikimedia';
@@ -1547,7 +1563,26 @@
                                 color: '#333333'
                             };
                         });
+                    return fotos;
                 } catch(e) { console.warn('Wikimedia erro:', e); return []; }
+            },
+
+            // ====== 0c. PICSUM (SEM KEY - fotos bonitas aleatorias como fallback visual) ======
+            async buscarPicsum(count = 10) {
+                try {
+                    const resp = await fetch(`https://picsum.photos/v2/list?page=${Math.floor(Math.random() * 50) + 1}&limit=${count}`);
+                    if (!resp.ok) return [];
+                    const data = await resp.json();
+                    return data.map(img => ({
+                        id: 'picsum_' + img.id,
+                        thumb: `https://picsum.photos/id/${img.id}/400/600`,
+                        full: img.download_url,
+                        regular: `https://picsum.photos/id/${img.id}/800/1200`,
+                        credit: img.author || 'Picsum',
+                        source: 'Picsum',
+                        color: '#333333'
+                    }));
+                } catch(e) { console.warn('Picsum erro:', e); return []; }
             },
 
             // ====== 1. PEXELS (com key, 200 req/hora) ======
@@ -1708,52 +1743,66 @@
             // ====== PRE-CARREGAR IMAGENS DO TEMA (chamada unica, economiza rate limit) ======
             async preCarregarTema(temaGeral) {
                 const temaEN = await traduzirParaIngles(temaGeral);
-                // Extrair palavras-chave curtas para Wikimedia (funciona melhor com termos simples)
-                const stopwords = ['how','to','the','a','an','and','or','for','in','on','at','of','with','your','my','is','are','tips','improve','create'];
+                // Extrair palavras-chave curtas (funciona melhor com termos simples)
+                const stopwords = ['how','to','the','a','an','and','or','for','in','on','at','of','with','your','my','is','are','tips','improve','create','make','more','best','good','great','ways','ideas','things','about','that','this','what','which','when','where','have','been','will','would','could','should','being','their','them','they','into','also','just','than','very','most','much','other','some','only','over','such','after','before','between','through','during','without','again','further'];
                 const keywords = temaEN.split(/\s+/).filter(w => w.length > 3 && !stopwords.includes(w.toLowerCase()));
                 const temaSimples = keywords.slice(0, 3).join(' ') || temaEN.split(/\s+/).slice(0, 3).join(' ');
-                const temaAesthetic = temaSimples + ' aesthetic';
-                console.log(`[ImageAPIs] Pre-carregando: tema="${temaSimples}", aesthetic="${temaAesthetic}"`);
+                const tema2palavras = keywords.slice(0, 2).join(' ') || temaEN.split(/\s+/).slice(0, 2).join(' ');
+                const tema1palavra = keywords[0] || temaEN.split(/\s+/)[0] || 'aesthetic';
+                console.log(`[ImageAPIs] Pre-carregando: keywords="${temaSimples}", short="${tema2palavras}"`);
 
                 const promessas = [];
-                // APIs com key: buscar com aesthetic
-                if (this.getPexelsKey()) promessas.push(this.buscarPexels(temaAesthetic, 20));
-                if (this.getPixabayKey()) promessas.push(this.buscarPixabay(temaAesthetic, 20));
-                if (this.getUnsplashKey()) promessas.push(this.buscarUnsplash(temaAesthetic, 20));
-                if (this.getFlickrKey()) promessas.push(this.buscarFlickr(temaAesthetic, 20));
-                // APIs gratuitas: Openverse com aesthetic, Wikimedia com termos simples
-                promessas.push(this.buscarOpenverse(temaAesthetic, 20));
-                promessas.push(this.buscarWikimedia(temaSimples, 20));
+                // APIs com key: buscar com tema aesthetic
+                if (this.getPexelsKey()) promessas.push(this.buscarPexels(temaSimples + ' aesthetic', 20));
+                if (this.getPixabayKey()) promessas.push(this.buscarPixabay(temaSimples + ' aesthetic', 20));
+                if (this.getUnsplashKey()) promessas.push(this.buscarUnsplash(temaSimples + ' aesthetic', 20));
+                if (this.getFlickrKey()) promessas.push(this.buscarFlickr(temaSimples + ' aesthetic', 20));
+                // APIs gratuitas: buscar com termos CURTOS para melhor relevancia
+                promessas.push(this.buscarOpenverse(tema2palavras, 20));
+                // Wikimedia: buscar com 2 variações para mais resultados
+                promessas.push(this.buscarWikimedia(tema2palavras + ' photo', 15));
+                promessas.push(this.buscarWikimedia(tema1palavra, 10));
+                // Picsum: sempre ter fotos bonitas como fallback
+                promessas.push(this.buscarPicsum(10));
 
                 const results = await Promise.allSettled(promessas);
                 let todas = [];
+                let fonteContagem = {};
                 for (const r of results) {
                     if (r.status === 'fulfilled' && r.value.length > 0) {
-                        todas.push(...r.value);
-                    }
-                }
-                // Se poucas imagens, tentar com termos mais curtos e simples
-                if (todas.length < 5) {
-                    console.log(`[ImageAPIs] Apenas ${todas.length} imagens, tentando termos mais curtos...`);
-                    // Extrair 1-2 palavras-chave do tema (sem stopwords)
-                    const stopwords = ['how','to','the','a','an','and','or','for','in','on','at','of','with','your','my','is','are','was','were','be','tips','dicas','como','para','seu','sua'];
-                    const keywords = temaEN.split(/\s+/).filter(w => w.length > 3 && !stopwords.includes(w.toLowerCase()));
-                    const termosCurtos = keywords.slice(0, 2).join(' ') || temaEN.split(/\s+/).slice(0, 2).join(' ');
-                    console.log(`[ImageAPIs] Retry com: "${termosCurtos}"`);
-                    const retry = await Promise.allSettled([
-                        this.buscarWikimedia(termosCurtos, 20),
-                        this.buscarOpenverse(termosCurtos, 20)
-                    ]);
-                    for (const r of retry) {
-                        if (r.status === 'fulfilled' && r.value.length > 0) {
-                            todas.push(...r.value);
+                        for (const img of r.value) {
+                            todas.push(img);
+                            fonteContagem[img.source] = (fonteContagem[img.source] || 0) + 1;
                         }
                     }
                 }
+                // Se poucas imagens relevantes (excluindo Picsum), tentar com termos mais curtos
+                const relevantes = todas.filter(i => i.source !== 'Picsum');
+                if (relevantes.length < 5) {
+                    console.log(`[ImageAPIs] Apenas ${relevantes.length} relevantes, retry com "${tema1palavra}"...`);
+                    const retry = await Promise.allSettled([
+                        this.buscarWikimedia(tema1palavra + ' photography', 20),
+                        this.buscarOpenverse(tema1palavra, 20)
+                    ]);
+                    for (const r of retry) {
+                        if (r.status === 'fulfilled' && r.value.length > 0) {
+                            for (const img of r.value) {
+                                todas.push(img);
+                                fonteContagem[img.source] = (fonteContagem[img.source] || 0) + 1;
+                            }
+                        }
+                    }
+                }
+                // Priorizar: imagens relevantes primeiro, Picsum por ultimo
+                const comRelevancia = todas.filter(i => i.source !== 'Picsum');
+                const picsum = todas.filter(i => i.source === 'Picsum');
+                todas = [...comRelevancia, ...picsum];
+
                 this._cacheImagens = {};
                 this._cacheImagens[temaEN] = todas;
                 this._cacheTimestamp = Date.now();
-                console.log(`[ImageAPIs] Cache: ${todas.length} imagens pre-carregadas`);
+                const fontesStr = Object.entries(fonteContagem).map(([k,v]) => `${k}:${v}`).join(', ');
+                console.log(`[ImageAPIs] Cache: ${todas.length} imagens (${fontesStr})`);
                 return todas;
             },
 
@@ -1807,11 +1856,15 @@
                             return cache.splice(0, 1)[0];
                         }
                     }
-                    // Fallback: buscar direto no Wikimedia (rate limit generoso)
-                    // Usar termos mais curtos (2-3 palavras) para melhor resultado
-                    const termoCurto = termoEN.split(/\s+/).filter(t => !['aesthetic','minimal','flatlay','bokeh','soft','light','warm','cozy'].includes(t.toLowerCase())).slice(0, 3).join(' ') || termoEN.split(/\s+/).slice(0, 2).join(' ');
-                    const wikiImgs = await this.buscarWikimedia(termoCurto, 5);
-                    if (wikiImgs.length > 0) return wikiImgs[0];
+                    // Fallback: buscar direto no Wikimedia com termos curtos
+                    const aestheticWords = ['aesthetic','minimal','flatlay','bokeh','soft','light','warm','cozy','closeup','tones'];
+                    const termoCurto = termoEN.split(/\s+/).filter(t => !aestheticWords.includes(t.toLowerCase())).slice(0, 2).join(' ') || termoEN.split(/\s+/).slice(0, 2).join(' ');
+                    console.log(`[Slide ${slide.numero}] Fallback Wikimedia: "${termoCurto}"`);
+                    const wikiImgs = await this.buscarWikimedia(termoCurto + ' photo', 8);
+                    if (wikiImgs.length > 0) return wikiImgs[Math.floor(Math.random() * Math.min(wikiImgs.length, 3))];
+                    // Ultimo fallback: Picsum (foto bonita aleatoria)
+                    const picsumImgs = await this.buscarPicsum(3);
+                    if (picsumImgs.length > 0) return picsumImgs[Math.floor(Math.random() * picsumImgs.length)];
                     return null;
                 }
 
