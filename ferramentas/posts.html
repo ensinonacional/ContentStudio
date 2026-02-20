@@ -452,7 +452,7 @@
         renderHeader('posts');
 
         // ==================== GLOBALS ====================
-        const PIXABAY_KEY = localStorage.getItem('pixabay_api_key') || '47069558-0a93cb2ea398ad38894153ef5';
+        const PIXABAY_KEY = localStorage.getItem('pixabay_api_key') || '';
         let dadosGerados = null;
         let currentLayoutIndex = 0;
         let editingSlideIndex = -1;
@@ -508,8 +508,9 @@
             }
         }
 
-        // ==================== PIXABAY API ====================
+        // ==================== IMAGE APIS ====================
         async function buscarPixabay(query, page = 1, perPage = 18) {
+            if (!PIXABAY_KEY) return { hits: [], totalHits: 0 };
             try {
                 const url = `https://pixabay.com/api/?key=${PIXABAY_KEY}&q=${encodeURIComponent(query)}&image_type=photo&per_page=${perPage}&page=${page}&safesearch=true`;
                 const resp = await fetch(url);
@@ -521,13 +522,47 @@
             }
         }
 
-        async function buscarImagemParaSlide(query) {
-            const data = await buscarPixabay(query, 1, 5);
-            if (data.hits && data.hits.length > 0) {
-                const pick = data.hits[Math.floor(Math.random() * Math.min(data.hits.length, 3))];
-                return pick.largeImageURL || pick.webformatURL;
+        async function buscarPexels(query, page = 1, perPage = 18) {
+            try {
+                const resp = await fetch(`https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&per_page=${perPage}&page=${page}`, {
+                    headers: { 'Authorization': 'nYMWBpMFOaBkaFPcoJkuAVcPMxFsGHoMg3UyzhAGjrOyYlBUkKK4kDBl' }
+                });
+                if (!resp.ok) return { photos: [], total_results: 0 };
+                const data = await resp.json();
+                return data;
+            } catch(e) {
+                console.warn('Pexels erro:', e);
+                return { photos: [], total_results: 0 };
             }
-            return '';
+        }
+
+        function gerarPicsumURL(seed) {
+            const id = Math.floor(Math.random() * 1000) + 1;
+            return `https://picsum.photos/seed/${seed || id}/1080/1350`;
+        }
+
+        async function buscarImagemParaSlide(query) {
+            // 1. Tentar Pexels primeiro
+            try {
+                const pexData = await buscarPexels(query, 1, 5);
+                if (pexData.photos && pexData.photos.length > 0) {
+                    const pick = pexData.photos[Math.floor(Math.random() * Math.min(pexData.photos.length, 3))];
+                    return pick.src.large2x || pick.src.large || pick.src.original;
+                }
+            } catch(e) {}
+
+            // 2. Tentar Pixabay se tiver chave
+            if (PIXABAY_KEY) {
+                const data = await buscarPixabay(query, 1, 5);
+                if (data.hits && data.hits.length > 0) {
+                    const pick = data.hits[Math.floor(Math.random() * Math.min(data.hits.length, 3))];
+                    return pick.largeImageURL || pick.webformatURL;
+                }
+            }
+
+            // 3. Fallback: Lorem Picsum com seed baseado na query
+            const seed = query.replace(/\s+/g, '-').toLowerCase() + '-' + Math.floor(Math.random() * 999);
+            return gerarPicsumURL(seed);
         }
 
         // ==================== AI GENERATION ====================
@@ -881,23 +916,51 @@ Retorne EXATAMENTE este JSON:
             currentPage = page;
             document.getElementById('imgGrid').innerHTML = '<p style="text-align:center;color:var(--text-muted);grid-column:1/-1;padding:20px">Buscando...</p>';
 
-            const data = await buscarPixabay(query, page, 18);
             const grid = document.getElementById('imgGrid');
-            const totalPages = Math.ceil(data.totalHits / 18);
+            let hits = [];
+            let totalResults = 0;
 
-            if (!data.hits || data.hits.length === 0) {
+            // Tentar Pexels primeiro
+            const pexData = await buscarPexels(query, page, 18);
+            if (pexData.photos && pexData.photos.length > 0) {
+                totalResults = pexData.total_results;
+                hits = pexData.photos.map(p => ({
+                    url: p.src.large2x || p.src.large,
+                    thumb: p.src.medium,
+                    alt: p.alt || query,
+                    credit: p.photographer + ' - Pexels'
+                }));
+            }
+
+            // Se Pexels falhou e tem Pixabay key, tentar Pixabay
+            if (hits.length === 0 && PIXABAY_KEY) {
+                const data = await buscarPixabay(query, page, 18);
+                if (data.hits && data.hits.length > 0) {
+                    totalResults = data.totalHits;
+                    hits = data.hits.map(h => ({
+                        url: h.largeImageURL || h.webformatURL,
+                        thumb: h.webformatURL,
+                        alt: h.tags || query,
+                        credit: h.user + ' - Pixabay'
+                    }));
+                }
+            }
+
+            const totalPages = Math.ceil(totalResults / 18) || 1;
+
+            if (hits.length === 0) {
                 grid.innerHTML = '<p style="text-align:center;color:var(--text-muted);grid-column:1/-1;padding:20px">Nenhuma imagem encontrada</p>';
                 return;
             }
 
-            grid.innerHTML = data.hits.map(hit => `
-                <div class="img-grid-item" onclick="selecionarImagem('${hit.largeImageURL || hit.webformatURL}')">
-                    <img src="${hit.webformatURL}" alt="${hit.tags}" loading="lazy">
-                    <div class="img-credit">${hit.user} - Pixabay</div>
+            grid.innerHTML = hits.map(hit => `
+                <div class="img-grid-item" onclick="selecionarImagem('${hit.url}')">
+                    <img src="${hit.thumb}" alt="${hit.alt}" loading="lazy">
+                    <div class="img-credit">${hit.credit}</div>
                 </div>
             `).join('');
 
-            document.getElementById('pageInfo').textContent = `Pagina ${page} de ${totalPages} (${data.totalHits} imagens)`;
+            document.getElementById('pageInfo').textContent = `Pagina ${page} de ${totalPages} (${totalResults} imagens)`;
             document.getElementById('btnPrevPage').disabled = page <= 1;
             document.getElementById('btnNextPage').disabled = page >= totalPages;
         }
