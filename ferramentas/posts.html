@@ -1505,8 +1505,9 @@
             async buscarOpenverse(query, count = 10) {
                 if (this._openverseBlocked) return [];
                 try {
-                    // Filtrar por extensao jpg/png e aspect_ratio tall para posts
-                    const resp = await fetch(`https://api.openverse.org/v1/images/?q=${encodeURIComponent(query)}&page_size=${Math.min(count, 20)}&mature=false&extension=jpg,png`);
+                    // Pedir mais para poder filtrar, extensao jpg/png
+                    const pedido = Math.min(count * 2, 40);
+                    const resp = await fetch(`https://api.openverse.org/v1/images/?q=${encodeURIComponent(query)}&page_size=${pedido}&mature=false&extension=jpg,png`);
                     if (resp.status === 429) {
                         console.warn('[Openverse] Rate limit atingido, desabilitando para esta sessao');
                         this._openverseBlocked = true;
@@ -1514,7 +1515,20 @@
                     }
                     if (!resp.ok) return [];
                     const data = await resp.json();
-                    return (data.results || []).map(img => ({
+                    // Filtrar: preferir fotos reais (flickr, wordpress, rawpixel, stocksnap)
+                    // Excluir fontes que tendem a ter ilustracoes/memes
+                    const fotosReais = (data.results || []).filter(img => {
+                        const src = (img.source || '').toLowerCase();
+                        const url = (img.url || '').toLowerCase();
+                        const title = (img.title || '').toLowerCase();
+                        // Excluir se parece ser ilustracao/cartoon/meme
+                        const excluirTermos = ['cartoon', 'comic', 'meme', 'clipart', 'illustration', 'drawing', 'anime', 'sketch', 'vector', 'icon'];
+                        if (excluirTermos.some(t => title.includes(t) || url.includes(t))) return false;
+                        // Preferir dimensoes maiores (fotos vs thumbnails)
+                        if (img.width && img.height && img.width < 300 && img.height < 300) return false;
+                        return true;
+                    });
+                    return fotosReais.slice(0, count).map(img => ({
                         id: 'openverse_' + img.id,
                         thumb: img.thumbnail || img.url,
                         full: img.url,
