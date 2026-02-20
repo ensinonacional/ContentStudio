@@ -646,14 +646,18 @@ Retorne EXATAMENTE este JSON:
 }`;
 
             try {
+                console.log('[Posts] Chamando API DeepSeek...');
                 const resposta = await chamarAPI(systemPrompt, userPrompt);
+                console.log('[Posts] Resposta recebida:', resposta.substring(0, 200));
+
                 let jsonLimpo = resposta.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
                 const jsonMatch = jsonLimpo.match(/\{[\s\S]*\}/);
                 if (jsonMatch) jsonLimpo = jsonMatch[0];
 
                 dadosGerados = JSON.parse(jsonLimpo);
+                console.log('[Posts] JSON parsed, slides:', dadosGerados.slides?.length);
 
-                showStatus('Buscando imagens no Pixabay...');
+                showStatus('Buscando imagens...');
 
                 // Buscar imagens para cada slide
                 const buscas = dadosGerados.slides.map(async (slide) => {
@@ -669,8 +673,10 @@ Retorne EXATAMENTE este JSON:
                 atualizarLegenda();
 
             } catch(error) {
+                console.error('[Posts] ERRO:', error);
                 hideStatus();
-                mostrarNotificacao('Erro ao gerar: ' + error.message, 'error');
+                mostrarNotificacao('Erro: ' + error.message, 'error');
+                alert('Erro ao gerar post:\n\n' + error.message + '\n\nVeja o console (F12) para mais detalhes.');
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/></svg> Gerar slides';
