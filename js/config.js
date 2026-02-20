@@ -4,13 +4,9 @@
 // Se common.js já definiu APIConfig, usa ele. Senão, cria aqui.
 if (typeof window.APIConfig === 'undefined' || !window.APIConfig) {
     window.APIConfig = {
-        _dk: '=M2Y4kzY0kDNjJWZ5EjMxkzN0ADNmZzMlFWY4cDOhlDMts2c',
-        _decode() {
-            try { return atob(this._dk.split('').reverse().join('')); } catch(e) { return ''; }
-        },
         get key() {
             const saved = localStorage.getItem('deepseek_api_key');
-            return (saved && saved.trim()) ? saved.trim() : this._decode();
+            return (saved && saved.trim()) ? saved.trim() : '';
         },
         set key(value) {
             localStorage.setItem('deepseek_api_key', value);

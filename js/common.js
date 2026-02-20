@@ -11,20 +11,12 @@ const FERRAMENTAS = [
         descricao: 'Transforme textos em roteiros profissionais para videos',
         icone: 'movie',
         url: 'ferramentas/roteiros.html'
-    },
-    {
-        id: 'posts',
-        nome: 'Posts',
-        descricao: 'Crie conteudo para carroseis e posts de redes sociais',
-        icone: 'grid',
-        url: 'ferramentas/posts.html'
     }
 ];
 
 // ==================== ICONES SVG ====================
 
 const ICONS = {
-    grid: '<svg viewBox="0 0 24 24"><path d="M3 3h8v8H3V3zm0 10h8v8H3v-8zm10-10h8v8h-8V3zm0 10h8v8h-8v-8z"/></svg>',
     movie: '<svg viewBox="0 0 24 24"><path d="M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4h-4z"/></svg>',
     image: '<svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>',
     mic: '<svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>',
@@ -415,13 +407,9 @@ async function copiarElemento(elementId) {
 // ==================== API ====================
 
 var APIConfig = {
-    _dk: '=M2Y4kzY0kDNjJWZ5EjMxkzN0ADNmZzMlFWY4cDOhlDMts2c',
-    _decode() {
-        try { return atob(this._dk.split('').reverse().join('')); } catch(e) { return ''; }
-    },
     get key() {
         const saved = localStorage.getItem('deepseek_api_key');
-        return (saved && saved.trim()) ? saved.trim() : this._decode();
+        return (saved && saved.trim()) ? saved.trim() : '';
     },
     set key(value) {
         localStorage.setItem('deepseek_api_key', value);
