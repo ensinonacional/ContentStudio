@@ -532,6 +532,15 @@
 
         // ==================== AI GENERATION ====================
         async function gerarPost() {
+            // Verificar API configurada
+            if (!APIConfig.isConfigured) {
+                mostrarNotificacao('API nao configurada. Acesse o painel admin para configurar.', 'error');
+                if (confirm('A chave da API DeepSeek nao esta configurada.\n\nDeseja ir ao painel admin para configurar?')) {
+                    window.location.href = '../admin.html';
+                }
+                return;
+            }
+
             const tema = document.getElementById('inputTema').value.trim();
             const conteudo = document.getElementById('inputConteudo').value.trim();
             const numSlides = parseInt(document.getElementById('numSlides').value) || 5;
