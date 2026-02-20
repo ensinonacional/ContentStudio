@@ -1708,18 +1708,22 @@
             // ====== PRE-CARREGAR IMAGENS DO TEMA (chamada unica, economiza rate limit) ======
             async preCarregarTema(temaGeral) {
                 const temaEN = await traduzirParaIngles(temaGeral);
-                const temaAesthetic = temaEN + ' aesthetic';
-                console.log(`[ImageAPIs] Pre-carregando imagens aesthetic para tema: "${temaAesthetic}"`);
+                // Extrair palavras-chave curtas para Wikimedia (funciona melhor com termos simples)
+                const stopwords = ['how','to','the','a','an','and','or','for','in','on','at','of','with','your','my','is','are','tips','improve','create'];
+                const keywords = temaEN.split(/\s+/).filter(w => w.length > 3 && !stopwords.includes(w.toLowerCase()));
+                const temaSimples = keywords.slice(0, 3).join(' ') || temaEN.split(/\s+/).slice(0, 3).join(' ');
+                const temaAesthetic = temaSimples + ' aesthetic';
+                console.log(`[ImageAPIs] Pre-carregando: tema="${temaSimples}", aesthetic="${temaAesthetic}"`);
 
                 const promessas = [];
-                // APIs com key: buscar bastante (com e sem aesthetic para variedade)
+                // APIs com key: buscar com aesthetic
                 if (this.getPexelsKey()) promessas.push(this.buscarPexels(temaAesthetic, 20));
                 if (this.getPixabayKey()) promessas.push(this.buscarPixabay(temaAesthetic, 20));
                 if (this.getUnsplashKey()) promessas.push(this.buscarUnsplash(temaAesthetic, 20));
                 if (this.getFlickrKey()) promessas.push(this.buscarFlickr(temaAesthetic, 20));
-                // APIs gratuitas: com termo aesthetic
+                // APIs gratuitas: Openverse com aesthetic, Wikimedia com termos simples
                 promessas.push(this.buscarOpenverse(temaAesthetic, 20));
-                promessas.push(this.buscarWikimedia(temaEN, 20));
+                promessas.push(this.buscarWikimedia(temaSimples, 20));
 
                 const results = await Promise.allSettled(promessas);
                 let todas = [];
@@ -1728,10 +1732,14 @@
                         todas.push(...r.value);
                     }
                 }
-                // Se nao achou nada, tentar com termos mais curtos (sem aesthetic)
-                if (todas.length === 0) {
-                    console.log('[ImageAPIs] Nenhuma imagem, tentando termos mais curtos...');
-                    const termosCurtos = temaEN.split(/\s+/).slice(0, 2).join(' ');
+                // Se poucas imagens, tentar com termos mais curtos e simples
+                if (todas.length < 5) {
+                    console.log(`[ImageAPIs] Apenas ${todas.length} imagens, tentando termos mais curtos...`);
+                    // Extrair 1-2 palavras-chave do tema (sem stopwords)
+                    const stopwords = ['how','to','the','a','an','and','or','for','in','on','at','of','with','your','my','is','are','was','were','be','tips','dicas','como','para','seu','sua'];
+                    const keywords = temaEN.split(/\s+/).filter(w => w.length > 3 && !stopwords.includes(w.toLowerCase()));
+                    const termosCurtos = keywords.slice(0, 2).join(' ') || temaEN.split(/\s+/).slice(0, 2).join(' ');
+                    console.log(`[ImageAPIs] Retry com: "${termosCurtos}"`);
                     const retry = await Promise.allSettled([
                         this.buscarWikimedia(termosCurtos, 20),
                         this.buscarOpenverse(termosCurtos, 20)
