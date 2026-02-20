@@ -508,70 +508,18 @@
             }
         }
 
-        // ==================== IMAGE APIS ====================
-        async function buscarPixabay(query, page = 1, perPage = 18) {
-            if (!PIXABAY_KEY) return { hits: [], totalHits: 0 };
-            try {
-                const url = `https://pixabay.com/api/?key=${PIXABAY_KEY}&q=${encodeURIComponent(query)}&image_type=photo&per_page=${perPage}&page=${page}&safesearch=true`;
-                const resp = await fetch(url);
-                if (!resp.ok) return { hits: [], totalHits: 0 };
-                return await resp.json();
-            } catch(e) {
-                console.warn('Pixabay erro:', e);
-                return { hits: [], totalHits: 0 };
-            }
-        }
-
-        async function buscarPexels(query, page = 1, perPage = 18) {
-            try {
-                // Pexels funciona melhor com + ao inves de %20 para multi-word
-                const q = query.trim().replace(/\s+/g, '+');
-                const resp = await fetch(`https://api.pexels.com/v1/search?query=${q}&per_page=${perPage}&page=${page}`, {
-                    headers: { 'Authorization': 'nYMWBpMFOaBkaFPcoJkuAVcPMxFsGHoMg3UyzhAGjrOyYlBUkKK4kDBl' }
-                });
-                if (!resp.ok) return { photos: [], total_results: 0 };
-                const data = await resp.json();
-                return data;
-            } catch(e) {
-                console.warn('Pexels erro:', e);
-                return { photos: [], total_results: 0 };
-            }
-        }
-
-        function gerarPicsumURL(seed) {
-            const id = Math.floor(Math.random() * 1000) + 1;
-            return `https://picsum.photos/seed/${seed || id}/1080/1350`;
+        // ==================== IMAGE API ====================
+        // LoremFlickr: sem API key, sem limites, busca Flickr por keyword
+        // Funciona com QUALQUER termo - retorna fotos reais relacionadas
+        function gerarURLImagem(query) {
+            const q = query.trim().replace(/\s+/g, ',');
+            return `https://loremflickr.com/1080/1350/${encodeURIComponent(q)}?random=${Math.floor(Math.random() * 9999)}`;
         }
 
         async function buscarImagemParaSlide(query) {
             const queryEN = traduzirParaIngles(query);
-            const palavras = queryEN.split(/\s+/).filter(p => p.length > 2);
-            console.log('[Posts] Buscando imagem:', query, '->', queryEN, 'palavras:', palavras);
-
-            // Tentar Pexels com diferentes estrategias
-            const tentativas = [
-                queryEN,                           // query completa
-                palavras[0] || queryEN,            // primeira palavra
-                palavras.length > 1 ? palavras[1] : null,  // segunda palavra
-                'business',                         // fallback generico
-                'nature'                            // fallback final
-            ].filter(Boolean);
-
-            for (const tentativa of tentativas) {
-                try {
-                    const pexData = await buscarPexels(tentativa, 1, 10);
-                    if (pexData.photos && pexData.photos.length > 0) {
-                        const pick = pexData.photos[Math.floor(Math.random() * Math.min(pexData.photos.length, 5))];
-                        console.log('[Posts] Pexels achou com "' + tentativa + '":', pick.src.large);
-                        return pick.src.large2x || pick.src.large || pick.src.original;
-                    }
-                } catch(e) {}
-            }
-
-            // Fallback: Lorem Picsum
-            console.log('[Posts] Usando Picsum fallback');
-            const seed = queryEN.replace(/\s+/g, '-').toLowerCase() + '-' + Math.floor(Math.random() * 999);
-            return gerarPicsumURL(seed);
+            console.log('[Posts] Imagem para slide:', query, '->', queryEN);
+            return gerarURLImagem(queryEN);
         }
 
         // ==================== AI GENERATION ====================
@@ -953,65 +901,30 @@ Retorne EXATAMENTE este JSON:
             const queryOriginal = document.getElementById('modalSearchInput').value.trim();
             if (!queryOriginal) return;
             currentPage = page;
-            document.getElementById('imgGrid').innerHTML = '<p style="text-align:center;color:var(--text-muted);grid-column:1/-1;padding:20px">Buscando...</p>';
-
             const grid = document.getElementById('imgGrid');
-            let hits = [];
-            let totalResults = 0;
+            grid.innerHTML = '<p style="text-align:center;color:var(--text-muted);grid-column:1/-1;padding:20px">Carregando imagens...</p>';
 
-            // Traduzir query para inglês (Pexels funciona melhor em inglês)
             const queryEN = traduzirParaIngles(queryOriginal);
-            const palavras = queryEN.split(/\s+/).filter(p => p.length > 2);
             console.log('[Posts] Busca modal:', queryOriginal, '->', queryEN);
 
-            // Tentar com diferentes estrategias
-            let pexData = { photos: [], total_results: 0 };
-            const tentativas = [queryEN, palavras[0], palavras[1], queryOriginal].filter(Boolean);
-            for (const tentativa of tentativas) {
-                pexData = await buscarPexels(tentativa, page, 18);
-                if (pexData.photos && pexData.photos.length > 0) break;
+            // Gerar 12 imagens do LoremFlickr (cada uma diferente por causa do random)
+            const q = queryEN.trim().replace(/\s+/g, ',');
+            let html = '';
+            for (let i = 0; i < 12; i++) {
+                const imgUrl = `https://loremflickr.com/1080/1350/${encodeURIComponent(q)}?random=${Date.now() + i}`;
+                const thumbUrl = `https://loremflickr.com/400/400/${encodeURIComponent(q)}?random=${Date.now() + i}`;
+                html += `
+                    <div class="img-grid-item" onclick="selecionarImagem('${imgUrl}')">
+                        <img src="${thumbUrl}" alt="${queryOriginal}" loading="lazy" onerror="this.src='https://picsum.photos/400/400?random=${i}'">
+                        <div class="img-credit">Flickr</div>
+                    </div>
+                `;
             }
-            if (pexData.photos && pexData.photos.length > 0) {
-                totalResults = pexData.total_results;
-                hits = pexData.photos.map(p => ({
-                    url: p.src.large2x || p.src.large,
-                    thumb: p.src.medium,
-                    alt: p.alt || queryOriginal,
-                    credit: p.photographer + ' - Pexels'
-                }));
-            }
+            grid.innerHTML = html;
 
-            // Se Pexels falhou e tem Pixabay key, tentar Pixabay
-            if (hits.length === 0 && PIXABAY_KEY) {
-                const data = await buscarPixabay(queryEN, page, 18);
-                if (data.hits && data.hits.length > 0) {
-                    totalResults = data.totalHits;
-                    hits = data.hits.map(h => ({
-                        url: h.largeImageURL || h.webformatURL,
-                        thumb: h.webformatURL,
-                        alt: h.tags || queryOriginal,
-                        credit: h.user + ' - Pixabay'
-                    }));
-                }
-            }
-
-            const totalPages = Math.ceil(totalResults / 18) || 1;
-
-            if (hits.length === 0) {
-                grid.innerHTML = '<p style="text-align:center;color:var(--text-muted);grid-column:1/-1;padding:20px">Nenhuma imagem encontrada. Tente buscar em ingles.</p>';
-                return;
-            }
-
-            grid.innerHTML = hits.map(hit => `
-                <div class="img-grid-item" onclick="selecionarImagem('${hit.url}')">
-                    <img src="${hit.thumb}" alt="${hit.alt}" loading="lazy">
-                    <div class="img-credit">${hit.credit}</div>
-                </div>
-            `).join('');
-
-            document.getElementById('pageInfo').textContent = `Pagina ${page} de ${totalPages} (${totalResults} imagens)`;
-            document.getElementById('btnPrevPage').disabled = page <= 1;
-            document.getElementById('btnNextPage').disabled = page >= totalPages;
+            document.getElementById('pageInfo').textContent = 'Clique para selecionar uma imagem';
+            document.getElementById('btnPrevPage').disabled = true;
+            document.getElementById('btnNextPage').disabled = false;
         }
 
         function selecionarImagem(url) {
