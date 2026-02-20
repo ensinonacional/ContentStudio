@@ -543,31 +543,31 @@
 
         async function buscarImagemParaSlide(query) {
             const queryEN = traduzirParaIngles(query);
-            console.log('[Posts] Buscando imagem para slide:', query, '->', queryEN);
+            const palavras = queryEN.split(/\s+/).filter(p => p.length > 2);
+            console.log('[Posts] Buscando imagem:', query, '->', queryEN, 'palavras:', palavras);
 
-            // 1. Tentar Pexels primeiro (em inglês)
-            try {
-                const pexData = await buscarPexels(queryEN, 1, 8);
-                if (pexData.photos && pexData.photos.length > 0) {
-                    const pick = pexData.photos[Math.floor(Math.random() * Math.min(pexData.photos.length, 5))];
-                    console.log('[Posts] Pexels encontrou:', pick.src.large);
-                    return pick.src.large2x || pick.src.large || pick.src.original;
-                }
-            } catch(e) {
-                console.warn('[Posts] Pexels falhou:', e);
+            // Tentar Pexels com diferentes estrategias
+            const tentativas = [
+                queryEN,                           // query completa
+                palavras[0] || queryEN,            // primeira palavra
+                palavras.length > 1 ? palavras[1] : null,  // segunda palavra
+                'business',                         // fallback generico
+                'nature'                            // fallback final
+            ].filter(Boolean);
+
+            for (const tentativa of tentativas) {
+                try {
+                    const pexData = await buscarPexels(tentativa, 1, 10);
+                    if (pexData.photos && pexData.photos.length > 0) {
+                        const pick = pexData.photos[Math.floor(Math.random() * Math.min(pexData.photos.length, 5))];
+                        console.log('[Posts] Pexels achou com "' + tentativa + '":', pick.src.large);
+                        return pick.src.large2x || pick.src.large || pick.src.original;
+                    }
+                } catch(e) {}
             }
 
-            // 2. Tentar Pixabay se tiver chave
-            if (PIXABAY_KEY) {
-                const data = await buscarPixabay(queryEN, 1, 5);
-                if (data.hits && data.hits.length > 0) {
-                    const pick = data.hits[Math.floor(Math.random() * Math.min(data.hits.length, 3))];
-                    return pick.largeImageURL || pick.webformatURL;
-                }
-            }
-
-            // 3. Fallback: Lorem Picsum com seed baseado na query
-            console.log('[Posts] Usando Picsum fallback para:', query);
+            // Fallback: Lorem Picsum
+            console.log('[Posts] Usando Picsum fallback');
             const seed = queryEN.replace(/\s+/g, '-').toLowerCase() + '-' + Math.floor(Math.random() * 999);
             return gerarPicsumURL(seed);
         }
@@ -959,13 +959,15 @@ Retorne EXATAMENTE este JSON:
 
             // Traduzir query para inglês (Pexels funciona melhor em inglês)
             const queryEN = traduzirParaIngles(queryOriginal);
-            console.log('[Posts] Busca imagens:', queryOriginal, '->', queryEN);
+            const palavras = queryEN.split(/\s+/).filter(p => p.length > 2);
+            console.log('[Posts] Busca modal:', queryOriginal, '->', queryEN);
 
-            // Tentar Pexels com query traduzida
-            let pexData = await buscarPexels(queryEN, page, 18);
-            // Se não achou, tentar query original
-            if ((!pexData.photos || pexData.photos.length === 0) && queryEN !== queryOriginal) {
-                pexData = await buscarPexels(queryOriginal, page, 18);
+            // Tentar com diferentes estrategias
+            let pexData = { photos: [], total_results: 0 };
+            const tentativas = [queryEN, palavras[0], palavras[1], queryOriginal].filter(Boolean);
+            for (const tentativa of tentativas) {
+                pexData = await buscarPexels(tentativa, page, 18);
+                if (pexData.photos && pexData.photos.length > 0) break;
             }
             if (pexData.photos && pexData.photos.length > 0) {
                 totalResults = pexData.total_results;
