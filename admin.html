@@ -789,6 +789,44 @@
                     </div>
                     <button class="btn btn-primary" onclick="saveAPIConfig()">Salvar Configuração</button>
                 </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+                            Bancos de Imagens (Posts)
+                        </div>
+                    </div>
+                    <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 0.85rem;">
+                        Configure as chaves dos bancos de imagens. Quanto mais chaves, mais imagens disponiveis. Sem nenhuma chave o sistema usa Lorem Picsum + Unsplash Source (gratis, sem chave).
+                    </p>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div class="form-group">
+                            <label class="form-label">Pexels API Key</label>
+                            <input type="password" class="form-input" id="pexelsKeyInput" placeholder="Cole sua Pexels API Key...">
+                            <p class="form-help">Gratis em <a href="https://www.pexels.com/api/" target="_blank" style="color: var(--accent-light);">pexels.com/api</a> (200 req/h)</p>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Pixabay API Key</label>
+                            <input type="password" class="form-input" id="pixabayKeyInput" placeholder="Cole sua Pixabay API Key...">
+                            <p class="form-help">Gratis em <a href="https://pixabay.com/api/docs/" target="_blank" style="color: var(--accent-light);">pixabay.com/api</a> (ilimitado)</p>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Unsplash Access Key</label>
+                            <input type="password" class="form-input" id="unsplashKeyInput" placeholder="Cole sua Unsplash Access Key...">
+                            <p class="form-help">Gratis em <a href="https://unsplash.com/developers" target="_blank" style="color: var(--accent-light);">unsplash.com/developers</a> (50 req/h)</p>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Flickr API Key</label>
+                            <input type="password" class="form-input" id="flickrKeyInput" placeholder="Cole sua Flickr API Key...">
+                            <p class="form-help">Gratis em <a href="https://www.flickr.com/services/apps/create/" target="_blank" style="color: var(--accent-light);">flickr.com/services</a> (sem limite)</p>
+                        </div>
+                    </div>
+                    <p style="color: var(--text-muted); font-size: 0.78rem; margin-bottom: 16px; padding: 10px; background: var(--bg-tertiary); border-radius: var(--radius-sm);">
+                        <strong>Lorem Picsum</strong> e <strong>Unsplash Source</strong> funcionam automaticamente sem chave. Servem como fallback quando nenhuma API esta configurada.
+                    </p>
+                    <button class="btn btn-primary" onclick="saveImageAPIs()">Salvar Chaves de Imagens</button>
+                </div>
             </div>
 
             <!-- Usuarios Tab -->
@@ -931,6 +969,12 @@
             document.getElementById('apiKeyInput').value = key;
             document.getElementById('apiModelSelect').value = APIConfig.modelo;
 
+            // Carregar chaves de imagem
+            document.getElementById('pexelsKeyInput').value = localStorage.getItem('pexels_api_key') || '';
+            document.getElementById('pixabayKeyInput').value = localStorage.getItem('pixabay_api_key') || '';
+            document.getElementById('unsplashKeyInput').value = localStorage.getItem('unsplash_api_key') || '';
+            document.getElementById('flickrKeyInput').value = localStorage.getItem('flickr_api_key') || '';
+
             // Mostrar alerta se API não configurada
             const apiTab = document.getElementById('tab-api');
             const existingAlert = apiTab.querySelector('.api-alert');
@@ -949,6 +993,27 @@
             APIConfig.key = document.getElementById('apiKeyInput').value;
             APIConfig.modelo = document.getElementById('apiModelSelect').value;
             showToast('Configuração da API salva!');
+        }
+
+        function saveImageAPIs() {
+            const keys = {
+                'pexels_api_key': document.getElementById('pexelsKeyInput').value.trim(),
+                'pixabay_api_key': document.getElementById('pixabayKeyInput').value.trim(),
+                'unsplash_api_key': document.getElementById('unsplashKeyInput').value.trim(),
+                'flickr_api_key': document.getElementById('flickrKeyInput').value.trim()
+            };
+
+            let count = 0;
+            Object.entries(keys).forEach(([storageKey, value]) => {
+                if (value) {
+                    localStorage.setItem(storageKey, value);
+                    count++;
+                } else {
+                    localStorage.removeItem(storageKey);
+                }
+            });
+
+            showToast(`${count} chave(s) de imagens salva(s)! + 2 fontes gratis`);
         }
 
         // ==================== ESTATÍSTICAS ====================
