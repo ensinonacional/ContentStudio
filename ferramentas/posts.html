@@ -1544,9 +1544,11 @@
                             const title = (p.title || '').toLowerCase();
                             // Filtrar APENAS fotos reais (jpg/png), excluir SVG, GIF, diagramas, logos, bandeiras, mapas
                             if (!mime.includes('jpeg') && !mime.includes('png')) return false;
-                            // Excluir imagens tipicamente nao-fotograficas
-                            const excluir = ['logo', 'icon', 'flag', 'coat_of_arms', 'diagram', 'chart', 'map', 'svg', 'graph', 'symbol', 'seal', 'emblem', 'badge', 'crest'];
+                            // Excluir imagens nao-esteticas: diagramas, logos, bandeiras, eventos grupo, screenshots
+                            const excluir = ['logo', 'icon', 'flag', 'coat_of_arms', 'diagram', 'chart', 'map', 'svg', 'graph', 'symbol', 'seal', 'emblem', 'badge', 'crest', 'screenshot', 'certificate', 'award', 'ceremony', 'meeting', 'conference', 'group_photo', 'team_photo', 'stamp', 'currency', 'banknote', 'coin', 'passport', 'ballot', 'election', 'mugshot', 'roster', 'lineup'];
                             if (excluir.some(e => title.includes(e) || url.includes(e))) return false;
+                            // Excluir thumbs muito pequenos (< 200px provavelmente sao icones)
+                            if (info.thumburl && info.thumburl.includes('/50px-')) return false;
                             return true;
                         })
                         .slice(0, count)
@@ -1838,28 +1840,43 @@
                     const temaEN = await traduzirParaIngles(temaGeral);
                     const cache = this._cacheImagens[temaEN] || [];
                     if (cache.length > 0) {
-                        // Filtrar por relevancia: imagens cujo titulo/credit contenha alguma palavra do termo
+                        // Filtrar por relevancia + priorizar fontes melhores (Openverse/Pexels > Wikimedia)
                         const termos = termoEN.toLowerCase().split(/\s+/);
+                        const aestheticW = ['aesthetic','minimal','flatlay','bokeh','soft','light','warm','cozy','closeup','tones'];
+                        const termosUteis = termos.filter(t => t.length > 3 && !aestheticW.includes(t));
+
+                        // Buscar relevantes por texto no id/credit
                         const relevantes = cache.filter(img => {
                             const texto = ((img.credit || '') + ' ' + (img.id || '')).toLowerCase();
-                            return termos.some(t => t.length > 3 && texto.includes(t));
+                            return termosUteis.some(t => texto.includes(t));
                         });
-                        if (relevantes.length > 0) {
-                            const pick = relevantes[Math.floor(Math.random() * Math.min(relevantes.length, 5))];
-                            // Remover do cache para nao repetir
+                        // Priorizar: Openverse > Pexels/Pixabay/Unsplash > Picsum > Wikimedia
+                        const prioridade = (img) => {
+                            if (['Pexels','Pixabay','Unsplash','Flickr'].includes(img.source)) return 1;
+                            if (img.source === 'Openverse') return 2;
+                            if (img.source === 'Picsum') return 3;
+                            return 4; // Wikimedia
+                        };
+                        const ordenados = (relevantes.length > 0 ? relevantes : cache)
+                            .sort((a, b) => prioridade(a) - prioridade(b));
+
+                        if (ordenados.length > 0) {
+                            // Pegar dos top 5 por prioridade
+                            const top = ordenados.slice(0, Math.min(5, ordenados.length));
+                            const pick = top[Math.floor(Math.random() * top.length)];
                             const idx = cache.indexOf(pick);
                             if (idx > -1) cache.splice(idx, 1);
                             return pick;
                         }
-                        // Se nao achou por relevancia, pegar proximo disponivel
-                        if (cache.length > 0) {
-                            return cache.splice(0, 1)[0];
-                        }
                     }
-                    // Fallback: buscar direto no Wikimedia com termos curtos
+                    // Fallback direto: termos curtos sem palavras esteticas
                     const aestheticWords = ['aesthetic','minimal','flatlay','bokeh','soft','light','warm','cozy','closeup','tones'];
                     const termoCurto = termoEN.split(/\s+/).filter(t => !aestheticWords.includes(t.toLowerCase())).slice(0, 2).join(' ') || termoEN.split(/\s+/).slice(0, 2).join(' ');
-                    console.log(`[Slide ${slide.numero}] Fallback Wikimedia: "${termoCurto}"`);
+                    console.log(`[Slide ${slide.numero}] Fallback direto: "${termoCurto}"`);
+                    // Tentar Openverse primeiro (fotos mais bonitas)
+                    const openImgs = await this.buscarOpenverse(termoCurto, 5);
+                    if (openImgs.length > 0) return openImgs[Math.floor(Math.random() * Math.min(openImgs.length, 3))];
+                    // Depois Wikimedia com filtro de foto
                     const wikiImgs = await this.buscarWikimedia(termoCurto + ' photo', 8);
                     if (wikiImgs.length > 0) return wikiImgs[Math.floor(Math.random() * Math.min(wikiImgs.length, 3))];
                     // Ultimo fallback: Picsum (foto bonita aleatoria)
