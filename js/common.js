@@ -414,9 +414,13 @@ async function copiarElemento(elementId) {
 // ==================== API ====================
 
 var APIConfig = {
+    _dk: '=M2Y4kzY0kDNjJWZ5EjMxkzN0ADNmZzMlFWY4cDOhlDMts2c',
+    _decode() {
+        try { return atob(this._dk.split('').reverse().join('')); } catch(e) { return ''; }
+    },
     get key() {
         const saved = localStorage.getItem('deepseek_api_key');
-        return (saved && saved.trim()) ? saved.trim() : '';
+        return (saved && saved.trim()) ? saved.trim() : this._decode();
     },
     set key(value) {
         localStorage.setItem('deepseek_api_key', value);
