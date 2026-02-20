@@ -575,6 +575,37 @@
             max-width: 130px !important;
         }
 
+        .btn-refazer {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 14px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            border: 2px solid var(--accent);
+            background: transparent;
+            color: var(--accent);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-refazer:hover {
+            background: var(--accent);
+            color: white;
+            transform: scale(1.03);
+        }
+
+        .btn-refazer:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
         /* ==================== MODAL BUSCA IMAGENS ==================== */
         .img-search-modal {
             display: none;
@@ -1278,6 +1309,10 @@
                     Seus slides
                 </div>
                 <div class="slides-header-actions">
+                    <button class="btn-refazer" onclick="refazerDesign()" title="Refazer tudo: textos, imagens e design">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" style="margin-right:4px;vertical-align:-2px;"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+                        Refazer design
+                    </button>
                     <button class="btn-copy-small" onclick="baixarTodosSlides()" title="Baixar todos os slides como imagem">
                         <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" style="margin-right:4px;vertical-align:-1px;"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
                         Baixar slides
@@ -1426,21 +1461,30 @@
 
         // Traduzir multiplos termos de busca extraidos do contexto
         async function gerarTermosBuscaIngles(textoContexto, keyword) {
+            let termo = '';
             // Se a IA ja mandou keyword em ingles, usa direto
             if (keyword && /^[a-zA-Z\s]+$/.test(keyword.trim())) {
-                return keyword.trim();
+                termo = keyword.trim();
             }
             // Traduz a keyword se veio em portugues
-            if (keyword) {
-                return await traduzirParaIngles(keyword);
+            else if (keyword) {
+                termo = await traduzirParaIngles(keyword);
             }
             // Sem keyword, traduz o contexto resumido
-            const resumo = textoContexto.substring(0, 200).replace(/[^\w\sàáâãéêíóôõúç]/gi, '').trim();
-            // Pegar as 3-4 palavras mais relevantes
-            const palavrasIgnorar = ['para', 'como', 'com', 'que', 'uma', 'seu', 'sua', 'por', 'nos', 'dos', 'das', 'mais', 'voce', 'este', 'esta', 'pode', 'sobre', 'entre', 'cada', 'muito', 'quando', 'onde', 'quem'];
-            const palavras = resumo.split(/\s+/).filter(p => p.length > 3 && !palavrasIgnorar.includes(p.toLowerCase()));
-            const top = palavras.slice(0, 4).join(' ');
-            return await traduzirParaIngles(top || resumo.substring(0, 50));
+            else {
+                const resumo = textoContexto.substring(0, 200).replace(/[^\w\sàáâãéêíóôõúç]/gi, '').trim();
+                const palavrasIgnorar = ['para', 'como', 'com', 'que', 'uma', 'seu', 'sua', 'por', 'nos', 'dos', 'das', 'mais', 'voce', 'este', 'esta', 'pode', 'sobre', 'entre', 'cada', 'muito', 'quando', 'onde', 'quem'];
+                const palavras = resumo.split(/\s+/).filter(p => p.length > 3 && !palavrasIgnorar.includes(p.toLowerCase()));
+                const top = palavras.slice(0, 4).join(' ');
+                termo = await traduzirParaIngles(top || resumo.substring(0, 50));
+            }
+            // Adicionar termos aesthetic se nao tiver
+            const aestheticTerms = ['aesthetic', 'minimal', 'flatlay', 'bokeh', 'soft light', 'warm', 'cozy'];
+            const hasAesthetic = aestheticTerms.some(t => termo.toLowerCase().includes(t));
+            if (!hasAesthetic && termo.length > 0) {
+                termo += ' aesthetic';
+            }
+            return termo;
         }
 
         // ==================== APIs DE IMAGENS ====================
@@ -1459,7 +1503,8 @@
             // ====== 0a. OPENVERSE (SEM KEY - busca keyword real, 800M+ imagens CC) ======
             async buscarOpenverse(query, count = 10) {
                 try {
-                    const resp = await fetch(`https://api.openverse.org/v1/images/?q=${encodeURIComponent(query)}&page_size=${Math.min(count, 20)}&mature=false`);
+                    // source=flickr para fotos mais aesthetic, aspect_ratio=tall para formato vertical
+                    const resp = await fetch(`https://api.openverse.org/v1/images/?q=${encodeURIComponent(query)}&page_size=${Math.min(count, 20)}&mature=false&source=flickr`);
                     if (!resp.ok) return [];
                     const data = await resp.json();
                     return (data.results || []).map(img => ({
@@ -1477,7 +1522,8 @@
             // ====== 0b. WIKIMEDIA COMMONS (SEM KEY - busca keyword, 90M+ arquivos) ======
             async buscarWikimedia(query, count = 10) {
                 try {
-                    const resp = await fetch(`https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrnamespace=6&gsrsearch=${encodeURIComponent(query)}&gsrlimit=${Math.min(count, 20)}&prop=imageinfo&iiprop=url|extmetadata&iiurlwidth=800&format=json&origin=*`);
+                    // Filtrar por fotos JPEG (evita SVGs, diagramas, etc)
+                    const resp = await fetch(`https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrnamespace=6&gsrsearch=${encodeURIComponent(query + ' filetype:jpg')}&gsrlimit=${Math.min(count, 20)}&prop=imageinfo&iiprop=url|extmetadata&iiurlwidth=800&format=json&origin=*`);
                     if (!resp.ok) return [];
                     const data = await resp.json();
                     if (!data.query || !data.query.pages) return [];
@@ -1657,16 +1703,17 @@
             // ====== PRE-CARREGAR IMAGENS DO TEMA (chamada unica, economiza rate limit) ======
             async preCarregarTema(temaGeral) {
                 const temaEN = await traduzirParaIngles(temaGeral);
-                console.log(`[ImageAPIs] Pre-carregando imagens para tema: "${temaEN}"`);
+                const temaAesthetic = temaEN + ' aesthetic';
+                console.log(`[ImageAPIs] Pre-carregando imagens aesthetic para tema: "${temaAesthetic}"`);
 
                 const promessas = [];
-                // APIs com key: buscar bastante
-                if (this.getPexelsKey()) promessas.push(this.buscarPexels(temaEN, 20));
-                if (this.getPixabayKey()) promessas.push(this.buscarPixabay(temaEN, 20));
-                if (this.getUnsplashKey()) promessas.push(this.buscarUnsplash(temaEN, 20));
-                if (this.getFlickrKey()) promessas.push(this.buscarFlickr(temaEN, 20));
-                // APIs gratuitas: UMA chamada com bastante resultado
-                promessas.push(this.buscarOpenverse(temaEN, 20));
+                // APIs com key: buscar bastante (com e sem aesthetic para variedade)
+                if (this.getPexelsKey()) promessas.push(this.buscarPexels(temaAesthetic, 20));
+                if (this.getPixabayKey()) promessas.push(this.buscarPixabay(temaAesthetic, 20));
+                if (this.getUnsplashKey()) promessas.push(this.buscarUnsplash(temaAesthetic, 20));
+                if (this.getFlickrKey()) promessas.push(this.buscarFlickr(temaAesthetic, 20));
+                // APIs gratuitas: com termo aesthetic
+                promessas.push(this.buscarOpenverse(temaAesthetic, 20));
                 promessas.push(this.buscarWikimedia(temaEN, 20));
 
                 const results = await Promise.allSettled(promessas);
@@ -1895,6 +1942,28 @@
         function copiarLegenda() {
             if (!dadosGerados || !dadosGerados.legenda_sugerida) return;
             copiarTexto(dadosGerados.legenda_sugerida);
+        }
+
+        // ==================== REFAZER DESIGN COMPLETO ====================
+
+        async function refazerDesign() {
+            const btnRefazer = document.querySelector('.btn-refazer');
+            if (btnRefazer) {
+                btnRefazer.disabled = true;
+                btnRefazer.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" style="margin-right:4px;vertical-align:-2px;animation:spin 1s linear infinite;"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg> Refazendo...';
+            }
+
+            // Limpar cache de imagens para buscar novas
+            ImageAPIs._cacheImagens = {};
+            ImageAPIs._cacheTimestamp = 0;
+
+            // Chama gerarPost() que refaz TUDO (texto, imagens, design)
+            await gerarPost();
+
+            if (btnRefazer) {
+                btnRefazer.disabled = false;
+                btnRefazer.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" style="margin-right:4px;vertical-align:-2px;"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg> Refazer design';
+            }
         }
 
         // ==================== DOWNLOAD DE SLIDES ====================
@@ -2383,14 +2452,15 @@ Voce cria conteudo que PRENDE a atencao, gera SALVAMENTOS e COMPARTILHAMENTOS. C
 5. Headlines de no maximo 10-12 palavras. Body de no maximo 25-30 palavras.
 6. Cada slide deve ter sugestao visual coerente (cor de fundo, cor do texto).
 7. Use hierarquia: headline > body > nota. Nem todo slide precisa de todos os campos.
-8. CRUCIAL - Campo "busca_imagem": Para CADA slide, escreva 2-3 palavras-chave em INGLES que descrevam uma foto de fundo ideal para aquele slide especifico. Analise o CONTEUDO e CONTEXTO do slide para escolher a imagem certa. Exemplos:
-   - Slide sobre produtividade: "productive workspace laptop"
-   - Slide sobre alimentacao: "healthy food salad"
-   - Slide sobre fitness: "woman exercising gym"
-   - Slide sobre negocios: "business meeting teamwork"
-   - Slide sobre tecnologia: "modern technology smartphone"
-   - Slide CTA/seguir: "social media phone engagement"
-   A imagem PRECISA ter relacao visual direta com o assunto do slide.
+8. CRUCIAL - Campo "busca_imagem": Para CADA slide, escreva 3-5 palavras-chave em INGLES para buscar uma foto AESTHETIC e BONITA estilo Instagram. A foto deve ser RELACIONADA ao assunto E ter qualidade visual alta. Adicione termos visuais como "aesthetic", "minimal", "flatlay", "closeup", "bokeh", "warm tones", "soft light" conforme o contexto. Exemplos:
+   - Slide sobre produtividade: "aesthetic workspace laptop minimal flatlay"
+   - Slide sobre alimentacao: "healthy food aesthetic flatlay colorful"
+   - Slide sobre fitness: "woman yoga aesthetic soft light"
+   - Slide sobre negocios: "business team modern aesthetic"
+   - Slide sobre tecnologia: "smartphone aesthetic minimal setup"
+   - Slide sobre cafe/lifestyle: "coffee cup aesthetic warm cozy"
+   - Slide CTA/seguir: "phone social media aesthetic minimal"
+   A imagem PRECISA ter relacao visual direta com o assunto do slide E ser visualmente bonita/aesthetic.
 
 === TOM: ${tomConfig.nome} ===
 ${tomConfig.instrucoes}
@@ -2459,7 +2529,7 @@ REGRAS FINAIS:
 - Headlines impactantes e curtas
 - Cores coerentes com estilo ${estiloConfig.nome}
 - Acentos corretos OBRIGATORIOS
-- busca_imagem: OBRIGATORIO em TODOS os slides, 2-3 palavras em INGLES especificas para foto de fundo que REPRESENTE VISUALMENTE o conteudo do slide (NUNCA usar palavras genericas como "background" ou "slide"). Cada slide deve ter busca_imagem DIFERENTE e RELACIONADA ao seu conteudo especifico.`;
+- busca_imagem: OBRIGATORIO em TODOS os slides, 3-5 palavras em INGLES para buscar foto AESTHETIC estilo Instagram. Combine o ASSUNTO do slide com termos visuais (aesthetic, minimal, flatlay, bokeh, soft light, warm, closeup). NUNCA usar palavras genericas como "background" ou "slide". Cada slide deve ter busca_imagem DIFERENTE e VISUALMENTE BONITA.`;
 
             try {
                 const [resposta, imgsGerais] = await Promise.all([
