@@ -509,44 +509,88 @@
         }
 
         // ==================== IMAGE API ====================
-        // Multiplos bancos: Pexels (qualidade) + LoremFlickr (cobertura total)
         const PEXELS_KEY = 'nYMWBpMFOaBkaFPcoJkuAVcPMxFsGHoMg3UyzhAGjrOyYlBUkKK4kDBl';
+        const PIXABAY_KEY = localStorage.getItem('pixabay_api_key') || '';
 
-        async function buscarPexels(query, perPage = 10) {
+        // Pexels - fotos profissionais (funciona com 1 palavra em ingles)
+        async function buscarPexelsFotos(query, perPage = 15, page = 1) {
             try {
-                const resp = await fetch(`https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&per_page=${perPage}&orientation=portrait`, {
+                const resp = await fetch(`https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&per_page=${perPage}&page=${page}`, {
                     headers: { 'Authorization': PEXELS_KEY }
                 });
                 if (!resp.ok) return [];
                 const data = await resp.json();
-                return (data.photos || []).map(p => p.src.large2x || p.src.large || p.src.original);
+                if (!data.photos || data.photos.length === 0) return [];
+                return data.photos.map(p => ({
+                    url: p.src.large2x || p.src.large || p.src.original,
+                    thumb: p.src.medium || p.src.small,
+                    credit: p.photographer + ' - Pexels'
+                }));
             } catch(e) { return []; }
         }
 
+        // Pixabay - banco mais completo (precisa de API key)
+        async function buscarPixabayFotos(query, perPage = 15, page = 1) {
+            if (!PIXABAY_KEY) return [];
+            try {
+                const resp = await fetch(`https://pixabay.com/api/?key=${PIXABAY_KEY}&q=${encodeURIComponent(query)}&image_type=photo&per_page=${perPage}&page=${page}&safesearch=true&editors_choice=false`);
+                if (!resp.ok) return [];
+                const data = await resp.json();
+                if (!data.hits || data.hits.length === 0) return [];
+                return data.hits.map(h => ({
+                    url: h.largeImageURL || h.webformatURL,
+                    thumb: h.webformatURL,
+                    credit: h.user + ' - Pixabay'
+                }));
+            } catch(e) { return []; }
+        }
+
+        // LoremFlickr - funciona com qualquer termo
         function gerarLoremFlickr(query) {
             const q = query.trim().replace(/\s+/g, ',');
             return `https://loremflickr.com/1080/1350/${encodeURIComponent(q)}?lock=${Date.now()}_${Math.floor(Math.random() * 99999)}`;
         }
 
+        // IA traduz a busca para ingles otimizado
+        async function traduzirComIA(textoPT) {
+            try {
+                const resp = await chamarAPI(
+                    'You are a translator. Translate the input to a single English keyword ideal for stock photo search. Reply with ONLY the keyword, nothing else.',
+                    textoPT,
+                    50
+                );
+                return resp.trim().toLowerCase().replace(/[^a-z\s]/g, '');
+            } catch(e) { return textoPT; }
+        }
+
+        // Buscar imagem para slide (usa durante geracao)
         async function buscarImagemParaSlide(query) {
             const queryEN = traduzirParaIngles(query);
             const palavras = queryEN.split(/\s+/).filter(p => p.length > 2);
-            const primeiraPalavra = palavras[0] || queryEN;
 
-            // 1. Tentar Pexels com primeira palavra (funciona melhor com 1 palavra)
-            try {
-                const urls = await buscarPexels(primeiraPalavra, 8);
-                if (urls.length > 0) {
-                    const pick = urls[Math.floor(Math.random() * urls.length)];
-                    console.log('[Posts] Pexels:', primeiraPalavra, '->', pick.substring(0, 60));
-                    return pick;
+            // Tentar cada palavra no Pexels ate achar
+            for (const palavra of palavras) {
+                const fotos = await buscarPexelsFotos(palavra, 8);
+                if (fotos.length > 0) {
+                    const pick = fotos[Math.floor(Math.random() * fotos.length)];
+                    console.log('[Posts] Pexels achou "' + palavra + '"');
+                    return pick.url;
                 }
-            } catch(e) {}
+            }
 
-            // 2. LoremFlickr (funciona com qualquer termo)
-            const url = gerarLoremFlickr(queryEN);
-            console.log('[Posts] LoremFlickr:', queryEN);
-            return url;
+            // Tentar Pixabay com query completa
+            if (PIXABAY_KEY) {
+                const fotos = await buscarPixabayFotos(queryEN, 8);
+                if (fotos.length > 0) {
+                    const pick = fotos[Math.floor(Math.random() * fotos.length)];
+                    console.log('[Posts] Pixabay achou');
+                    return pick.url;
+                }
+            }
+
+            // Fallback LoremFlickr
+            console.log('[Posts] LoremFlickr fallback:', queryEN);
+            return gerarLoremFlickr(queryEN);
         }
 
         // ==================== AI GENERATION ====================
@@ -603,7 +647,7 @@ REGRAS:
 3. Cada slide deve manter o MESMO ASSUNTO, com progresso na informacao
 4. headline: titulo curto e impactante (maximo 6 palavras)
 5. body: texto explicativo direto, maximo 3 linhas curtas
-6. busca_imagem: 1-2 palavras SIMPLES em INGLES para buscar foto (ex: "coffee", "business people", "technology", "nature", "city", "food", "money", "computer", "book")
+6. busca_imagem: EXATAMENTE 1 palavra em INGLES, substantivo concreto e visual para buscar foto profissional de banco de imagens. Use APENAS palavras deste tipo: "coffee", "laptop", "office", "nature", "city", "food", "money", "computer", "book", "people", "business", "technology", "fitness", "cooking", "writing", "reading", "sunset", "ocean", "mountain", "flowers", "workspace", "meditation". NUNCA use palavras abstratas como "success", "motivation", "growth". Escolha algo VISUAL e CONCRETO relacionado ao slide.
 7. A numeracao dos slides internos e opcional - use quando fizer sentido (listas, passos, dicas)
 
 Retorne EXATAMENTE este JSON:
@@ -902,7 +946,7 @@ Retorne EXATAMENTE este JSON:
             }
         }
 
-        // Traducoes simples PT -> EN para busca de imagens
+        // Traducoes rapidas PT -> EN (dicionario + IA como backup)
         const TRADUCOES_IMG = {
             'produtividade':'productivity','trabalho':'work','escritorio':'office','negocio':'business','negocios':'business',
             'tecnologia':'technology','computador':'computer','celular':'phone','saude':'health','comida':'food',
@@ -911,16 +955,23 @@ Retorne EXATAMENTE este JSON:
             'motivacao':'motivation','sucesso':'success','lideranca':'leadership','equipe':'team','reuniao':'meeting',
             'cafe':'coffee','livro':'book','estudo':'study','academia':'gym','exercicio':'exercise','familia':'family',
             'casa':'home','cozinha':'kitchen','moda':'fashion','beleza':'beauty','musica':'music','arte':'art',
-            'design':'design','criatividade':'creativity','comunicacao':'communication','social':'social media',
-            'digital':'digital','internet':'internet','startup':'startup','inovacao':'innovation','tempo':'time',
-            'planejamento':'planning','organizacao':'organization','foco':'focus','mente':'mind','cerebro':'brain',
-            'meditar':'meditation','yoga':'yoga','dormir':'sleep','agua':'water','sol':'sun','praia':'beach',
-            'montanha':'mountain','floresta':'forest','animal':'animal','cachorro':'dog','gato':'cat'
+            'design':'design','criatividade':'creativity','comunicacao':'communication','digital':'digital',
+            'internet':'internet','startup':'startup','inovacao':'innovation','tempo':'time','foco':'focus',
+            'mente':'mind','cerebro':'brain','meditar':'meditation','yoga':'yoga','dormir':'sleep','agua':'water',
+            'sol':'sun','praia':'beach','montanha':'mountain','floresta':'forest','animal':'animal',
+            'cachorro':'dog','gato':'cat','carro':'car','aviao':'airplane','comput':'computer','celula':'phone',
+            'mesa':'desk','cadeira':'chair','jardim':'garden','flor':'flower','rio':'river','mar':'sea',
+            'nuvem':'cloud','estrela':'star','lua':'moon','relogio':'clock','caneta':'pen','papel':'paper',
+            'escola':'school','hospital':'hospital','restaurante':'restaurant','loja':'store','rua':'street',
+            'ponte':'bridge','predios':'buildings','parque':'park','esporte':'sports','futebol':'soccer',
+            'basquete':'basketball','tenis':'tennis','corrida':'running','bicicleta':'bicycle','cozinhar':'cooking',
+            'ler':'reading','escrever':'writing','pintar':'painting','danca':'dancing','cantar':'singing',
+            'festa':'party','casamento':'wedding','bebe':'baby','crianca':'children','idoso':'elderly',
+            'medico':'doctor','professor':'teacher','engenheiro':'engineer','advogado':'lawyer','cozinheiro':'chef'
         };
 
         function traduzirParaIngles(query) {
             let q = query.toLowerCase().trim();
-            // Tentar traduzir palavra por palavra
             const palavras = q.split(/\s+/);
             const traduzidas = palavras.map(p => TRADUCOES_IMG[p] || p);
             return traduzidas.join(' ');
@@ -931,54 +982,69 @@ Retorne EXATAMENTE este JSON:
             if (!queryOriginal) return;
             currentPage = page;
             const grid = document.getElementById('imgGrid');
-            grid.innerHTML = '<p style="text-align:center;color:var(--text-muted);grid-column:1/-1;padding:20px">Buscando imagens...</p>';
+            grid.innerHTML = '<p style="text-align:center;color:var(--text-muted);grid-column:1/-1;padding:20px">🔍 Buscando imagens profissionais...</p>';
 
-            const queryEN = traduzirParaIngles(queryOriginal);
-            const primeiraPalavra = queryEN.split(/\s+/)[0] || queryEN;
-            console.log('[Posts] Busca modal:', queryOriginal, '->', queryEN);
-
-            let html = '';
-            const ts = Date.now();
-
-            // 1. Buscar Pexels (alta qualidade)
-            try {
-                const resp = await fetch(`https://api.pexels.com/v1/search?query=${encodeURIComponent(primeiraPalavra)}&per_page=15&page=${page}`, {
-                    headers: { 'Authorization': PEXELS_KEY }
-                });
-                if (resp.ok) {
-                    const data = await resp.json();
-                    if (data.photos && data.photos.length > 0) {
-                        html += data.photos.map(p => {
-                            const fullUrl = p.src.large2x || p.src.large;
-                            return `<div class="img-grid-item" onclick="selecionarImagem('${fullUrl}')">
-                                <img src="${p.src.medium}" alt="${p.alt || queryOriginal}" loading="lazy">
-                                <div class="img-credit">${p.photographer} - Pexels</div>
-                            </div>`;
-                        }).join('');
-                    }
-                }
-            } catch(e) {}
-
-            // 2. Adicionar LoremFlickr (sempre funciona, mais variedade)
-            const qFlickr = queryEN.trim().replace(/\s+/g, ',');
-            for (let i = 0; i < 6; i++) {
-                const imgUrl = gerarLoremFlickr(queryEN);
-                const thumbUrl = `https://loremflickr.com/400/500/${encodeURIComponent(qFlickr)}?lock=${ts + i * 1000}`;
-                html += `<div class="img-grid-item" onclick="selecionarImagem('${imgUrl}')">
-                    <img src="${thumbUrl}" alt="${queryOriginal}" loading="lazy">
-                    <div class="img-credit">Flickr</div>
-                </div>`;
+            // Usar IA para traduzir busca se for portugues
+            let queryEN = traduzirParaIngles(queryOriginal);
+            // Se nao mudou (nao tinha no dicionario), usar IA
+            if (queryEN === queryOriginal.toLowerCase().trim() && /[àáãâéêíóôõúç]/.test(queryOriginal)) {
+                try {
+                    queryEN = await traduzirComIA(queryOriginal);
+                    console.log('[Posts] IA traduziu:', queryOriginal, '->', queryEN);
+                } catch(e) {}
             }
 
-            if (!html) {
-                grid.innerHTML = '<p style="text-align:center;color:var(--text-muted);grid-column:1/-1;padding:20px">Nenhuma imagem encontrada</p>';
+            const palavras = queryEN.split(/\s+/).filter(p => p.length > 2);
+            const primeiraPalavra = palavras[0] || queryEN;
+            console.log('[Posts] Busca modal:', queryOriginal, '->', queryEN, '-> keyword:', primeiraPalavra);
+
+            let todas = [];
+
+            // 1. Pexels - alta qualidade (tentar keyword principal)
+            let pexelsFotos = await buscarPexelsFotos(primeiraPalavra, 20, page);
+            // Se nao achou, tentar segunda palavra
+            if (pexelsFotos.length === 0 && palavras[1]) {
+                pexelsFotos = await buscarPexelsFotos(palavras[1], 20, page);
+            }
+            // Se ainda nao achou, tentar query completa
+            if (pexelsFotos.length === 0) {
+                pexelsFotos = await buscarPexelsFotos(queryEN, 20, page);
+            }
+            todas = todas.concat(pexelsFotos);
+
+            // 2. Pixabay - se tiver key (banco mais completo)
+            if (PIXABAY_KEY) {
+                const pixabayFotos = await buscarPixabayFotos(queryEN, 20, page);
+                todas = todas.concat(pixabayFotos);
+            }
+
+            // 3. LoremFlickr como complemento (sempre funciona)
+            const ts = Date.now();
+            const qFlickr = queryEN.trim().replace(/\s+/g, ',');
+            for (let i = 0; i < 6; i++) {
+                todas.push({
+                    url: gerarLoremFlickr(queryEN),
+                    thumb: `https://loremflickr.com/400/500/${encodeURIComponent(qFlickr)}?lock=${ts + i * 7919}`,
+                    credit: 'Flickr'
+                });
+            }
+
+            if (todas.length === 0) {
+                grid.innerHTML = '<p style="text-align:center;color:var(--text-muted);grid-column:1/-1;padding:20px">Nenhuma imagem encontrada. Tente outro termo.</p>';
                 return;
             }
 
-            grid.innerHTML = html;
-            document.getElementById('pageInfo').textContent = 'Pexels + Flickr - Clique para selecionar';
+            grid.innerHTML = todas.map(img => `
+                <div class="img-grid-item" onclick="selecionarImagem('${img.url}')">
+                    <img src="${img.thumb}" alt="${queryOriginal}" loading="lazy">
+                    <div class="img-credit">${img.credit}</div>
+                </div>
+            `).join('');
+
+            const totalPexels = pexelsFotos.length;
+            document.getElementById('pageInfo').textContent = `${todas.length} imagens (${totalPexels} Pexels${PIXABAY_KEY ? ' + Pixabay' : ''} + Flickr) - Pag ${page}`;
             document.getElementById('btnPrevPage').disabled = page <= 1;
-            document.getElementById('btnNextPage').disabled = false;
+            document.getElementById('btnNextPage').disabled = totalPexels < 20;
         }
 
         function selecionarImagem(url) {
