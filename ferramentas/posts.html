@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Posts - StudioDias</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800;900&family=Playfair+Display:wght@400;700;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styles.css">
+    <script src="../js/auth-block.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <style>
+        /* ==================== GENERAL ==================== */
+        .page-container { max-width: 1200px; margin: 0 auto; padding: 0 20px 60px; }
+        .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 20px; }
+        .card-title { font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        .card-title svg { width: 16px; height: 16px; fill: var(--accent); }
+
+        /* ==================== CONFIG GRID ==================== */
+        .config-row { display: grid; grid-template-columns: 1fr 120px; gap: 16px; align-items: end; }
+        @media (max-width: 600px) { .config-row { grid-template-columns: 1fr; } }
+        .field-group { display: flex; flex-direction: column; gap: 4px; }
+        .field-label { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; color: var(--text-muted); }
+        .field-input, .field-select { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-primary); color: var(--text-primary); font-size: 0.85rem; font-family: 'Inter', sans-serif; outline: none; transition: border-color 0.2s; }
+        .field-input:focus, .field-select:focus { border-color: var(--accent); }
+        .field-textarea { width: 100%; min-height: 100px; padding: 12px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-primary); color: var(--text-primary); font-size: 0.85rem; font-family: 'Inter', sans-serif; resize: vertical; outline: none; transition: border-color 0.2s; }
+        .field-textarea:focus { border-color: var(--accent); }
+
+        /* ==================== SUGGESTIONS CHIPS ==================== */
+        .suggestions { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 16px; }
+        .chip { padding: 6px 14px; border: 1px solid var(--border); border-radius: 9999px; font-size: 0.75rem; color: var(--text-muted); cursor: pointer; transition: all 0.15s; background: transparent; }
+        .chip:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-glow); }
+
+        /* ==================== ACCORDION ==================== */
+        .accordion-trigger { display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 10px 0; font-size: 0.82rem; font-weight: 600; color: var(--text-muted); border: none; background: none; width: 100%; text-align: left; }
+        .accordion-trigger svg { width: 14px; height: 14px; fill: var(--text-muted); transition: transform 0.2s; }
+        .accordion-trigger.open svg { transform: rotate(180deg); }
+        .accordion-body { display: none; padding-top: 12px; }
+        .accordion-body.open { display: block; }
+        .adv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        @media (max-width: 600px) { .adv-grid { grid-template-columns: 1fr; } }
+
+        /* ==================== PROFILE SECTION ==================== */
+        .perfil-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+        .perfil-foto-wrap { width: 48px; height: 48px; border-radius: 50%; overflow: hidden; border: 2px solid var(--border); cursor: pointer; display: flex; align-items: center; justify-content: center; background: var(--bg-secondary); flex-shrink: 0; }
+        .perfil-foto-wrap img { width: 100%; height: 100%; object-fit: cover; }
+        .perfil-foto-wrap svg { width: 20px; height: 20px; fill: var(--text-muted); }
+
+        /* ==================== GENERATE BUTTON ==================== */
+        .btn-generate { display: inline-flex; align-items: center; gap: 8px; padding: 12px 28px; background: var(--accent); color: white; border: none; border-radius: var(--radius-sm); font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.15s; float: right; }
+        .btn-generate:hover { filter: brightness(1.1); transform: translateY(-1px); }
+        .btn-generate:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .btn-generate svg { width: 16px; height: 16px; fill: white; }
+
+        /* ==================== ACTION BAR ==================== */
+        .action-bar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+        .action-bar-title { font-size: 0.95rem; font-weight: 700; color: var(--text-primary); margin-right: auto; display: flex; align-items: center; gap: 8px; }
+        .action-bar-title svg { width: 18px; height: 18px; fill: var(--accent); }
+        .btn-action { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); background: transparent; color: var(--text-primary); font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+        .btn-action:hover { border-color: var(--accent); color: var(--accent); }
+        .btn-action svg { width: 14px; height: 14px; fill: currentColor; }
+        .btn-action.primary { border-color: var(--accent); color: var(--accent); }
+        .btn-action.primary:hover { background: var(--accent); color: white; }
+        .btn-action.primary:hover svg { fill: white; }
+
+        /* ==================== SLIDES CONTAINER ==================== */
+        .slides-scroll { display: flex; gap: 16px; overflow-x: auto; padding: 8px 4px 16px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
+        .slides-scroll::-webkit-scrollbar { height: 6px; }
+        .slides-scroll::-webkit-scrollbar-track { background: var(--bg-secondary); border-radius: 3px; }
+        .slides-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+        /* ==================== SLIDE CARD ==================== */
+        .slide-wrap { flex-shrink: 0; scroll-snap-align: start; position: relative; cursor: grab; transition: transform 0.15s; }
+        .slide-wrap:active { cursor: grabbing; }
+        .slide-wrap.dragging { opacity: 0.4; transform: scale(0.95); }
+        .slide-wrap.drag-over { transform: scale(1.02); }
+
+        .slide-card { width: 270px; height: 337.5px; border-radius: 12px; overflow: hidden; position: relative; background: #0a1628; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
+        .slide-card * { box-sizing: border-box; }
+
+        .slide-number { position: absolute; top: 10px; left: 10px; width: 24px; height: 24px; border-radius: 50%; background: rgba(0,180,216,0.9); color: white; font-size: 0.65rem; font-weight: 700; display: flex; align-items: center; justify-content: center; z-index: 10; }
+        .slide-badge { position: absolute; top: 10px; right: 10px; padding: 3px 10px; border-radius: 4px; background: rgba(0,0,0,0.5); color: white; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; z-index: 10; }
+
+        /* Slide edit overlay */
+        .slide-edit-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; gap: 8px; opacity: 0; transition: opacity 0.15s; z-index: 20; border-radius: 12px; }
+        .slide-wrap:hover .slide-edit-overlay { opacity: 1; }
+        .slide-edit-btn { padding: 8px 14px; border-radius: 8px; border: 1.5px solid white; background: rgba(0,0,0,0.4); color: white; font-size: 0.72rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 5px; transition: all 0.15s; }
+        .slide-edit-btn:hover { background: white; color: #0a1628; }
+        .slide-edit-btn svg { width: 13px; height: 13px; fill: currentColor; }
+
+        /* ==================== 10 LAYOUTS ==================== */
+        /* Base image */
+        .slide-bg { position: absolute; inset: 0; background-size: cover; background-position: center; }
+        .slide-overlay { position: absolute; inset: 0; }
+
+        /* Layout 1: Classic Dark - image top, text bottom */
+        .layout-1 .slide-bg { height: 55%; }
+        .layout-1 .slide-overlay { top: 40%; background: linear-gradient(to bottom, transparent, #0a1628 70%); }
+        .layout-1 .slide-content { position: absolute; bottom: 0; left: 0; right: 0; padding: 20px; }
+        .layout-1 .slide-headline { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 1.05rem; color: #ffffff; line-height: 1.25; margin-bottom: 6px; }
+        .layout-1 .slide-body { font-family: 'Inter', sans-serif; font-weight: 400; font-size: 0.72rem; color: rgba(255,255,255,0.8); line-height: 1.45; }
+        .layout-1 .slide-deco { position: absolute; top: 50%; left: 20px; width: 30px; height: 3px; background: #00b4d8; }
+
+        /* Layout 2: Split Diagonal */
+        .layout-2 .slide-bg { clip-path: polygon(0 0, 100% 0, 100% 55%, 0 70%); }
+        .layout-2 .slide-overlay { top: 50%; background: linear-gradient(to bottom, transparent 0%, #0d1b2a 20%); }
+        .layout-2 .slide-content { position: absolute; bottom: 0; left: 0; right: 0; padding: 20px; }
+        .layout-2 .slide-headline { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 1.05rem; color: #ffffff; line-height: 1.25; margin-bottom: 6px; }
+        .layout-2 .slide-body { font-family: 'Inter', sans-serif; font-weight: 400; font-size: 0.72rem; color: rgba(255,255,255,0.8); line-height: 1.45; }
+        .layout-2 .slide-deco { position: absolute; bottom: 12px; right: 20px; width: 40px; height: 40px; border: 2px solid #f4c542; border-radius: 50%; opacity: 0.3; }
+
+        /* Layout 3: Centered Quote */
+        .layout-3 .slide-bg { inset: 0; }
+        .layout-3 .slide-overlay { background: rgba(10,22,40,0.55); }
+        .layout-3 .slide-content { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 30px; text-align: center; }
+        .layout-3 .slide-headline { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.1rem; color: #ffffff; line-height: 1.35; margin-bottom: 10px; }
+        .layout-3 .slide-body { font-family: 'Inter', sans-serif; font-weight: 300; font-size: 0.72rem; color: rgba(255,255,255,0.75); line-height: 1.5; }
+        .layout-3 .slide-deco-top { position: absolute; top: 25%; left: 50%; transform: translateX(-50%); width: 50px; height: 1px; background: #f4c542; }
+        .layout-3 .slide-deco-bottom { position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%); width: 50px; height: 1px; background: #f4c542; }
+
+        /* Layout 4: Bold Typography */
+        .layout-4 { background: #0a1628 !important; }
+        .layout-4 .slide-bg { opacity: 0.12; }
+        .layout-4 .slide-overlay { background: none; }
+        .layout-4 .slide-content { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; padding: 24px; }
+        .layout-4 .slide-headline { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.35rem; color: #ffffff; line-height: 1.2; margin-bottom: 12px; text-transform: uppercase; }
+        .layout-4 .slide-headline .accent { color: #00b4d8; }
+        .layout-4 .slide-body { font-family: 'Inter', sans-serif; font-weight: 400; font-size: 0.75rem; color: rgba(255,255,255,0.7); line-height: 1.5; }
+        .layout-4 .slide-deco { position: absolute; top: 20px; right: 20px; width: 60px; height: 60px; border: 3px solid rgba(0,180,216,0.15); border-radius: 50%; }
+
+        /* Layout 5: Magazine Split */
+        .layout-5 .slide-bg { width: 45%; right: auto; }
+        .layout-5 .slide-overlay { left: 42%; background: linear-gradient(to right, transparent, #0d1b2a 15%); }
+        .layout-5 .slide-content { position: absolute; top: 0; bottom: 0; left: 48%; right: 0; display: flex; flex-direction: column; justify-content: center; padding: 16px; }
+        .layout-5 .slide-headline { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.92rem; color: #ffffff; line-height: 1.3; margin-bottom: 8px; }
+        .layout-5 .slide-body { font-family: 'Inter', sans-serif; font-weight: 400; font-size: 0.7rem; color: rgba(255,255,255,0.8); line-height: 1.5; }
+        .layout-5 .slide-deco { position: absolute; left: 46%; top: 15%; bottom: 15%; width: 1px; background: rgba(244,197,66,0.3); }
+
+        /* Layout 6: Gradient Overlay Full */
+        .layout-6 .slide-bg { inset: 0; }
+        .layout-6 .slide-overlay { background: linear-gradient(to bottom, transparent 30%, rgba(10,22,40,0.85) 70%, #0a1628 100%); }
+        .layout-6 .slide-content { position: absolute; bottom: 0; left: 0; right: 0; padding: 22px; }
+        .layout-6 .slide-headline { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1.05rem; color: #ffffff; line-height: 1.3; margin-bottom: 8px; text-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+        .layout-6 .slide-body { font-family: 'Inter', sans-serif; font-weight: 400; font-size: 0.72rem; color: rgba(255,255,255,0.85); line-height: 1.5; }
+        .layout-6 .slide-deco { position: absolute; bottom: 16px; right: 20px; width: 6px; height: 6px; background: #f4c542; border-radius: 50%; box-shadow: 12px 0 0 #00b4d8, 24px 0 0 #f4c542; }
+
+        /* Layout 7: Frame */
+        .layout-7 .slide-bg { inset: 14px; border-radius: 8px; }
+        .layout-7 .slide-overlay { inset: 14px; border-radius: 8px; background: linear-gradient(to bottom, transparent 40%, rgba(10,22,40,0.9) 80%); }
+        .layout-7 .slide-frame { position: absolute; inset: 10px; border: 2px solid rgba(0,180,216,0.4); border-radius: 10px; pointer-events: none; z-index: 5; }
+        .layout-7 .slide-content { position: absolute; bottom: 14px; left: 14px; right: 14px; padding: 16px; z-index: 6; }
+        .layout-7 .slide-headline { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.95rem; color: #ffffff; line-height: 1.3; margin-bottom: 6px; }
+        .layout-7 .slide-body { font-family: 'Inter', sans-serif; font-weight: 400; font-size: 0.7rem; color: rgba(255,255,255,0.8); line-height: 1.45; }
+
+        /* Layout 8: Minimal Card */
+        .layout-8 { background: #0d1b2a !important; }
+        .layout-8 .slide-bg { top: 20px; left: 50%; transform: translateX(-50%); width: 100px; height: 100px; border-radius: 16px; overflow: hidden; inset: auto; }
+        .layout-8 .slide-overlay { display: none; }
+        .layout-8 .slide-content { position: absolute; top: 140px; left: 0; right: 0; padding: 0 24px; text-align: center; }
+        .layout-8 .slide-headline { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.95rem; color: #ffffff; line-height: 1.3; margin-bottom: 10px; }
+        .layout-8 .slide-body { font-family: 'Inter', sans-serif; font-weight: 400; font-size: 0.72rem; color: rgba(255,255,255,0.7); line-height: 1.55; }
+        .layout-8 .slide-deco { position: absolute; top: 130px; left: 50%; transform: translateX(-50%); width: 40px; height: 2px; background: #00b4d8; }
+
+        /* Layout 9: Sidebar Accent */
+        .layout-9 .slide-bg { inset: 0; }
+        .layout-9 .slide-overlay { background: rgba(10,22,40,0.5); }
+        .layout-9 .slide-sidebar { position: absolute; left: 0; top: 0; bottom: 0; width: 6px; background: linear-gradient(to bottom, #00b4d8, #f4c542); z-index: 5; }
+        .layout-9 .slide-content { position: absolute; bottom: 0; left: 0; right: 0; padding: 20px 20px 20px 18px; z-index: 5; }
+        .layout-9 .slide-headline { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 1rem; color: #ffffff; line-height: 1.25; margin-bottom: 6px; border-left: 3px solid #00b4d8; padding-left: 10px; }
+        .layout-9 .slide-body { font-family: 'Inter', sans-serif; font-weight: 400; font-size: 0.72rem; color: rgba(255,255,255,0.85); line-height: 1.5; padding-left: 13px; }
+
+        /* Layout 10: Duotone */
+        .layout-10 .slide-bg { inset: 0; filter: grayscale(100%) contrast(1.1); }
+        .layout-10 .slide-overlay { background: linear-gradient(135deg, rgba(0,180,216,0.4), rgba(10,22,40,0.7)); mix-blend-mode: multiply; }
+        .layout-10 .slide-overlay2 { position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 40%, rgba(10,22,40,0.9) 80%); }
+        .layout-10 .slide-content { position: absolute; bottom: 0; left: 0; right: 0; padding: 22px; z-index: 5; }
+        .layout-10 .slide-headline { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 1.05rem; color: #ffffff; line-height: 1.25; margin-bottom: 6px; }
+        .layout-10 .slide-body { font-family: 'Inter', sans-serif; font-weight: 400; font-size: 0.72rem; color: rgba(255,255,255,0.85); line-height: 1.5; }
+        .layout-10 .slide-deco { position: absolute; top: 15px; right: 15px; width: 35px; height: 35px; border: 2px solid rgba(244,197,66,0.5); transform: rotate(45deg); z-index: 5; }
+
+        /* ==================== COVER SPECIFIC ==================== */
+        .slide-card.is-cover .slide-content { bottom: 0 !important; top: auto !important; display: flex; flex-direction: column; justify-content: flex-end; }
+
+        /* ==================== CAPTION SECTION ==================== */
+        .caption-section { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border); }
+        .caption-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+        .caption-title { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent); }
+        .caption-toggles { display: flex; gap: 12px; }
+        .caption-toggle { display: flex; align-items: center; gap: 5px; font-size: 0.7rem; color: var(--text-muted); cursor: pointer; }
+        .caption-toggle input[type="checkbox"] { accent-color: var(--accent); }
+        .caption-text { font-size: 0.82rem; color: var(--text-primary); line-height: 1.6; white-space: pre-wrap; background: var(--bg-secondary); padding: 16px; border-radius: var(--radius-sm); position: relative; }
+        .btn-copy-caption { position: absolute; top: 8px; right: 8px; padding: 5px 12px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg-card); color: var(--text-muted); font-size: 0.7rem; font-weight: 600; cursor: pointer; }
+        .btn-copy-caption:hover { border-color: var(--accent); color: var(--accent); }
+
+        /* ==================== IMAGE SEARCH MODAL ==================== */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; }
+        .modal-overlay.active { display: flex; }
+        .modal-box { background: var(--bg-card); border-radius: var(--radius-lg); width: 90%; max-width: 700px; max-height: 80vh; overflow: hidden; display: flex; flex-direction: column; }
+        .modal-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+        .modal-header input { flex: 1; padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-primary); color: var(--text-primary); font-size: 0.85rem; outline: none; }
+        .modal-header input:focus { border-color: var(--accent); }
+        .modal-header button { padding: 10px 18px; background: var(--accent); color: white; border: none; border-radius: var(--radius-sm); font-size: 0.8rem; font-weight: 600; cursor: pointer; }
+        .modal-close { padding: 8px; background: none; border: none; cursor: pointer; color: var(--text-muted); font-size: 1.2rem; }
+        .modal-body { padding: 16px; overflow-y: auto; flex: 1; }
+        .img-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        @media (max-width: 500px) { .img-grid { grid-template-columns: repeat(2, 1fr); } }
+        .img-grid-item { aspect-ratio: 4/3; border-radius: 8px; overflow: hidden; cursor: pointer; position: relative; border: 2px solid transparent; transition: all 0.15s; }
+        .img-grid-item:hover { border-color: var(--accent); transform: scale(1.02); }
+        .img-grid-item img { width: 100%; height: 100%; object-fit: cover; }
+        .img-grid-item .img-credit { position: absolute; bottom: 0; left: 0; right: 0; padding: 3px 6px; background: rgba(0,0,0,0.6); color: white; font-size: 0.55rem; }
+        .modal-footer { padding: 12px 20px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .modal-footer .page-info { font-size: 0.75rem; color: var(--text-muted); }
+        .modal-footer button { padding: 7px 16px; border: 1px solid var(--border); border-radius: 6px; background: transparent; color: var(--text-primary); font-size: 0.75rem; cursor: pointer; }
+        .modal-footer button:hover { border-color: var(--accent); }
+        .modal-footer button:disabled { opacity: 0.3; cursor: not-allowed; }
+
+        /* Upload tab in modal */
+        .modal-tabs { display: flex; border-bottom: 1px solid var(--border); }
+        .modal-tab { padding: 10px 20px; font-size: 0.78rem; font-weight: 600; color: var(--text-muted); border: none; background: none; cursor: pointer; border-bottom: 2px solid transparent; }
+        .modal-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+        .upload-area { border: 2px dashed var(--border); border-radius: 12px; padding: 40px; text-align: center; cursor: pointer; transition: border-color 0.2s; }
+        .upload-area:hover { border-color: var(--accent); }
+        .upload-area p { font-size: 0.82rem; color: var(--text-muted); margin-top: 8px; }
+
+        /* ==================== EDIT TOOLBAR ==================== */
+        .edit-toolbar { display: none; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 12px; margin-top: 8px; gap: 8px; flex-wrap: wrap; align-items: center; }
+        .edit-toolbar.active { display: flex; }
+        .edit-toolbar .edit-group { display: flex; align-items: center; gap: 4px; padding-right: 8px; border-right: 1px solid var(--border); }
+        .edit-toolbar .edit-group:last-child { border-right: none; }
+        .edit-toolbar label { font-size: 0.65rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; }
+        .edit-toolbar input[type="color"] { width: 24px; height: 24px; border: 1px solid var(--border); border-radius: 4px; cursor: pointer; padding: 0; }
+        .edit-toolbar select { padding: 4px 8px; border: 1px solid var(--border); border-radius: 4px; background: var(--bg-primary); color: var(--text-primary); font-size: 0.72rem; }
+        .edit-toolbar input[type="range"] { width: 60px; }
+
+        /* ==================== STATUS ==================== */
+        .status-bar { display: none; padding: 12px 16px; border-radius: var(--radius-sm); background: var(--bg-secondary); margin-bottom: 16px; font-size: 0.8rem; color: var(--text-muted); text-align: center; }
+        .status-bar.active { display: block; }
+
+        /* ==================== LOGO CONFIG ==================== */
+        .logo-config { display: flex; align-items: center; gap: 12px; margin-top: 8px; }
+        .logo-config label { font-size: 0.72rem; color: var(--text-muted); }
+        .logo-config select { padding: 4px 10px; border: 1px solid var(--border); border-radius: 4px; background: var(--bg-primary); color: var(--text-primary); font-size: 0.75rem; }
+        .switch { position: relative; width: 36px; height: 20px; }
+        .switch input { display: none; }
+        .switch .slider { position: absolute; inset: 0; background: var(--border); border-radius: 10px; cursor: pointer; transition: 0.2s; }
+        .switch .slider::before { content: ''; position: absolute; width: 16px; height: 16px; left: 2px; bottom: 2px; background: white; border-radius: 50%; transition: 0.2s; }
+        .switch input:checked + .slider { background: var(--accent); }
+        .switch input:checked + .slider::before { transform: translateX(16px); }
+
+        /* Clearfix */
+        .clearfix::after { content: ''; display: table; clear: both; }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Hero -->
+        <section class="hero">
+            <h1 class="hero-title">Posts</h1>
+            <p class="hero-subtitle">Crie posts e carrosseis profissionais para redes sociais com IA</p>
+        </section>
+
+        <!-- Config Card -->
+        <div class="card">
+            <div class="config-row">
+                <div class="field-group">
+                    <span class="field-label">Slides</span>
+                    <input type="number" id="numSlides" class="field-input" value="5" min="1" max="15" style="width:80px">
+                </div>
+            </div>
+
+            <!-- Suggestions -->
+            <div class="suggestions">
+                <button class="chip" onclick="usarSugestao('5 dicas de')">5 dicas de...</button>
+                <button class="chip" onclick="usarSugestao('Como fazer')">Como fazer...</button>
+                <button class="chip" onclick="usarSugestao('Antes e depois')">Antes e depois</button>
+                <button class="chip" onclick="usarSugestao('Mito vs Verdade')">Mito vs Verdade</button>
+                <button class="chip" onclick="usarSugestao('Passo a passo')">Passo a passo</button>
+                <button class="chip" onclick="usarSugestao('O que ninguem te conta sobre')">O que ninguem te conta...</button>
+                <button class="chip" onclick="usarSugestao('Erros que voce comete')">Erros que voce comete</button>
+                <button class="chip" onclick="usarSugestao('Guia completo')">Guia completo</button>
+            </div>
+
+            <!-- Advanced -->
+            <button class="accordion-trigger" onclick="toggleAccordion(this)">
+                <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                Avancado
+                <svg viewBox="0 0 24 24" style="margin-left:auto"><path d="M7 10l5 5 5-5z"/></svg>
+            </button>
+            <div class="accordion-body" id="advancedPanel">
+                <!-- Perfil -->
+                <div class="card-title" style="margin-top:0">Perfil</div>
+                <div class="perfil-row">
+                    <div class="perfil-foto-wrap" onclick="document.getElementById('perfilFotoInput').click()" id="perfilFotoPreview">
+                        <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                    </div>
+                    <input type="file" id="perfilFotoInput" accept="image/*" style="display:none" onchange="carregarFotoPerfil(this)">
+                    <div style="flex:1;display:flex;gap:8px">
+                        <input type="text" id="perfilNome" class="field-input" placeholder="Nome / Marca" style="flex:1">
+                        <input type="text" id="perfilArroba" class="field-input" placeholder="@perfil" style="width:120px">
+                    </div>
+                </div>
+
+                <div class="adv-grid">
+                    <!-- Cores -->
+                    <div class="field-group">
+                        <span class="field-label">Cor Principal</span>
+                        <div style="display:flex;gap:8px;align-items:center">
+                            <input type="color" id="corPrincipal" value="#00b4d8" style="width:36px;height:32px;border:1px solid var(--border);border-radius:4px;cursor:pointer">
+                            <span style="font-size:0.72rem;color:var(--text-muted)" id="corPrincipalHex">#00b4d8</span>
+                        </div>
+                    </div>
+                    <div class="field-group">
+                        <span class="field-label">Cor Secundaria</span>
+                        <div style="display:flex;gap:8px;align-items:center">
+                            <input type="color" id="corSecundaria" value="#f4c542" style="width:36px;height:32px;border:1px solid var(--border);border-radius:4px;cursor:pointer">
+                            <span style="font-size:0.72rem;color:var(--text-muted)" id="corSecundariaHex">#f4c542</span>
+                        </div>
+                    </div>
+
+                    <!-- Logo -->
+                    <div class="field-group">
+                        <span class="field-label">Logo nos slides</span>
+                        <div class="logo-config">
+                            <label class="switch">
+                                <input type="checkbox" id="logoAtivo">
+                                <span class="slider"></span>
+                            </label>
+                            <select id="logoPosicao" class="field-select" style="width:auto;padding:6px 10px;font-size:0.75rem">
+                                <option value="bottom-right">Inferior direito</option>
+                                <option value="bottom-left">Inferior esquerdo</option>
+                                <option value="top-right">Superior direito</option>
+                                <option value="top-left">Superior esquerdo</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input Section -->
+        <div class="card">
+            <div class="card-title">
+                <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                Tema e conteudo
+            </div>
+            <div class="field-group" style="margin-bottom:12px">
+                <span class="field-label">Tema</span>
+                <input type="text" id="inputTema" class="field-input" placeholder="Ex: 5 dicas de produtividade para empreendedores">
+            </div>
+            <div class="field-group" style="margin-bottom:16px">
+                <span class="field-label">Conteudo (opcional)</span>
+                <textarea id="inputConteudo" class="field-textarea" placeholder="Cole aqui o conteudo base para gerar os slides, ou descreva o que quer no carrossel..."></textarea>
+            </div>
+            <div class="clearfix">
+                <button class="btn-generate" id="btnGenerate" onclick="gerarPost()">
+                    <svg viewBox="0 0 24 24"><path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/></svg>
+                    Gerar slides
+                </button>
+            </div>
+        </div>
+
+        <!-- Status -->
+        <div class="status-bar" id="statusBar"></div>
+
+        <!-- Preview Section -->
+        <div id="previewSection" class="card" style="display:none">
+            <!-- Action bar -->
+            <div class="action-bar">
+                <div class="action-bar-title">
+                    <svg viewBox="0 0 24 24"><path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/></svg>
+                    Seus slides
+                </div>
+                <button class="btn-action primary" onclick="refazerDesign()">
+                    <svg viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+                    Refazer design
+                </button>
+                <button class="btn-action" onclick="baixarTodosSlides()">
+                    <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                    Baixar slides
+                </button>
+                <button class="btn-action" onclick="baixarZIP()">
+                    <svg viewBox="0 0 24 24"><path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-6 10H8v-2h6v2zm4-4H8v-2h10v2z"/></svg>
+                    ZIP
+                </button>
+                <button class="btn-action" onclick="copiarLegenda()">
+                    <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                    Copiar legenda
+                </button>
+            </div>
+
+            <!-- Slides -->
+            <div class="slides-scroll" id="slidesContainer"></div>
+
+            <!-- Caption -->
+            <div class="caption-section">
+                <div class="caption-header">
+                    <span class="caption-title">Legenda sugerida</span>
+                    <div class="caption-toggles">
+                        <label class="caption-toggle"><input type="checkbox" id="toggleEmojis" checked onchange="atualizarLegenda()"> Emojis</label>
+                        <label class="caption-toggle"><input type="checkbox" id="toggleHashtags" checked onchange="atualizarLegenda()"> Hashtags</label>
+                        <label class="caption-toggle"><input type="checkbox" id="toggleCTA" checked onchange="atualizarLegenda()"> CTA</label>
+                    </div>
+                </div>
+                <div class="caption-text" id="captionText">
+                    <button class="btn-copy-caption" onclick="copiarLegenda()">Copiar</button>
+                    <span id="captionContent"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Search Modal -->
+    <div class="modal-overlay" id="imageModal">
+        <div class="modal-box">
+            <div class="modal-tabs">
+                <button class="modal-tab active" onclick="switchModalTab('search',this)">Buscar</button>
+                <button class="modal-tab" onclick="switchModalTab('upload',this)">Upload</button>
+            </div>
+            <div class="modal-header" id="modalSearchHeader">
+                <input type="text" id="modalSearchInput" placeholder="Buscar imagens no Pixabay..." onkeydown="if(event.key==='Enter')buscarImagens()">
+                <button onclick="buscarImagens()">Buscar</button>
+                <button class="modal-close" onclick="fecharModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <div class="img-grid" id="imgGrid"></div>
+                <div id="uploadArea" style="display:none">
+                    <div class="upload-area" onclick="document.getElementById('uploadImgInput').click()">
+                        <svg viewBox="0 0 24 24" width="40" height="40" fill="var(--text-muted)"><path d="M19 7v2.99s-1.99.01-2 0V7h-3s.01-1.99 0-2h3V2h2v3h3v2h-3zm-3 4V8h-3V5H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-8h-3zM5 19l3-4 2 3 3-4 4 5H5z"/></svg>
+                        <p>Clique para enviar uma imagem</p>
+                    </div>
+                    <input type="file" id="uploadImgInput" accept="image/*" style="display:none" onchange="uploadImagem(this)">
+                </div>
+            </div>
+            <div class="modal-footer" id="modalFooter">
+                <span class="page-info" id="pageInfo"></span>
+                <div style="display:flex;gap:8px">
+                    <button id="btnPrevPage" onclick="buscarImagens(currentPage-1)" disabled>&laquo; Anterior</button>
+                    <button id="btnNextPage" onclick="buscarImagens(currentPage+1)">Proxima &raquo;</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden render container for downloads -->
+    <div id="renderContainer" style="position:fixed;left:-9999px;top:0;z-index:-1;"></div>
+
+    <script src="../js/common.js"></script>
+    <script src="../js/config.js"></script>
+    <script>
+        renderHeader('posts');
+
+        // ==================== GLOBALS ====================
+        const PIXABAY_KEY = localStorage.getItem('pixabay_api_key') || '47069558-0a93cb2ea398ad38894153ef5';
+        let dadosGerados = null;
+        let currentLayoutIndex = 0;
+        let editingSlideIndex = -1;
+        let currentPage = 1;
+        let modalCallback = null;
+        let perfilFotoBase64 = localStorage.getItem('post_perfil_foto') || '';
+
+        // Restaurar perfil
+        document.getElementById('perfilNome').value = localStorage.getItem('post_perfil_nome') || '';
+        document.getElementById('perfilArroba').value = localStorage.getItem('post_perfil_arroba') || '';
+        if (perfilFotoBase64) {
+            document.getElementById('perfilFotoPreview').innerHTML = `<img src="${perfilFotoBase64}" alt="Foto">`;
+        }
+
+        // Salvar perfil ao mudar
+        document.getElementById('perfilNome').addEventListener('change', function() { localStorage.setItem('post_perfil_nome', this.value); });
+        document.getElementById('perfilArroba').addEventListener('change', function() { localStorage.setItem('post_perfil_arroba', this.value); });
+        document.getElementById('corPrincipal').addEventListener('input', function() { document.getElementById('corPrincipalHex').textContent = this.value; });
+        document.getElementById('corSecundaria').addEventListener('input', function() { document.getElementById('corSecundariaHex').textContent = this.value; });
+
+        // ==================== UTILS ====================
+        function toggleAccordion(btn) {
+            btn.classList.toggle('open');
+            const body = btn.nextElementSibling;
+            body.classList.toggle('open');
+        }
+
+        function usarSugestao(texto) {
+            const input = document.getElementById('inputTema');
+            input.value = texto;
+            input.focus();
+            input.setSelectionRange(texto.length, texto.length);
+        }
+
+        function showStatus(msg) {
+            const bar = document.getElementById('statusBar');
+            bar.textContent = msg;
+            bar.classList.add('active');
+        }
+        function hideStatus() {
+            document.getElementById('statusBar').classList.remove('active');
+        }
+
+        function carregarFotoPerfil(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    perfilFotoBase64 = e.target.result;
+                    localStorage.setItem('post_perfil_foto', perfilFotoBase64);
+                    document.getElementById('perfilFotoPreview').innerHTML = `<img src="${perfilFotoBase64}" alt="Foto">`;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // ==================== PIXABAY API ====================
+        async function buscarPixabay(query, page = 1, perPage = 18) {
+            try {
+                const url = `https://pixabay.com/api/?key=${PIXABAY_KEY}&q=${encodeURIComponent(query)}&image_type=photo&per_page=${perPage}&page=${page}&safesearch=true`;
+                const resp = await fetch(url);
+                if (!resp.ok) return { hits: [], totalHits: 0 };
+                return await resp.json();
+            } catch(e) {
+                console.warn('Pixabay erro:', e);
+                return { hits: [], totalHits: 0 };
+            }
+        }
+
+        async function buscarImagemParaSlide(query) {
+            const data = await buscarPixabay(query, 1, 5);
+            if (data.hits && data.hits.length > 0) {
+                const pick = data.hits[Math.floor(Math.random() * Math.min(data.hits.length, 3))];
+                return pick.largeImageURL || pick.webformatURL;
+            }
+            return '';
+        }
+
+        // ==================== AI GENERATION ====================
+        async function gerarPost() {
+            const tema = document.getElementById('inputTema').value.trim();
+            const conteudo = document.getElementById('inputConteudo').value.trim();
+            const numSlides = parseInt(document.getElementById('numSlides').value) || 5;
+
+            if (!tema && !conteudo) {
+                mostrarNotificacao('Digite um tema ou conteudo', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('btnGenerate');
+            btn.disabled = true;
+            btn.innerHTML = '<svg viewBox="0 0 24 24" style="animation:spin 1s linear infinite"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg> Gerando...';
+            showStatus('Gerando conteudo com IA...');
+
+            const systemPrompt = `Voce e um estrategista de conteudo e designer grafico especialista em posts para Instagram. Crie conteudo profissional, envolvente e visualmente pensado.
+Sempre responda em portugues brasileiro com acentos corretos.
+Retorne APENAS o JSON solicitado, sem explicacoes ou markdown.`;
+
+            let userPrompt = '';
+            if (conteudo && !tema) {
+                // Modo 3: colar texto
+                userPrompt = `Transforme o texto abaixo em um carrossel de ${numSlides} slides para Instagram:
+
+TEXTO:
+${conteudo}`;
+            } else if (tema && conteudo) {
+                // Modo 2: tema + conteudo
+                userPrompt = `Crie um carrossel de ${numSlides} slides para Instagram sobre:
+TEMA: ${tema}
+CONTEUDO BASE: ${conteudo}`;
+            } else {
+                // Modo 1: so tema
+                userPrompt = `Crie um carrossel de ${numSlides} slides para Instagram sobre: ${tema}`;
+            }
+
+            userPrompt += `
+
+REGRAS:
+1. Slide 1 e SEMPRE a CAPA com titulo envolvente (maximo 8 palavras) + subtitulo curto
+2. Slides 2 a ${numSlides} sao conteudo com começo, meio e fim logico
+3. Cada slide deve manter o MESMO ASSUNTO, com progresso na informacao
+4. headline: titulo curto e impactante (maximo 6 palavras)
+5. body: texto explicativo direto, maximo 3 linhas curtas
+6. busca_imagem: 2-4 palavras em INGLES para buscar foto no Pixabay RELACIONADA ao texto daquele slide
+7. A numeracao dos slides internos e opcional - use quando fizer sentido (listas, passos, dicas)
+
+Retorne EXATAMENTE este JSON:
+{
+    "slides": [
+        {
+            "numero": 1,
+            "tipo": "capa",
+            "headline": "Titulo da Capa Aqui",
+            "body": "Subtitulo curto e envolvente",
+            "busca_imagem": "productivity workspace minimal"
+        },
+        {
+            "numero": 2,
+            "tipo": "conteudo",
+            "headline": "Primeiro Ponto",
+            "body": "Texto explicativo curto e direto ao ponto. Maximo 3 linhas.",
+            "busca_imagem": "coffee morning routine"
+        }
+    ],
+    "legenda": "Texto completo da legenda para Instagram com emojis",
+    "hashtags": "#hashtag1 #hashtag2 #hashtag3 #hashtag4 #hashtag5 #hashtag6 #hashtag7 #hashtag8 #hashtag9 #hashtag10",
+    "cta_legenda": "Salve este post e compartilhe com alguem que precisa!"
+}`;
+
+            try {
+                const resposta = await chamarAPI(systemPrompt, userPrompt);
+                let jsonLimpo = resposta.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+                const jsonMatch = jsonLimpo.match(/\{[\s\S]*\}/);
+                if (jsonMatch) jsonLimpo = jsonMatch[0];
+
+                dadosGerados = JSON.parse(jsonLimpo);
+
+                showStatus('Buscando imagens no Pixabay...');
+
+                // Buscar imagens para cada slide
+                const buscas = dadosGerados.slides.map(async (slide) => {
+                    if (slide.busca_imagem) {
+                        slide.bgImage = await buscarImagemParaSlide(slide.busca_imagem);
+                    }
+                });
+                await Promise.allSettled(buscas);
+
+                hideStatus();
+                renderizarSlides();
+                document.getElementById('previewSection').style.display = 'block';
+                atualizarLegenda();
+
+            } catch(error) {
+                hideStatus();
+                mostrarNotificacao('Erro ao gerar: ' + error.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/></svg> Gerar slides';
+            }
+        }
+
+        // ==================== RENDER SLIDES ====================
+        function renderizarSlides() {
+            if (!dadosGerados) return;
+            const container = document.getElementById('slidesContainer');
+            const layoutNum = (currentLayoutIndex % 10) + 1;
+            const perfilNome = document.getElementById('perfilNome').value.trim();
+            const perfilArroba = document.getElementById('perfilArroba').value.trim();
+            const logoAtivo = document.getElementById('logoAtivo').checked;
+            const logoPosicao = document.getElementById('logoPosicao').value;
+
+            let html = '';
+            dadosGerados.slides.forEach((slide, index) => {
+                const isCapa = slide.tipo === 'capa';
+                const bgStyle = slide.bgImage ? `background-image: url('${slide.bgImage}'); background-size: cover; background-position: center;` : '';
+                const badge = isCapa ? '<div class="slide-badge">CAPA</div>' : '';
+
+                // Logo HTML
+                let logoHTML = '';
+                if (logoAtivo && (perfilNome || perfilArroba)) {
+                    const posMap = { 'bottom-right': 'bottom:10px;right:12px;', 'bottom-left': 'bottom:10px;left:12px;', 'top-right': 'top:10px;right:12px;', 'top-left': 'top:10px;left:12px;' };
+                    logoHTML = `<div style="position:absolute;${posMap[logoPosicao]}z-index:15;display:flex;align-items:center;gap:5px;font-size:0.55rem;color:rgba(255,255,255,0.7);">
+                        ${perfilFotoBase64 ? `<img src="${perfilFotoBase64}" style="width:16px;height:16px;border-radius:50%;object-fit:cover;">` : ''}
+                        <span>${perfilArroba || perfilNome}</span>
+                    </div>`;
+                }
+
+                // Perfil on cover
+                let perfilHTML = '';
+                if (isCapa && (perfilNome || perfilArroba || perfilFotoBase64)) {
+                    perfilHTML = `<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                        ${perfilFotoBase64 ? `<img src="${perfilFotoBase64}" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:1.5px solid rgba(255,255,255,0.3);">` : ''}
+                        <div>
+                            ${perfilNome ? `<div style="font-size:0.65rem;font-weight:600;color:white;">${perfilNome}</div>` : ''}
+                            ${perfilArroba ? `<div style="font-size:0.58rem;color:rgba(255,255,255,0.6);">${perfilArroba}</div>` : ''}
+                        </div>
+                    </div>`;
+                }
+
+                // Layout-specific extras
+                let extras = '';
+                if (layoutNum === 3) extras = '<div class="slide-deco-top"></div><div class="slide-deco-bottom"></div>';
+                else if (layoutNum === 7) extras = '<div class="slide-frame"></div>';
+                else if (layoutNum === 9) extras = '<div class="slide-sidebar"></div>';
+                else if (layoutNum === 10) extras = '<div class="slide-overlay2"></div>';
+                else if ([1,2,4,5,6,8].includes(layoutNum)) extras = '<div class="slide-deco"></div>';
+
+                html += `
+                <div class="slide-wrap" draggable="true" data-index="${index}" ondragstart="dragStart(event)" ondragover="dragOver(event)" ondrop="dropSlide(event)" ondragend="dragEnd(event)">
+                    <div class="slide-card layout-${layoutNum} ${isCapa ? 'is-cover' : ''}" id="slide-${index}">
+                        <div class="slide-bg" style="${bgStyle}"></div>
+                        <div class="slide-overlay"></div>
+                        ${extras}
+                        <div class="slide-number">${index + 1}</div>
+                        ${badge}
+                        ${logoHTML}
+                        <div class="slide-content">
+                            ${isCapa ? perfilHTML : ''}
+                            <div class="slide-headline" contenteditable="false">${slide.headline || ''}</div>
+                            <div class="slide-body" contenteditable="false">${slide.body || ''}</div>
+                        </div>
+                    </div>
+                    <div class="slide-edit-overlay">
+                        <button class="slide-edit-btn" onclick="editarSlide(${index})">
+                            <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                            Editar
+                        </button>
+                        <button class="slide-edit-btn" onclick="trocarImagem(${index})">
+                            <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+                            Imagem
+                        </button>
+                        <button class="slide-edit-btn" onclick="baixarSlide(${index})">
+                            <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                        </button>
+                    </div>
+                    <div class="edit-toolbar" id="toolbar-${index}">
+                        <div class="edit-group">
+                            <label>Fonte</label>
+                            <select onchange="mudarFonte(${index},this.value)">
+                                <option value="Montserrat">Montserrat</option>
+                                <option value="Inter">Inter</option>
+                                <option value="Poppins">Poppins</option>
+                                <option value="Playfair Display">Playfair</option>
+                            </select>
+                        </div>
+                        <div class="edit-group">
+                            <label>Cor texto</label>
+                            <input type="color" value="#ffffff" onchange="mudarCorTexto(${index},this.value)">
+                        </div>
+                        <div class="edit-group">
+                            <label>Tamanho</label>
+                            <input type="range" min="10" max="24" value="16" oninput="mudarTamanho(${index},this.value)">
+                        </div>
+                    </div>
+                </div>`;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // ==================== EDIT FUNCTIONS ====================
+        function editarSlide(index) {
+            // Toggle toolbar
+            const toolbar = document.getElementById(`toolbar-${index}`);
+            const isActive = toolbar.classList.contains('active');
+
+            // Close all toolbars
+            document.querySelectorAll('.edit-toolbar').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.slide-headline, .slide-body').forEach(el => el.contentEditable = 'false');
+
+            if (!isActive) {
+                toolbar.classList.add('active');
+                // Enable contenteditable on this slide
+                const card = document.getElementById(`slide-${index}`);
+                card.querySelectorAll('.slide-headline, .slide-body').forEach(el => {
+                    el.contentEditable = 'true';
+                    el.style.cursor = 'text';
+                    el.style.outline = '1px dashed rgba(0,180,216,0.5)';
+                    el.style.borderRadius = '4px';
+                });
+                // Save on blur
+                card.querySelectorAll('.slide-headline').forEach(el => {
+                    el.addEventListener('blur', () => { dadosGerados.slides[index].headline = el.textContent; }, { once: true });
+                });
+                card.querySelectorAll('.slide-body').forEach(el => {
+                    el.addEventListener('blur', () => { dadosGerados.slides[index].body = el.textContent; }, { once: true });
+                });
+                editingSlideIndex = index;
+            } else {
+                editingSlideIndex = -1;
+                renderizarSlides(); // re-render to clean up
+            }
+        }
+
+        function mudarFonte(index, font) {
+            const card = document.getElementById(`slide-${index}`);
+            card.querySelectorAll('.slide-headline').forEach(el => el.style.fontFamily = `'${font}', sans-serif`);
+        }
+
+        function mudarCorTexto(index, cor) {
+            const card = document.getElementById(`slide-${index}`);
+            card.querySelectorAll('.slide-headline, .slide-body').forEach(el => el.style.color = cor);
+        }
+
+        function mudarTamanho(index, size) {
+            const card = document.getElementById(`slide-${index}`);
+            card.querySelectorAll('.slide-headline').forEach(el => el.style.fontSize = size + 'px');
+        }
+
+        function trocarImagem(index) {
+            editingSlideIndex = index;
+            modalCallback = function(imgUrl) {
+                dadosGerados.slides[index].bgImage = imgUrl;
+                renderizarSlides();
+            };
+            abrirModal(dadosGerados.slides[index].busca_imagem || '');
+        }
+
+        // ==================== REFAZER DESIGN ====================
+        async function refazerDesign() {
+            currentLayoutIndex++;
+            showStatus(`Layout ${(currentLayoutIndex % 10) + 1} de 10`);
+
+            // Re-buscar imagens
+            const buscas = dadosGerados.slides.map(async (slide) => {
+                if (slide.busca_imagem) {
+                    slide.bgImage = await buscarImagemParaSlide(slide.busca_imagem);
+                }
+            });
+            await Promise.allSettled(buscas);
+
+            renderizarSlides();
+            setTimeout(hideStatus, 1500);
+            mostrarNotificacao(`Design ${(currentLayoutIndex % 10) + 1} de 10`, 'success');
+        }
+
+        // ==================== DRAG & DROP ====================
+        let draggedIndex = null;
+        function dragStart(e) {
+            draggedIndex = parseInt(e.currentTarget.dataset.index);
+            e.currentTarget.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        }
+        function dragOver(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('drag-over');
+        }
+        function dropSlide(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('drag-over');
+            const targetIndex = parseInt(e.currentTarget.dataset.index);
+            if (draggedIndex !== null && draggedIndex !== targetIndex) {
+                const slides = dadosGerados.slides;
+                const [moved] = slides.splice(draggedIndex, 1);
+                slides.splice(targetIndex, 0, moved);
+                // Re-number
+                slides.forEach((s, i) => s.numero = i + 1);
+                renderizarSlides();
+            }
+        }
+        function dragEnd(e) {
+            e.currentTarget.classList.remove('dragging');
+            document.querySelectorAll('.slide-wrap').forEach(el => el.classList.remove('drag-over'));
+            draggedIndex = null;
+        }
+
+        // ==================== IMAGE MODAL ====================
+        function abrirModal(query) {
+            document.getElementById('imageModal').classList.add('active');
+            document.getElementById('modalSearchInput').value = query || '';
+            if (query) buscarImagens(1);
+        }
+
+        function fecharModal() {
+            document.getElementById('imageModal').classList.remove('active');
+            modalCallback = null;
+        }
+
+        function switchModalTab(tab, btn) {
+            document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+            if (tab === 'search') {
+                document.getElementById('modalSearchHeader').style.display = 'flex';
+                document.getElementById('imgGrid').style.display = 'grid';
+                document.getElementById('uploadArea').style.display = 'none';
+                document.getElementById('modalFooter').style.display = 'flex';
+            } else {
+                document.getElementById('modalSearchHeader').style.display = 'none';
+                document.getElementById('imgGrid').style.display = 'none';
+                document.getElementById('uploadArea').style.display = 'block';
+                document.getElementById('modalFooter').style.display = 'none';
+            }
+        }
+
+        async function buscarImagens(page = 1) {
+            const query = document.getElementById('modalSearchInput').value.trim();
+            if (!query) return;
+            currentPage = page;
+            document.getElementById('imgGrid').innerHTML = '<p style="text-align:center;color:var(--text-muted);grid-column:1/-1;padding:20px">Buscando...</p>';
+
+            const data = await buscarPixabay(query, page, 18);
+            const grid = document.getElementById('imgGrid');
+            const totalPages = Math.ceil(data.totalHits / 18);
+
+            if (!data.hits || data.hits.length === 0) {
+                grid.innerHTML = '<p style="text-align:center;color:var(--text-muted);grid-column:1/-1;padding:20px">Nenhuma imagem encontrada</p>';
+                return;
+            }
+
+            grid.innerHTML = data.hits.map(hit => `
+                <div class="img-grid-item" onclick="selecionarImagem('${hit.largeImageURL || hit.webformatURL}')">
+                    <img src="${hit.webformatURL}" alt="${hit.tags}" loading="lazy">
+                    <div class="img-credit">${hit.user} - Pixabay</div>
+                </div>
+            `).join('');
+
+            document.getElementById('pageInfo').textContent = `Pagina ${page} de ${totalPages} (${data.totalHits} imagens)`;
+            document.getElementById('btnPrevPage').disabled = page <= 1;
+            document.getElementById('btnNextPage').disabled = page >= totalPages;
+        }
+
+        function selecionarImagem(url) {
+            if (modalCallback) {
+                modalCallback(url);
+            }
+            fecharModal();
+        }
+
+        function uploadImagem(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    if (modalCallback) {
+                        modalCallback(e.target.result);
+                    }
+                    fecharModal();
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // ==================== CAPTION ====================
+        function atualizarLegenda() {
+            if (!dadosGerados) return;
+            const showEmojis = document.getElementById('toggleEmojis').checked;
+            const showHashtags = document.getElementById('toggleHashtags').checked;
+            const showCTA = document.getElementById('toggleCTA').checked;
+
+            let legenda = dadosGerados.legenda || '';
+            if (!showEmojis) {
+                legenda = legenda.replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F1E0}-\u{1F1FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{FE00}-\u{FE0F}\u{1F900}-\u{1F9FF}\u{200D}\u{20E3}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}]/gu, '');
+            }
+            if (showCTA && dadosGerados.cta_legenda) {
+                legenda += '\n\n' + dadosGerados.cta_legenda;
+            }
+            if (showHashtags && dadosGerados.hashtags) {
+                legenda += '\n\n' + dadosGerados.hashtags;
+            }
+
+            document.getElementById('captionContent').textContent = legenda.trim();
+        }
+
+        function copiarLegenda() {
+            const texto = document.getElementById('captionContent').textContent;
+            copiarTexto(texto);
+        }
+
+        // ==================== DOWNLOAD ====================
+        async function renderSlideFullRes(index) {
+            const slide = dadosGerados.slides[index];
+            const layoutNum = (currentLayoutIndex % 10) + 1;
+            const container = document.getElementById('renderContainer');
+
+            // Clone slide at full resolution
+            const original = document.getElementById(`slide-${index}`);
+            const clone = original.cloneNode(true);
+            clone.style.width = '1080px';
+            clone.style.height = '1350px';
+            clone.style.borderRadius = '0';
+            clone.style.transform = 'scale(1)';
+
+            // Scale up fonts
+            clone.querySelectorAll('.slide-headline').forEach(el => {
+                const currentSize = parseFloat(window.getComputedStyle(original.querySelector('.slide-headline')).fontSize);
+                el.style.fontSize = (currentSize * 4) + 'px';
+            });
+            clone.querySelectorAll('.slide-body').forEach(el => {
+                const currentSize = parseFloat(window.getComputedStyle(original.querySelector('.slide-body')).fontSize);
+                el.style.fontSize = (currentSize * 4) + 'px';
+            });
+            clone.querySelectorAll('.slide-content').forEach(el => {
+                el.style.padding = '80px';
+            });
+            clone.querySelectorAll('.slide-number').forEach(el => {
+                el.style.width = '96px';
+                el.style.height = '96px';
+                el.style.fontSize = '2.6rem';
+                el.style.top = '40px';
+                el.style.left = '40px';
+            });
+            clone.querySelectorAll('.slide-badge').forEach(el => {
+                el.style.fontSize = '2.4rem';
+                el.style.padding = '12px 40px';
+                el.style.top = '40px';
+                el.style.right = '40px';
+            });
+
+            // Remove edit overlay
+            clone.querySelectorAll('.slide-edit-overlay').forEach(el => el.remove());
+
+            container.innerHTML = '';
+            container.appendChild(clone);
+
+            const canvas = await html2canvas(clone, {
+                width: 1080,
+                height: 1350,
+                scale: 1,
+                useCORS: true,
+                allowTaint: true,
+                backgroundColor: '#0a1628'
+            });
+
+            container.innerHTML = '';
+            return canvas;
+        }
+
+        async function baixarSlide(index) {
+            showStatus('Gerando imagem...');
+            try {
+                const canvas = await renderSlideFullRes(index);
+                const link = document.createElement('a');
+                link.download = `slide-${index + 1}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                hideStatus();
+                mostrarNotificacao('Slide baixado!', 'success');
+            } catch(e) {
+                hideStatus();
+                mostrarNotificacao('Erro ao baixar: ' + e.message, 'error');
+            }
+        }
+
+        async function baixarTodosSlides() {
+            showStatus('Gerando imagens...');
+            for (let i = 0; i < dadosGerados.slides.length; i++) {
+                showStatus(`Baixando slide ${i + 1} de ${dadosGerados.slides.length}...`);
+                try {
+                    const canvas = await renderSlideFullRes(i);
+                    const link = document.createElement('a');
+                    link.download = `slide-${i + 1}.png`;
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                    await new Promise(r => setTimeout(r, 500));
+                } catch(e) {
+                    console.warn('Erro slide ' + i, e);
+                }
+            }
+            hideStatus();
+            mostrarNotificacao('Todos os slides baixados!', 'success');
+        }
+
+        async function baixarZIP() {
+            if (typeof JSZip === 'undefined') {
+                mostrarNotificacao('JSZip nao carregou', 'error');
+                return;
+            }
+            const zip = new JSZip();
+            showStatus('Gerando ZIP...');
+
+            for (let i = 0; i < dadosGerados.slides.length; i++) {
+                showStatus(`Processando slide ${i + 1} de ${dadosGerados.slides.length}...`);
+                try {
+                    const canvas = await renderSlideFullRes(i);
+                    const dataUrl = canvas.toDataURL('image/png');
+                    const base64 = dataUrl.split(',')[1];
+                    zip.file(`slide-${i + 1}.png`, base64, { base64: true });
+                } catch(e) {
+                    console.warn('Erro zip slide ' + i, e);
+                }
+            }
+
+            const blob = await zip.generateAsync({ type: 'blob' });
+            const link = document.createElement('a');
+            link.download = 'carrossel.zip';
+            link.href = URL.createObjectURL(blob);
+            link.click();
+            URL.revokeObjectURL(link.href);
+            hideStatus();
+            mostrarNotificacao('ZIP baixado!', 'success');
+        }
+
+        // ==================== SPIN ANIMATION ====================
+        if (!document.getElementById('spin-style')) {
+            const s = document.createElement('style');
+            s.id = 'spin-style';
+            s.textContent = '@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }';
+            document.head.appendChild(s);
+        }
+    </script>
+</body>
+</html>

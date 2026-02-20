@@ -11,6 +11,13 @@ const FERRAMENTAS = [
         descricao: 'Transforme textos em roteiros profissionais para videos',
         icone: 'movie',
         url: 'ferramentas/roteiros.html'
+    },
+    {
+        id: 'posts',
+        nome: 'Posts',
+        descricao: 'Crie posts e carrosseis profissionais para redes sociais com IA',
+        icone: 'image',
+        url: 'ferramentas/posts.html'
     }
 ];
 
