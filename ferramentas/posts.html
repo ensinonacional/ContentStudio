@@ -509,17 +509,44 @@
         }
 
         // ==================== IMAGE API ====================
-        // LoremFlickr: sem API key, sem limites, busca Flickr por keyword
-        // Funciona com QUALQUER termo - retorna fotos reais relacionadas
-        function gerarURLImagem(query) {
+        // Multiplos bancos: Pexels (qualidade) + LoremFlickr (cobertura total)
+        const PEXELS_KEY = 'nYMWBpMFOaBkaFPcoJkuAVcPMxFsGHoMg3UyzhAGjrOyYlBUkKK4kDBl';
+
+        async function buscarPexels(query, perPage = 10) {
+            try {
+                const resp = await fetch(`https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&per_page=${perPage}&orientation=portrait`, {
+                    headers: { 'Authorization': PEXELS_KEY }
+                });
+                if (!resp.ok) return [];
+                const data = await resp.json();
+                return (data.photos || []).map(p => p.src.large2x || p.src.large || p.src.original);
+            } catch(e) { return []; }
+        }
+
+        function gerarLoremFlickr(query) {
             const q = query.trim().replace(/\s+/g, ',');
-            return `https://loremflickr.com/1080/1350/${encodeURIComponent(q)}?random=${Math.floor(Math.random() * 9999)}`;
+            return `https://loremflickr.com/1080/1350/${encodeURIComponent(q)}?lock=${Date.now()}_${Math.floor(Math.random() * 99999)}`;
         }
 
         async function buscarImagemParaSlide(query) {
             const queryEN = traduzirParaIngles(query);
-            console.log('[Posts] Imagem para slide:', query, '->', queryEN);
-            return gerarURLImagem(queryEN);
+            const palavras = queryEN.split(/\s+/).filter(p => p.length > 2);
+            const primeiraPalavra = palavras[0] || queryEN;
+
+            // 1. Tentar Pexels com primeira palavra (funciona melhor com 1 palavra)
+            try {
+                const urls = await buscarPexels(primeiraPalavra, 8);
+                if (urls.length > 0) {
+                    const pick = urls[Math.floor(Math.random() * urls.length)];
+                    console.log('[Posts] Pexels:', primeiraPalavra, '->', pick.substring(0, 60));
+                    return pick;
+                }
+            } catch(e) {}
+
+            // 2. LoremFlickr (funciona com qualquer termo)
+            const url = gerarLoremFlickr(queryEN);
+            console.log('[Posts] LoremFlickr:', queryEN);
+            return url;
         }
 
         // ==================== AI GENERATION ====================
@@ -800,11 +827,13 @@ Retorne EXATAMENTE este JSON:
         // ==================== REFAZER DESIGN ====================
         async function refazerDesign() {
             currentLayoutIndex++;
-            showStatus(`Layout ${(currentLayoutIndex % 10) + 1} de 10`);
+            const layoutNum = (currentLayoutIndex % 10) + 1;
+            showStatus(`Carregando layout ${layoutNum} de 10 com novas imagens...`);
 
-            // Re-buscar imagens
+            // Forcar novas imagens (limpar cache das URLs anteriores)
             const buscas = dadosGerados.slides.map(async (slide) => {
                 if (slide.busca_imagem) {
+                    // Sempre buscar imagem nova
                     slide.bgImage = await buscarImagemParaSlide(slide.busca_imagem);
                 }
             });
@@ -812,7 +841,7 @@ Retorne EXATAMENTE este JSON:
 
             renderizarSlides();
             setTimeout(hideStatus, 1500);
-            mostrarNotificacao(`Design ${(currentLayoutIndex % 10) + 1} de 10`, 'success');
+            mostrarNotificacao(`Layout ${layoutNum} de 10 - novas imagens!`, 'success');
         }
 
         // ==================== DRAG & DROP ====================
@@ -902,28 +931,53 @@ Retorne EXATAMENTE este JSON:
             if (!queryOriginal) return;
             currentPage = page;
             const grid = document.getElementById('imgGrid');
-            grid.innerHTML = '<p style="text-align:center;color:var(--text-muted);grid-column:1/-1;padding:20px">Carregando imagens...</p>';
+            grid.innerHTML = '<p style="text-align:center;color:var(--text-muted);grid-column:1/-1;padding:20px">Buscando imagens...</p>';
 
             const queryEN = traduzirParaIngles(queryOriginal);
+            const primeiraPalavra = queryEN.split(/\s+/)[0] || queryEN;
             console.log('[Posts] Busca modal:', queryOriginal, '->', queryEN);
 
-            // Gerar 12 imagens do LoremFlickr (cada uma diferente por causa do random)
-            const q = queryEN.trim().replace(/\s+/g, ',');
             let html = '';
-            for (let i = 0; i < 12; i++) {
-                const imgUrl = `https://loremflickr.com/1080/1350/${encodeURIComponent(q)}?random=${Date.now() + i}`;
-                const thumbUrl = `https://loremflickr.com/400/400/${encodeURIComponent(q)}?random=${Date.now() + i}`;
-                html += `
-                    <div class="img-grid-item" onclick="selecionarImagem('${imgUrl}')">
-                        <img src="${thumbUrl}" alt="${queryOriginal}" loading="lazy" onerror="this.src='https://picsum.photos/400/400?random=${i}'">
-                        <div class="img-credit">Flickr</div>
-                    </div>
-                `;
-            }
-            grid.innerHTML = html;
+            const ts = Date.now();
 
-            document.getElementById('pageInfo').textContent = 'Clique para selecionar uma imagem';
-            document.getElementById('btnPrevPage').disabled = true;
+            // 1. Buscar Pexels (alta qualidade)
+            try {
+                const resp = await fetch(`https://api.pexels.com/v1/search?query=${encodeURIComponent(primeiraPalavra)}&per_page=15&page=${page}`, {
+                    headers: { 'Authorization': PEXELS_KEY }
+                });
+                if (resp.ok) {
+                    const data = await resp.json();
+                    if (data.photos && data.photos.length > 0) {
+                        html += data.photos.map(p => {
+                            const fullUrl = p.src.large2x || p.src.large;
+                            return `<div class="img-grid-item" onclick="selecionarImagem('${fullUrl}')">
+                                <img src="${p.src.medium}" alt="${p.alt || queryOriginal}" loading="lazy">
+                                <div class="img-credit">${p.photographer} - Pexels</div>
+                            </div>`;
+                        }).join('');
+                    }
+                }
+            } catch(e) {}
+
+            // 2. Adicionar LoremFlickr (sempre funciona, mais variedade)
+            const qFlickr = queryEN.trim().replace(/\s+/g, ',');
+            for (let i = 0; i < 6; i++) {
+                const imgUrl = gerarLoremFlickr(queryEN);
+                const thumbUrl = `https://loremflickr.com/400/500/${encodeURIComponent(qFlickr)}?lock=${ts + i * 1000}`;
+                html += `<div class="img-grid-item" onclick="selecionarImagem('${imgUrl}')">
+                    <img src="${thumbUrl}" alt="${queryOriginal}" loading="lazy">
+                    <div class="img-credit">Flickr</div>
+                </div>`;
+            }
+
+            if (!html) {
+                grid.innerHTML = '<p style="text-align:center;color:var(--text-muted);grid-column:1/-1;padding:20px">Nenhuma imagem encontrada</p>';
+                return;
+            }
+
+            grid.innerHTML = html;
+            document.getElementById('pageInfo').textContent = 'Pexels + Flickr - Clique para selecionar';
+            document.getElementById('btnPrevPage').disabled = page <= 1;
             document.getElementById('btnNextPage').disabled = false;
         }
 
