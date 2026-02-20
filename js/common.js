@@ -407,10 +407,9 @@ async function copiarElemento(elementId) {
 // ==================== API ====================
 
 var APIConfig = {
-    DEFAULT_KEY: 'sk-09a878aae36f404791219ebc494c98cc',
     get key() {
         const saved = localStorage.getItem('deepseek_api_key');
-        return (saved && saved.trim()) ? saved.trim() : this.DEFAULT_KEY;
+        return (saved && saved.trim()) ? saved.trim() : '';
     },
     set key(value) {
         localStorage.setItem('deepseek_api_key', value);
@@ -420,12 +419,15 @@ var APIConfig = {
     },
     set modelo(value) {
         localStorage.setItem('deepseek_modelo', value);
+    },
+    get isConfigured() {
+        return this.key.length > 0;
     }
 };
 
 async function chamarAPI(systemPrompt, userPrompt, maxTokens = 4000) {
-    if (!APIConfig.key) {
-        throw new Error('API Key nao configurada. Acesse o painel admin para configurar.');
+    if (!APIConfig.isConfigured) {
+        throw new Error('API não configurada. O administrador precisa configurar a chave da API no painel admin.');
     }
 
     const response = await fetch('https://api.deepseek.com/chat/completions', {

@@ -927,8 +927,22 @@
         // ==================== API ====================
 
         function loadAPIConfig() {
-            document.getElementById('apiKeyInput').value = APIConfig.key;
+            const key = APIConfig.key;
+            document.getElementById('apiKeyInput').value = key;
             document.getElementById('apiModelSelect').value = APIConfig.modelo;
+
+            // Mostrar alerta se API não configurada
+            const apiTab = document.getElementById('tab-api');
+            const existingAlert = apiTab.querySelector('.api-alert');
+            if (existingAlert) existingAlert.remove();
+
+            if (!key) {
+                const alert = document.createElement('div');
+                alert.className = 'api-alert';
+                alert.style.cssText = 'background: rgba(251,191,36,0.15); border: 1px solid var(--warning); color: var(--warning); padding: 16px; border-radius: var(--radius-md); margin-bottom: 20px; font-size: 0.9rem;';
+                alert.innerHTML = '⚠️ <strong>API não configurada.</strong> O site não vai gerar roteiros até que uma chave seja inserida aqui.';
+                apiTab.insertBefore(alert, apiTab.firstChild);
+            }
         }
 
         function saveAPIConfig() {

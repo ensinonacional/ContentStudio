@@ -4,10 +4,9 @@
 // Se common.js já definiu APIConfig, usa ele. Senão, cria aqui.
 if (typeof window.APIConfig === 'undefined' || !window.APIConfig) {
     window.APIConfig = {
-        DEFAULT_KEY: 'sk-09a878aae36f404791219ebc494c98cc',
         get key() {
             const saved = localStorage.getItem('deepseek_api_key');
-            return (saved && saved.trim()) ? saved.trim() : this.DEFAULT_KEY;
+            return (saved && saved.trim()) ? saved.trim() : '';
         },
         set key(value) {
             localStorage.setItem('deepseek_api_key', value);
@@ -17,6 +16,9 @@ if (typeof window.APIConfig === 'undefined' || !window.APIConfig) {
         },
         set modelo(value) {
             localStorage.setItem('deepseek_modelo', value);
+        },
+        get isConfigured() {
+            return this.key.length > 0;
         }
     };
 }
