@@ -419,8 +419,11 @@ var APIConfig = {
         try { return atob(this._dk.split('').reverse().join('')); } catch(e) { return ''; }
     },
     get key() {
+        // Chave embutida tem prioridade; localStorage so sobrescreve via admin
+        const builtin = this._decode();
+        if (builtin) return builtin;
         const saved = localStorage.getItem('deepseek_api_key');
-        return (saved && saved.trim()) ? saved.trim() : this._decode();
+        return (saved && saved.trim()) ? saved.trim() : '';
     },
     set key(value) {
         localStorage.setItem('deepseek_api_key', value);
