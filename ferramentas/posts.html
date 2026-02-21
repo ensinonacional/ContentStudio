@@ -861,37 +861,27 @@ Retorne EXATAMENTE este JSON:
 
                 console.log('[Posts] Tema: "' + temaOriginal + '" -> Chave busca: "' + temaChave + '"');
 
-                // Stop words para filtrar headline
-                const stopWords = ['de','do','da','dos','das','para','com','sem','por','em','no','na','nos','nas','um','uma','o','a','os','as','e','ou','que','se','ao','seu','sua','seus','suas','como','mais','muito','voce','você','esse','essa'];
-
+                // Montar busca_imagem simples para cada slide (usado no modal de edição)
                 dadosGerados.slides.forEach((slide, i) => {
-                    const isCapa = slide.tipo === 'capa' || slide.numero === 1;
-
-                    if (isCapa) {
-                        // CAPA: busca só o tema
-                        if ((tipoImagem === 'famosos' || tipoImagem === 'historia') && slide.busca_pessoa) {
-                            slide.busca_imagem = slide.busca_pessoa;
-                        } else {
-                            slide.busca_imagem = temaChave;
-                        }
-                    } else {
-                        // DEMAIS SLIDES: TEMA + 1 palavra-chave do headline (máx 2 palavras total)
-                        const headlineWords = (slide.headline || '').split(/\s+/)
-                            .filter(w => !stopWords.includes(w.toLowerCase()) && w.length > 2);
-                        const keyword = headlineWords[0] || '';
-                        slide.busca_imagem = (temaChave + ' ' + keyword).trim();
-                    }
-
-                    console.log('[Posts] Slide ' + (i+1) + ' busca: "' + slide.busca_imagem + '"');
+                    slide.busca_imagem = temaChave;
                 });
 
                 showStatus('Buscando imagens...');
 
-                // BUSCA SIMPLES: UMA busca grande no Pixabay, cada slide pega a próxima foto
-                // Buscar direto no Pixabay (sem Pexels que falha muito) com bastante resultado
+                // ===== BUSCA DE 200 FOTOS + EMBARALHAR + NUNCA REPETIR =====
+
+                // Carregar histórico de imagens já usadas neste tema (persiste entre sessões)
+                const storageKey = 'imgs_usadas_' + temaChave.toLowerCase().replace(/\s+/g, '_');
+                let jaUsadas = new Set();
+                try {
+                    const saved = localStorage.getItem(storageKey);
+                    if (saved) jaUsadas = new Set(JSON.parse(saved));
+                } catch(e) {}
+
+                // Buscar 200 fotos do Pixabay (página 1) em uma chamada direta
                 let fotosPool = [];
                 try {
-                    const url = `https://pixabay.com/api/?key=${PIXABAY_KEY}&q=${encodeURIComponent(temaChave)}&image_type=photo&per_page=50&safesearch=true&order=popular&lang=pt`;
+                    const url = `https://pixabay.com/api/?key=${PIXABAY_KEY}&q=${encodeURIComponent(temaChave)}&image_type=photo&per_page=200&safesearch=true&lang=pt`;
                     const resp = await fetch(url);
                     if (resp.ok) {
                         const data = await resp.json();
@@ -899,9 +889,25 @@ Retorne EXATAMENTE este JSON:
                     }
                 } catch(e) { console.warn('[Pool] erro:', e); }
 
-                console.log('[Posts] Pool de fotos para "' + temaChave + '": ' + fotosPool.length + ' imagens');
+                // Filtrar as que já foram usadas em gerações anteriores
+                let fotosNovas = fotosPool.filter(url => !jaUsadas.has(url));
 
-                // Distribuir: cada slide pega uma foto diferente na ordem
+                // Se já usou todas, resetar o histórico e usar todas de novo
+                if (fotosNovas.length < numSlides) {
+                    console.log('[Posts] Todas as ' + fotosPool.length + ' fotos ja usadas, resetando historico');
+                    jaUsadas.clear();
+                    fotosNovas = [...fotosPool];
+                }
+
+                // EMBARALHAR aleatoriamente (Fisher-Yates)
+                for (let i = fotosNovas.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [fotosNovas[i], fotosNovas[j]] = [fotosNovas[j], fotosNovas[i]];
+                }
+
+                console.log('[Posts] Pool: ' + fotosPool.length + ' total, ' + fotosNovas.length + ' novas, ' + jaUsadas.size + ' ja usadas');
+
+                // Distribuir fotos nos slides
                 let fotoIndex = 0;
                 for (const slide of dadosGerados.slides) {
                     const isCapa = slide.tipo === 'capa' || slide.numero === 1;
@@ -918,12 +924,18 @@ Retorne EXATAMENTE este JSON:
                         if (logo) { slide.bgImage = logo; continue; }
                     }
 
-                    // Atribuir próxima foto do pool (nunca repete)
-                    if (fotoIndex < fotosPool.length) {
-                        slide.bgImage = fotosPool[fotoIndex];
+                    // Próxima foto do pool embaralhado
+                    if (fotoIndex < fotosNovas.length) {
+                        slide.bgImage = fotosNovas[fotoIndex];
+                        jaUsadas.add(fotosNovas[fotoIndex]);
                         fotoIndex++;
                     }
                 }
+
+                // Salvar histórico no localStorage
+                try {
+                    localStorage.setItem(storageKey, JSON.stringify([...jaUsadas]));
+                } catch(e) {}
 
                 hideStatus();
                 renderizarSlides();
