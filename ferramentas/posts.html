@@ -227,6 +227,66 @@
         /* Layout 10: Splash de cor radial no canto inferior direito */
         .layout-10.is-cover .cover-deco { position: absolute; bottom: -20px; right: -20px; width: 120px; height: 120px; background: radial-gradient(circle, rgba(244,197,66,0.15) 0%, transparent 70%); border-radius: 50%; z-index: 4; }
 
+        /* ==================== DESIGNER SELECTOR ==================== */
+        .designer-option { display: inline-flex; align-items: center; gap: 5px; padding: 7px 14px; border: 1.5px solid var(--border); border-radius: 9999px; font-size: 0.75rem; font-weight: 600; color: var(--text-muted); cursor: pointer; transition: all 0.15s; user-select: none; }
+        .designer-option:hover { border-color: var(--accent); color: var(--accent); }
+        .designer-option.selected { border-color: var(--accent); color: var(--accent); background: var(--accent-glow); }
+
+        /* ==================== DESIGNER NOTICIA — CAPA ==================== */
+        .noticia-capa .slide-bg { position: absolute; inset: 0; background-size: cover; background-position: center; }
+        .noticia-capa .slide-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 0%, transparent 25%, rgba(10,22,40,0.4) 50%, rgba(10,22,40,0.88) 75%, rgba(10,22,40,0.98) 100%); }
+        .noticia-capa .slide-content { position: absolute; bottom: 0; left: 0; right: 0; padding: 20px; display: flex; flex-direction: column; justify-content: flex-end; z-index: 5; }
+        .noticia-capa .slide-headline { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.35rem; line-height: 1.15; color: white; text-transform: uppercase; letter-spacing: -0.3px; }
+        .noticia-capa .slide-headline .hl-tag { background: #00b4d8; color: white; padding: 2px 8px 3px; border-radius: 3px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+        .noticia-capa .slide-body { font-family: 'Inter', sans-serif; font-size: 0.7rem; color: rgba(255,255,255,0.85); line-height: 1.45; margin-top: 6px; }
+        .noticia-capa .noticia-tag { position: absolute; top: 14px; left: 14px; background: #00b4d8; color: white; font-family: 'Montserrat', sans-serif; font-size: 0.5rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; padding: 4px 10px; border-radius: 3px; z-index: 10; }
+        .noticia-capa .noticia-line { position: absolute; bottom: 0; left: 0; right: 0; height: 4px; background: linear-gradient(to right, #00b4d8, #48cae4); z-index: 10; }
+
+        /* ==================== DESIGNER NOTICIA — MODELO 1: Blocos ==================== */
+        .noticia-1 { background: #0a1628; }
+        .noticia-1 .slide-bg { display: none; }
+        .noticia-1 .slide-overlay { display: none; }
+        .noticia-1 .slide-content { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; padding: 28px 24px 28px 28px; z-index: 5; border-left: 4px solid #00b4d8; margin: 20px 16px; }
+        .noticia-1 .slide-headline { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 1.15rem; color: white; line-height: 1.25; text-transform: uppercase; }
+        .noticia-1 .slide-body { font-family: 'Inter', sans-serif; font-size: 0.75rem; color: rgba(255,255,255,0.75); line-height: 1.55; margin-top: 10px; }
+        .noticia-1::after { content: ''; position: absolute; bottom: 16px; right: 16px; width: 40px; height: 40px; border: 2px solid rgba(0,180,216,0.15); border-radius: 50%; }
+
+        /* ==================== DESIGNER NOTICIA — MODELO 2: Card Limpo ==================== */
+        .noticia-2 { background: #f0f2f5 !important; }
+        .noticia-2 .slide-bg { display: none; }
+        .noticia-2 .slide-overlay { display: none; }
+        .noticia-2 .slide-content { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; padding: 30px 24px; z-index: 5; }
+        .noticia-2 .slide-headline { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 1.1rem; color: #0a1628; line-height: 1.3; padding-bottom: 10px; border-bottom: 3px solid #00b4d8; text-shadow: none; }
+        .noticia-2 .slide-body { font-family: 'Inter', sans-serif; font-size: 0.75rem; color: #333; line-height: 1.6; margin-top: 12px; text-shadow: none; opacity: 1; }
+        .noticia-2::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px; background: linear-gradient(to right, #00b4d8, #48cae4); z-index: 6; }
+        .noticia-2 .slide-number { background: #0a1628 !important; }
+
+        /* ==================== DESIGNER NOTICIA — MODELO 3: Split Horizontal ==================== */
+        .noticia-3 .slide-bg { position: absolute; top: 0; left: 0; right: 0; height: 45%; background-size: cover; background-position: center; }
+        .noticia-3 .slide-overlay { position: absolute; top: 0; left: 0; right: 0; height: 45%; background: linear-gradient(to bottom, transparent 30%, rgba(10,22,40,0.6) 100%); }
+        .noticia-3 .slide-content { position: absolute; top: 45%; left: 0; right: 0; bottom: 0; background: #0a1628; display: flex; flex-direction: column; justify-content: center; padding: 16px 22px; z-index: 5; }
+        .noticia-3 .slide-headline { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 1rem; color: white; line-height: 1.3; }
+        .noticia-3 .slide-body { font-family: 'Inter', sans-serif; font-size: 0.72rem; color: rgba(255,255,255,0.8); line-height: 1.55; margin-top: 8px; }
+        .noticia-3::after { content: ''; position: absolute; top: 44%; left: 22px; width: 30px; height: 3px; background: #00b4d8; z-index: 6; border-radius: 2px; }
+
+        /* ==================== DESIGNER NOTICIA — MODELO 4: Textura ==================== */
+        .noticia-4 { background: #0a1628; }
+        .noticia-4 .slide-bg { display: none; }
+        .noticia-4 .slide-overlay { display: none; }
+        .noticia-4::before { content: ''; position: absolute; inset: 0; background-image: radial-gradient(rgba(0,180,216,0.07) 1px, transparent 1px); background-size: 16px 16px; z-index: 1; }
+        .noticia-4 .slide-content { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 30px 24px; z-index: 5; }
+        .noticia-4 .slide-headline { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.25rem; color: white; line-height: 1.2; text-transform: uppercase; }
+        .noticia-4 .slide-body { font-family: 'Inter', sans-serif; font-size: 0.72rem; color: rgba(255,255,255,0.7); line-height: 1.6; margin-top: 12px; max-width: 90%; }
+        .noticia-4::after { content: ''; position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); width: 40px; height: 3px; background: linear-gradient(to right, #00b4d8, #48cae4); border-radius: 2px; z-index: 6; }
+
+        /* ==================== DESIGNER NOTICIA — MODELO 5: Destaque Lateral ==================== */
+        .noticia-5 .slide-bg { position: absolute; top: 0; left: 0; width: 40%; height: 100%; background-size: cover; background-position: center; }
+        .noticia-5 .slide-overlay { position: absolute; top: 0; left: 0; width: 40%; height: 100%; background: linear-gradient(to right, transparent 40%, rgba(10,22,40,0.8) 100%); }
+        .noticia-5 .slide-content { position: absolute; top: 0; left: 40%; right: 0; bottom: 0; background: #0a1628; display: flex; flex-direction: column; justify-content: center; padding: 20px 18px 20px 22px; z-index: 5; }
+        .noticia-5 .slide-headline { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.95rem; color: white; line-height: 1.3; }
+        .noticia-5 .slide-body { font-family: 'Inter', sans-serif; font-size: 0.7rem; color: rgba(255,255,255,0.75); line-height: 1.55; margin-top: 8px; }
+        .noticia-5::after { content: ''; position: absolute; top: 15%; left: 40%; width: 3px; height: 70%; background: linear-gradient(to bottom, #00b4d8, #48cae4); z-index: 6; border-radius: 2px; }
+
         /* ==================== CAPTION SECTION ==================== */
         .caption-section { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border); }
         .caption-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
@@ -319,6 +379,19 @@
         <!-- Config Card -->
         <div class="card">
             <div style="display:flex;gap:16px;align-items:end;flex-wrap:wrap;margin-bottom:12px">
+                <div class="field-group" style="flex-shrink:0">
+                    <span class="field-label">Designer</span>
+                    <div style="display:flex;gap:6px;flex-wrap:wrap">
+                        <label class="designer-option selected" onclick="selecionarDesigner('padrao',this)">
+                            <svg viewBox="0 0 24 24" width="14" height="14"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/></svg>
+                            Padrao
+                        </label>
+                        <label class="designer-option" onclick="selecionarDesigner('noticia',this)">
+                            <svg viewBox="0 0 24 24" width="14" height="14"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z" fill="currentColor"/></svg>
+                            Noticia
+                        </label>
+                    </div>
+                </div>
                 <div class="field-group" style="flex-shrink:0">
                     <span class="field-label">Slides</span>
                     <input type="number" id="numSlides" class="field-input" value="5" min="1" max="15" style="width:80px">
@@ -561,6 +634,15 @@
         let perfilFotoBase64 = localStorage.getItem('post_perfil_foto') || '';
         let tipoImagem = 'aleatorio'; // 'aleatorio', 'famosos', 'historia', 'empresa'
         let modoImagem = 'imagens'; // 'imagens' ou 'criativo'
+        let designerModelo = 'padrao'; // 'padrao' ou 'noticia'
+
+        function selecionarDesigner(modelo, el) {
+            designerModelo = modelo;
+            document.querySelectorAll('.designer-option').forEach(e => e.classList.remove('selected'));
+            el.classList.add('selected');
+            // Se já tem slides gerados, re-renderizar com novo designer
+            if (dadosGerados) renderizarSlides();
+        }
 
         function toggleModoImagem() {
             const options = document.querySelectorAll('.img-mode-option');
@@ -885,6 +967,12 @@ CONTEUDO BASE: ${conteudo}`;
                 regraCapa = `\n6. MODO CRIATIVO DE IMAGENS: Adicione o campo "comImagem": true APENAS nos slides que voce quer que tenham foto de fundo. Voce tem liberdade criativa total para escolher: pode colocar imagem so na capa, ou em 2 slides do meio, ou alternados, ou so no ultimo. REGRA OBRIGATORIA: NAO coloque "comImagem": true em TODOS os slides - no minimo 1 slide deve ficar sem imagem. Slides sem "comImagem" terao fundo escuro elegante so com texto. Escolha de forma inteligente para criar contraste visual.`;
             }
 
+            // Regra extra para Designer Noticia: campo "destaque" na capa
+            let regraDestaque = '';
+            if (designerModelo === 'noticia') {
+                regraDestaque = `\n8. destaque: NO SLIDE 1 (CAPA), inclua o campo "destaque" com 1-2 PALAVRAS-CHAVE do titulo que devem ser destacadas visualmente com fundo colorido. Escolha as palavras mais impactantes e de efeito. Ex: se headline="CRISE GLOBAL ATINGE MERCADOS", destaque="CRISE GLOBAL". Se headline="INTELIGENCIA ARTIFICIAL MUDA O MUNDO", destaque="INTELIGENCIA ARTIFICIAL". SEMPRE inclua este campo no slide 1.`;
+            }
+
             userPrompt += `
 
 REGRAS:
@@ -893,7 +981,7 @@ REGRAS:
 3. Cada slide deve manter o MESMO ASSUNTO, com progresso na informacao
 4. headline: titulo curto e impactante (maximo 6 palavras)
 5. body: texto explicativo direto, maximo 3 linhas curtas${regraCapa}
-7. A numeracao dos slides internos e opcional - use quando fizer sentido (listas, passos, dicas)
+7. A numeracao dos slides internos e opcional - use quando fizer sentido (listas, passos, dicas)${regraDestaque}
 
 NAO inclua o campo "busca_imagem" - as imagens serao montadas automaticamente pelo sistema.
 
@@ -904,7 +992,7 @@ Retorne EXATAMENTE este JSON:
             "numero": 1,
             "tipo": "capa",
             "headline": "DOMINE SUA PRODUTIVIDADE AGORA",
-            "body": "Subtitulo curto e envolvente"${tipoImagem === 'famosos' || tipoImagem === 'historia' ? ',\n            "busca_pessoa": "Nome Completo"' : ''}${modoImagem === 'criativo' ? ',\n            "comImagem": true' : ''}
+            "body": "Subtitulo curto e envolvente"${tipoImagem === 'famosos' || tipoImagem === 'historia' ? ',\n            "busca_pessoa": "Nome Completo"' : ''}${modoImagem === 'criativo' ? ',\n            "comImagem": true' : ''}${designerModelo === 'noticia' ? ',\n            "destaque": "PRODUTIVIDADE"' : ''}
         },
         {
             "numero": 2,
@@ -1056,11 +1144,14 @@ Retorne EXATAMENTE este JSON:
         function renderizarSlides() {
             if (!dadosGerados) return;
             const container = document.getElementById('slidesContainer');
-            const layoutNum = (currentLayoutIndex % 10) + 1;
             const perfilNome = document.getElementById('perfilNome').value.trim();
             const perfilArroba = document.getElementById('perfilArroba').value.trim();
             const logoAtivo = document.getElementById('logoAtivo').checked;
             const logoPosicao = document.getElementById('logoPosicao').value;
+
+            // Determinar layout conforme designer
+            const isNoticia = designerModelo === 'noticia';
+            const layoutNum = isNoticia ? (currentLayoutIndex % 5) + 1 : (currentLayoutIndex % 10) + 1;
 
             let html = '';
             dadosGerados.slides.forEach((slide, index) => {
@@ -1092,75 +1183,148 @@ Retorne EXATAMENTE este JSON:
                     </div>`;
                 }
 
-                // Layout-specific extras
-                let extras = '';
-                if (layoutNum === 3) extras = '<div class="slide-deco-top"></div><div class="slide-deco-bottom"></div>';
-                else if (layoutNum === 7) extras = '<div class="slide-frame"></div>';
-                else if (layoutNum === 9) extras = '<div class="slide-sidebar"></div>';
-                else if (layoutNum === 10) extras = '<div class="slide-overlay2"></div>';
-                else if ([1,2,4,5,6,8].includes(layoutNum)) extras = '<div class="slide-deco"></div>';
+                // ===== MODO NOTICIA =====
+                if (isNoticia) {
+                    const slideClass = isCapa ? 'noticia-capa' : `noticia-${layoutNum}`;
 
-                // Cover-specific decoration (unique per layout)
-                let coverDeco = '';
-                if (isCapa) {
-                    if (layoutNum === 4) {
-                        coverDeco = '<div class="cover-deco">\u2756</div>';
-                    } else if (layoutNum === 5) {
-                        coverDeco = '<div class="cover-deco">CAPA</div>';
-                    } else {
-                        coverDeco = '<div class="cover-deco"></div>';
+                    // Headline com destaque (hl-tag) na capa
+                    let headlineHTML = slide.headline || '';
+                    if (isCapa && slide.destaque && headlineHTML) {
+                        // Escapar caracteres especiais do destaque para regex
+                        const escapedDestaque = slide.destaque.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                        const re = new RegExp(`(${escapedDestaque})`, 'gi');
+                        headlineHTML = headlineHTML.replace(re, '<span class="hl-tag">$1</span>');
                     }
-                }
 
-                html += `
-                <div class="slide-wrap" draggable="true" data-index="${index}" ondragstart="dragStart(event)" ondragover="dragOver(event)" ondrop="dropSlide(event)" ondragend="dragEnd(event)">
-                    <div class="slide-card layout-${layoutNum} ${isCapa ? 'is-cover' : ''} ${noBgClass}" id="slide-${index}">
-                        <div class="slide-bg" style="${bgStyle}"></div>
-                        <div class="slide-overlay"></div>
-                        ${extras}
-                        ${coverDeco}
-                        <div class="slide-number">${index + 1}</div>
-                        ${badge}
-                        ${logoHTML}
-                        <div class="slide-content">
-                            ${isCapa ? perfilHTML : ''}
-                            <div class="slide-headline" contenteditable="false">${slide.headline || ''}</div>
-                            <div class="slide-body" contenteditable="false">${slide.body || ''}</div>
+                    // Tag "NOTICIA" e linha inferior na capa
+                    let noticiaExtras = '';
+                    if (isCapa) {
+                        noticiaExtras = `<div class="noticia-tag">NOTÍCIA</div><div class="noticia-line"></div>`;
+                    }
+
+                    html += `
+                    <div class="slide-wrap" draggable="true" data-index="${index}" ondragstart="dragStart(event)" ondragover="dragOver(event)" ondrop="dropSlide(event)" ondragend="dragEnd(event)">
+                        <div class="slide-card ${slideClass} ${isCapa ? 'is-cover' : ''} ${noBgClass}" id="slide-${index}">
+                            <div class="slide-bg" style="${bgStyle}"></div>
+                            <div class="slide-overlay"></div>
+                            ${noticiaExtras}
+                            <div class="slide-number">${index + 1}</div>
+                            ${badge}
+                            ${logoHTML}
+                            <div class="slide-content">
+                                ${isCapa ? perfilHTML : ''}
+                                <div class="slide-headline" contenteditable="false">${headlineHTML}</div>
+                                <div class="slide-body" contenteditable="false">${slide.body || ''}</div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="slide-edit-overlay">
-                        <button class="slide-edit-btn" onclick="editarSlide(${index})">
-                            <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
-                            Editar
-                        </button>
-                        <button class="slide-edit-btn" onclick="trocarImagem(${index})">
-                            <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
-                            Imagem
-                        </button>
-                        <button class="slide-edit-btn" onclick="baixarSlide(${index})">
-                            <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-                        </button>
-                    </div>
-                    <div class="edit-toolbar" id="toolbar-${index}">
-                        <div class="edit-group">
-                            <label>Fonte</label>
-                            <select onchange="mudarFonte(${index},this.value)">
-                                <option value="Montserrat">Montserrat</option>
-                                <option value="Inter">Inter</option>
-                                <option value="Poppins">Poppins</option>
-                                <option value="Playfair Display">Playfair</option>
-                            </select>
+                        <div class="slide-edit-overlay">
+                            <button class="slide-edit-btn" onclick="editarSlide(${index})">
+                                <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                                Editar
+                            </button>
+                            <button class="slide-edit-btn" onclick="trocarImagem(${index})">
+                                <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+                                Imagem
+                            </button>
+                            <button class="slide-edit-btn" onclick="baixarSlide(${index})">
+                                <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                            </button>
                         </div>
-                        <div class="edit-group">
-                            <label>Cor texto</label>
-                            <input type="color" value="#ffffff" onchange="mudarCorTexto(${index},this.value)">
+                        <div class="edit-toolbar" id="toolbar-${index}">
+                            <div class="edit-group">
+                                <label>Fonte</label>
+                                <select onchange="mudarFonte(${index},this.value)">
+                                    <option value="Montserrat">Montserrat</option>
+                                    <option value="Inter">Inter</option>
+                                    <option value="Poppins">Poppins</option>
+                                    <option value="Playfair Display">Playfair</option>
+                                </select>
+                            </div>
+                            <div class="edit-group">
+                                <label>Cor texto</label>
+                                <input type="color" value="#ffffff" onchange="mudarCorTexto(${index},this.value)">
+                            </div>
+                            <div class="edit-group">
+                                <label>Tamanho</label>
+                                <input type="range" min="10" max="24" value="16" oninput="mudarTamanho(${index},this.value)">
+                            </div>
                         </div>
-                        <div class="edit-group">
-                            <label>Tamanho</label>
-                            <input type="range" min="10" max="24" value="16" oninput="mudarTamanho(${index},this.value)">
+                    </div>`;
+
+                // ===== MODO PADRAO =====
+                } else {
+                    const layoutNum = (currentLayoutIndex % 10) + 1;
+
+                    // Layout-specific extras
+                    let extras = '';
+                    if (layoutNum === 3) extras = '<div class="slide-deco-top"></div><div class="slide-deco-bottom"></div>';
+                    else if (layoutNum === 7) extras = '<div class="slide-frame"></div>';
+                    else if (layoutNum === 9) extras = '<div class="slide-sidebar"></div>';
+                    else if (layoutNum === 10) extras = '<div class="slide-overlay2"></div>';
+                    else if ([1,2,4,5,6,8].includes(layoutNum)) extras = '<div class="slide-deco"></div>';
+
+                    // Cover-specific decoration (unique per layout)
+                    let coverDeco = '';
+                    if (isCapa) {
+                        if (layoutNum === 4) {
+                            coverDeco = '<div class="cover-deco">\u2756</div>';
+                        } else if (layoutNum === 5) {
+                            coverDeco = '<div class="cover-deco">CAPA</div>';
+                        } else {
+                            coverDeco = '<div class="cover-deco"></div>';
+                        }
+                    }
+
+                    html += `
+                    <div class="slide-wrap" draggable="true" data-index="${index}" ondragstart="dragStart(event)" ondragover="dragOver(event)" ondrop="dropSlide(event)" ondragend="dragEnd(event)">
+                        <div class="slide-card layout-${layoutNum} ${isCapa ? 'is-cover' : ''} ${noBgClass}" id="slide-${index}">
+                            <div class="slide-bg" style="${bgStyle}"></div>
+                            <div class="slide-overlay"></div>
+                            ${extras}
+                            ${coverDeco}
+                            <div class="slide-number">${index + 1}</div>
+                            ${badge}
+                            ${logoHTML}
+                            <div class="slide-content">
+                                ${isCapa ? perfilHTML : ''}
+                                <div class="slide-headline" contenteditable="false">${slide.headline || ''}</div>
+                                <div class="slide-body" contenteditable="false">${slide.body || ''}</div>
+                            </div>
                         </div>
-                    </div>
-                </div>`;
+                        <div class="slide-edit-overlay">
+                            <button class="slide-edit-btn" onclick="editarSlide(${index})">
+                                <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                                Editar
+                            </button>
+                            <button class="slide-edit-btn" onclick="trocarImagem(${index})">
+                                <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+                                Imagem
+                            </button>
+                            <button class="slide-edit-btn" onclick="baixarSlide(${index})">
+                                <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                            </button>
+                        </div>
+                        <div class="edit-toolbar" id="toolbar-${index}">
+                            <div class="edit-group">
+                                <label>Fonte</label>
+                                <select onchange="mudarFonte(${index},this.value)">
+                                    <option value="Montserrat">Montserrat</option>
+                                    <option value="Inter">Inter</option>
+                                    <option value="Poppins">Poppins</option>
+                                    <option value="Playfair Display">Playfair</option>
+                                </select>
+                            </div>
+                            <div class="edit-group">
+                                <label>Cor texto</label>
+                                <input type="color" value="#ffffff" onchange="mudarCorTexto(${index},this.value)">
+                            </div>
+                            <div class="edit-group">
+                                <label>Tamanho</label>
+                                <input type="range" min="10" max="24" value="16" oninput="mudarTamanho(${index},this.value)">
+                            </div>
+                        </div>
+                    </div>`;
+                }
             });
 
             container.innerHTML = html;
@@ -1227,8 +1391,10 @@ Retorne EXATAMENTE este JSON:
         // ==================== REFAZER DESIGN ====================
         async function refazerDesign() {
             currentLayoutIndex++;
-            const layoutNum = (currentLayoutIndex % 10) + 1;
-            showStatus(`Carregando layout ${layoutNum} com novas imagens...`);
+            const isNoticia = designerModelo === 'noticia';
+            const layoutNum = isNoticia ? (currentLayoutIndex % 5) + 1 : (currentLayoutIndex % 10) + 1;
+            const designLabel = isNoticia ? `Notícia modelo ${layoutNum}` : `Layout ${layoutNum}`;
+            showStatus(`Carregando ${designLabel} com novas imagens...`);
 
             // Usar o mesmo sistema de pool do tema
             const temaOriginal = document.getElementById('inputTema').value.trim() || '';
@@ -1287,7 +1453,7 @@ Retorne EXATAMENTE este JSON:
 
             renderizarSlides();
             setTimeout(hideStatus, 1500);
-            mostrarNotificacao(`Layout ${layoutNum} - novas imagens!`, 'success');
+            mostrarNotificacao(`${designLabel} - novas imagens!`, 'success');
         }
 
         // ==================== DRAG & DROP ====================
@@ -1600,6 +1766,23 @@ Retorne EXATAMENTE este JSON:
                 el.style.padding = '12px 40px';
                 el.style.top = '40px';
                 el.style.right = '40px';
+            });
+
+            // Scale up noticia-specific elements
+            clone.querySelectorAll('.hl-tag').forEach(el => {
+                el.style.padding = '6px 28px 8px';
+                el.style.borderRadius = '10px';
+            });
+            clone.querySelectorAll('.noticia-tag').forEach(el => {
+                el.style.fontSize = '1.6rem';
+                el.style.padding = '14px 36px';
+                el.style.top = '50px';
+                el.style.left = '50px';
+                el.style.letterSpacing = '4px';
+                el.style.borderRadius = '10px';
+            });
+            clone.querySelectorAll('.noticia-line').forEach(el => {
+                el.style.height = '14px';
             });
 
             // Remove edit overlay
