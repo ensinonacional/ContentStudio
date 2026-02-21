@@ -557,10 +557,10 @@
         const PIXABAY_KEY = (function(){ try { return atob(_pk.split('').reverse().join('')); } catch(e) { return ''; } })();
         const PEXELS_KEY = 'nYMWBpMFOaBkaFPcoJkuAVcPMxFsGHoMg3UyzhAGjrOyYlBUkKK4kDBl';
 
-        // ---- PIXABAY ----
-        async function buscarPixabayAPI(query, perPage = 15) {
+        // ---- PIXABAY (max 200 por pagina) ----
+        async function buscarPixabayAPI(query, perPage = 15, page = 1) {
             try {
-                const url = `https://pixabay.com/api/?key=${PIXABAY_KEY}&q=${encodeURIComponent(query)}&image_type=photo&per_page=${perPage}&safesearch=true&order=popular&lang=pt`;
+                const url = `https://pixabay.com/api/?key=${PIXABAY_KEY}&q=${encodeURIComponent(query)}&image_type=photo&per_page=${Math.min(perPage, 200)}&page=${page}&safesearch=true&order=popular&lang=pt`;
                 const resp = await fetch(url);
                 if (!resp.ok) return [];
                 const data = await resp.json();
@@ -575,10 +575,10 @@
             } catch(e) { return []; }
         }
 
-        // ---- PEXELS ----
-        async function buscarPexelsAPI(query, perPage = 15) {
+        // ---- PEXELS (max 80 por pagina) ----
+        async function buscarPexelsAPI(query, perPage = 15, page = 1) {
             try {
-                const url = `https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&per_page=${perPage}&size=medium`;
+                const url = `https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&per_page=${Math.min(perPage, 80)}&page=${page}&size=medium`;
                 const resp = await fetch(url, { headers: { 'Authorization': PEXELS_KEY } });
                 if (!resp.ok) return [];
                 const data = await resp.json();
@@ -1166,11 +1166,26 @@ Retorne EXATAMENTE este JSON:
             const grid = document.getElementById('imgGrid');
             grid.innerHTML = '<p style="text-align:center;color:var(--text-muted);grid-column:1/-1;padding:20px">Buscando em Pixabay + Pexels...</p>';
 
-            // Buscar em ambos bancos com mais resultados
-            const [pixabay, pexels] = await Promise.allSettled([
-                buscarPixabayAPI(query, 40),
-                buscarPexelsAPI(query, 40)
+            // Buscar 300 de cada banco (múltiplas páginas em paralelo)
+            const [pix1, pix2, pex1, pex2, pex3, pex4] = await Promise.allSettled([
+                buscarPixabayAPI(query, 200),
+                buscarPixabayAPI(query, 100, 2),
+                buscarPexelsAPI(query, 80),
+                buscarPexelsAPI(query, 80, 2),
+                buscarPexelsAPI(query, 80, 3),
+                buscarPexelsAPI(query, 80, 4)
             ]);
+
+            const pixabay = { value: [
+                ...(pix1.status === 'fulfilled' ? pix1.value : []),
+                ...(pix2.status === 'fulfilled' ? pix2.value : [])
+            ]};
+            const pexels = { value: [
+                ...(pex1.status === 'fulfilled' ? pex1.value : []),
+                ...(pex2.status === 'fulfilled' ? pex2.value : []),
+                ...(pex3.status === 'fulfilled' ? pex3.value : []),
+                ...(pex4.status === 'fulfilled' ? pex4.value : [])
+            ]};
 
             let todas = [];
             if (pixabay.status === 'fulfilled') todas.push(...pixabay.value);
