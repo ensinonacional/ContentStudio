@@ -97,6 +97,13 @@
         .slide-headline { text-shadow: 0 1px 6px rgba(0,0,0,0.5), 0 2px 12px rgba(0,0,0,0.3); }
         .slide-body { text-shadow: 0 1px 4px rgba(0,0,0,0.4); }
 
+        /* Slide sem imagem (modo Criativo) */
+        .slide-card.no-bg-image { background: linear-gradient(145deg, #0a1628 0%, #0d1b2a 50%, #112240 100%); }
+        .slide-card.no-bg-image .slide-overlay { background: none !important; }
+        .slide-card.no-bg-image .slide-headline { font-size: 1.5rem !important; line-height: 1.25 !important; text-shadow: none; }
+        .slide-card.no-bg-image .slide-body { font-size: 0.82rem !important; opacity: 0.9; text-shadow: none; }
+        .slide-card.no-bg-image .slide-content { justify-content: center; }
+
         /* Layout 1: Classic Dark - image top, text bottom */
         .layout-1 .slide-bg { inset: 0; }
         .layout-1 .slide-overlay { background: linear-gradient(to bottom, transparent 0%, transparent 55%, rgba(10,22,40,0.4) 72%, rgba(10,22,40,0.78) 88%, rgba(10,22,40,0.92) 100%); }
@@ -328,6 +335,10 @@
                         <label class="img-type-option" onclick="selecionarTipoImagem('empresa',this)">
                             <svg viewBox="0 0 24 24" width="14" height="14"><path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z" fill="currentColor"/></svg>
                             Empresa
+                        </label>
+                        <label class="img-type-option" onclick="selecionarTipoImagem('criativo',this)">
+                            <svg viewBox="0 0 24 24" width="14" height="14"><path d="M7.5 5.6L10 7 8.6 4.5 10 2 7.5 3.4 5 2l1.4 2.5L5 7zm12 9.8L17 14l1.4 2.5L17 19l2.5-1.4L22 19l-1.4-2.5L22 14zM22 2l-2.5 1.4L17 2l1.4 2.5L17 7l2.5-1.4L22 7l-1.4-2.5zm-7.63 5.29a.996.996 0 00-1.41 0L1.29 18.96a.996.996 0 000 1.41l2.34 2.34c.39.39 1.02.39 1.41 0L16.7 11.05a.996.996 0 000-1.41l-2.33-2.35zm-1.97 5.67L7.71 8.27l2.34-2.34 4.69 4.69-2.34 2.34z" fill="currentColor"/></svg>
+                            Criativo
                         </label>
                     </div>
                 </div>
@@ -841,6 +852,8 @@ CONTEUDO BASE: ${conteudo}`;
                 regraCapa = `\n6. busca_pessoa: NO SLIDE 1 (CAPA), inclua o campo "busca_pessoa" com o NOME COMPLETO da pessoa famosa principal do tema. Ex: "Anitta", "Neymar Jr", "Elon Musk". A foto sera buscada na Wikipedia.`;
             } else if (tipoImagem === 'historia') {
                 regraCapa = `\n6. busca_pessoa: NO SLIDE 1 (CAPA), inclua o campo "busca_pessoa" com o NOME COMPLETO do personagem historico. Ex: "Albert Einstein", "Dom Pedro II". A foto sera buscada na Wikipedia.`;
+            } else if (tipoImagem === 'criativo') {
+                regraCapa = `\n6. MODO CRIATIVO DE IMAGENS: Adicione o campo "comImagem": true APENAS nos slides que voce quer que tenham foto de fundo. Voce tem liberdade criativa total para escolher: pode colocar imagem so na capa, ou em 2 slides do meio, ou alternados, ou so no ultimo. REGRA OBRIGATORIA: NAO coloque "comImagem": true em TODOS os slides - no minimo 1 slide deve ficar sem imagem. Slides sem "comImagem" terao fundo escuro elegante so com texto. Escolha de forma inteligente para criar contraste visual.`;
             }
 
             userPrompt += `
@@ -862,7 +875,7 @@ Retorne EXATAMENTE este JSON:
             "numero": 1,
             "tipo": "capa",
             "headline": "DOMINE SUA PRODUTIVIDADE AGORA",
-            "body": "Subtitulo curto e envolvente"${tipoImagem === 'famosos' || tipoImagem === 'historia' ? ',\n            "busca_pessoa": "Nome Completo"' : ''}
+            "body": "Subtitulo curto e envolvente"${tipoImagem === 'famosos' || tipoImagem === 'historia' ? ',\n            "busca_pessoa": "Nome Completo"' : ''}${tipoImagem === 'criativo' ? ',\n            "comImagem": true' : ''}
         },
         {
             "numero": 2,
@@ -944,9 +957,29 @@ Retorne EXATAMENTE este JSON:
 
                 console.log('[Posts] Pool: ' + fotosPool.length + ' total, ' + fotosNovas.length + ' novas, ' + jaUsadas.size + ' ja usadas');
 
+                // Modo Criativo: segurança - se IA colocou comImagem em TODOS, remover do penultimo
+                if (tipoImagem === 'criativo') {
+                    const totalCom = dadosGerados.slides.filter(s => s.comImagem).length;
+                    if (totalCom >= dadosGerados.slides.length && dadosGerados.slides.length > 1) {
+                        // Remover comImagem do penultimo slide de conteudo
+                        for (let i = dadosGerados.slides.length - 2; i >= 1; i--) {
+                            if (dadosGerados.slides[i].tipo !== 'capa') {
+                                delete dadosGerados.slides[i].comImagem;
+                                break;
+                            }
+                        }
+                    }
+                }
+
                 // Distribuir fotos nos slides
                 let fotoIndex = 0;
                 for (const slide of dadosGerados.slides) {
+                    // Modo Criativo: pular slides sem comImagem
+                    if (tipoImagem === 'criativo' && !slide.comImagem) {
+                        slide.bgImage = '';
+                        continue;
+                    }
+
                     const isCapa = slide.tipo === 'capa' || slide.numero === 1;
 
                     // Famosos/Historia: capa busca na Wikipedia
@@ -1003,7 +1036,9 @@ Retorne EXATAMENTE este JSON:
             let html = '';
             dadosGerados.slides.forEach((slide, index) => {
                 const isCapa = slide.tipo === 'capa';
-                const bgStyle = slide.bgImage ? `background-image: url('${slide.bgImage}'); background-size: cover; background-position: center;` : '';
+                const hasImage = slide.bgImage && slide.bgImage.trim() !== '';
+                const bgStyle = hasImage ? `background-image: url('${slide.bgImage}'); background-size: cover; background-position: center;` : '';
+                const noBgClass = hasImage ? '' : 'no-bg-image';
                 const badge = isCapa ? '<div class="slide-badge">CAPA</div>' : '';
 
                 // Logo HTML
@@ -1050,7 +1085,7 @@ Retorne EXATAMENTE este JSON:
 
                 html += `
                 <div class="slide-wrap" draggable="true" data-index="${index}" ondragstart="dragStart(event)" ondragover="dragOver(event)" ondrop="dropSlide(event)" ondragend="dragEnd(event)">
-                    <div class="slide-card layout-${layoutNum} ${isCapa ? 'is-cover' : ''}" id="slide-${index}">
+                    <div class="slide-card layout-${layoutNum} ${isCapa ? 'is-cover' : ''} ${noBgClass}" id="slide-${index}">
                         <div class="slide-bg" style="${bgStyle}"></div>
                         <div class="slide-overlay"></div>
                         ${extras}
@@ -1206,6 +1241,11 @@ Retorne EXATAMENTE este JSON:
             // Distribuir
             let idx = 0;
             for (const slide of dadosGerados.slides) {
+                // Modo Criativo: pular slides sem comImagem
+                if (tipoImagem === 'criativo' && !slide.comImagem) {
+                    slide.bgImage = '';
+                    continue;
+                }
                 if (idx < fotosNovas.length) {
                     slide.bgImage = fotosNovas[idx];
                     jaUsadas.add(fotosNovas[idx]);
