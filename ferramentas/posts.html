@@ -654,17 +654,26 @@
             return '';
         }
 
+        // URL do logo da empresa (para reutilizar nos slides)
+        let empresaLogoURL = '';
+
         // Buscar 1 imagem para um slide (roteador por tipo)
         // isCapa = true so para o slide 1 (capa)
         async function buscarImagemParaSlide(query, isCapa = false) {
             // SÓ NA CAPA: buscar imagem especial conforme tipo
             if (isCapa && tipoImagem === 'empresa') {
-                // Empresa: buscar logo no Pixabay (inclui vetores/ilustracoes)
+                // Empresa: buscar logo no Pixabay (inclui vetores/ilustracoes/PNG)
                 const logo = await buscarLogoPixabay(query);
-                if (logo) return logo;
+                if (logo) {
+                    empresaLogoURL = logo; // guardar para usar nos slides internos
+                    return logo;
+                }
                 // Fallback Wikipedia
                 const wikiImg = await buscarImagemWikipedia(query);
-                if (wikiImg) return wikiImg;
+                if (wikiImg) {
+                    empresaLogoURL = wikiImg;
+                    return wikiImg;
+                }
                 console.log('[Posts] Logo nao encontrado para "' + query + '", usando Pixabay generico...');
             } else if (isCapa && (tipoImagem === 'famosos' || tipoImagem === 'historia')) {
                 // Famosos/Historia: Wikipedia para foto da pessoa
@@ -676,7 +685,9 @@
             // Todos os outros slides + fallback: Pixabay fotos
             const { fotos } = await buscarPixabay(query, 10);
             if (fotos.length > 0) {
-                const pick = fotos[Math.floor(Math.random() * fotos.length)];
+                // Pegar entre os 3 primeiros (mais relevantes)
+                const top = fotos.slice(0, Math.min(3, fotos.length));
+                const pick = top[Math.floor(Math.random() * top.length)];
                 console.log('[Posts] Pixabay "' + query + '" -> OK');
                 return pick.url;
             }
@@ -685,7 +696,7 @@
             if (primeira && primeira !== query) {
                 const { fotos: fotos2 } = await buscarPixabay(primeira, 10);
                 if (fotos2.length > 0) {
-                    return fotos2[Math.floor(Math.random() * fotos2.length)].url;
+                    return fotos2[0].url; // primeiro resultado = mais relevante
                 }
             }
             return '';
@@ -705,6 +716,7 @@
             const tema = document.getElementById('inputTema').value.trim();
             const conteudo = document.getElementById('inputConteudo').value.trim();
             const numSlides = parseInt(document.getElementById('numSlides').value) || 5;
+            empresaLogoURL = ''; // resetar logo
 
             if (!tema && !conteudo) {
                 mostrarNotificacao('Digite um tema ou conteudo', 'error');
@@ -737,32 +749,6 @@ CONTEUDO BASE: ${conteudo}`;
                 userPrompt = `Crie um carrossel de ${numSlides} slides para Instagram sobre: ${tema}`;
             }
 
-            // Regra de busca_imagem varia conforme o tipo selecionado
-            let regraBuscaImagem = '';
-            if (tipoImagem === 'famosos') {
-                regraBuscaImagem = `6. busca_imagem: REGRA IMPORTANTE:
-   - Para o SLIDE 1 (CAPA): use o NOME COMPLETO da pessoa famosa ou celebridade principal do tema. Ex: "Anitta", "Neymar Jr", "Elon Musk". A foto dessa pessoa sera buscada na Wikipedia.
-   - Para os DEMAIS slides (2 em diante): use 1-3 palavras em PORTUGUES para buscar foto no Pixabay. Escolha termos que representem VISUALMENTE o conteudo. Exemplos por area:
-     * Musica: "palco show luzes", "microfone cantor", "publico festival"
-     * Esporte: "estadio futebol", "trofeu campeonato", "atleta correndo"
-     * Cinema: "camera cinema", "tapete vermelho", "oscar premiacao"
-     NUNCA repita o nome do famoso nos slides internos.`;
-            } else if (tipoImagem === 'historia') {
-                regraBuscaImagem = `6. busca_imagem: REGRA IMPORTANTE:
-   - Para o SLIDE 1 (CAPA): use o NOME COMPLETO do personagem historico principal do tema. Ex: "Albert Einstein", "Dom Pedro II", "Princesa Isabel". A foto sera buscada na Wikipedia.
-   - Para os DEMAIS slides (2 em diante): use 1-3 palavras em PORTUGUES para buscar foto no Pixabay. Escolha termos que representem VISUALMENTE o contexto historico. Exemplos:
-     * "livro antigo biblioteca", "mapa mundo antigo", "castelo medieval"
-     * "laboratorio ciencia", "pergaminho escrita", "museu estatua"
-     * "coroa realeza", "espada cavaleiro", "navio caravela"
-     NUNCA repita o nome da pessoa nos slides internos.`;
-            } else if (tipoImagem === 'empresa') {
-                regraBuscaImagem = `6. busca_imagem: REGRA IMPORTANTE:
-   - Para o SLIDE 1 (CAPA): use APENAS o nome da empresa/marca em INGLES como e conhecida mundialmente. Ex: "Instagram", "Facebook", "Google", "Apple", "Nike", "Coca Cola", "Netflix", "Amazon", "Uber", "Spotify". O logo sera buscado automaticamente.
-   - Para os DEMAIS slides (2 em diante): use 1-3 palavras em PORTUGUES para buscar foto no Pixabay. Use termos CONCRETOS e VISUAIS que representem o setor ou atividade da empresa (ex: para Instagram use "rede social celular", para Nike use "tenis corrida esporte", para Starbucks use "cafe xicara"). NUNCA repita o nome da empresa nos slides internos.`;
-            } else {
-                regraBuscaImagem = `6. busca_imagem: 1-3 palavras em PORTUGUES para buscar foto no banco Pixabay. Use termos CONCRETOS e VISUAIS relacionados ao slide (ex: "escritorio moderno", "cafe trabalho", "equipe reuniao", "laptop mesa", "escola alunos"). NUNCA use termos abstratos.`;
-            }
-
             userPrompt += `
 
 REGRAS:
@@ -771,25 +757,22 @@ REGRAS:
 3. Cada slide deve manter o MESMO ASSUNTO, com progresso na informacao
 4. headline: titulo curto e impactante (maximo 6 palavras)
 5. body: texto explicativo direto, maximo 3 linhas curtas
-${regraBuscaImagem}
-7. A numeracao dos slides internos e opcional - use quando fizer sentido (listas, passos, dicas)
+6. A numeracao dos slides internos e opcional - use quando fizer sentido (listas, passos, dicas)
 
-Retorne EXATAMENTE este JSON:
+Retorne EXATAMENTE este JSON (SEM o campo busca_imagem, as imagens serao escolhidas depois):
 {
     "slides": [
         {
             "numero": 1,
             "tipo": "capa",
             "headline": "Titulo da Capa Aqui",
-            "body": "Subtitulo curto e envolvente",
-            "busca_imagem": "escritorio moderno"
+            "body": "Subtitulo curto e envolvente"
         },
         {
             "numero": 2,
             "tipo": "conteudo",
             "headline": "Primeiro Ponto",
-            "body": "Texto explicativo curto e direto ao ponto. Maximo 3 linhas.",
-            "busca_imagem": "cafe trabalho"
+            "body": "Texto explicativo curto e direto ao ponto. Maximo 3 linhas."
         }
     ],
     "legenda": "Texto completo da legenda para Instagram com emojis",
@@ -809,12 +792,72 @@ Retorne EXATAMENTE este JSON:
                 dadosGerados = JSON.parse(jsonLimpo);
                 console.log('[Posts] JSON parsed, slides:', dadosGerados.slides?.length);
 
-                const tipoLabels = { famosos: 'foto do famoso na Wikipedia + imagens no Pixabay', historia: 'foto historica na Wikipedia + imagens no Pixabay', empresa: 'logo/foto da empresa na Wikipedia + imagens no Pixabay', aleatorio: 'imagens no Pixabay' };
-                const tipoLabel = tipoLabels[tipoImagem] || 'imagens no Pixabay';
-                showStatus('Buscando ' + tipoLabel + '...');
+                // ===== ETAPA 2: IA analisa cada slide e gera termos de busca PRECISOS =====
+                showStatus('Analisando slides para escolher imagens perfeitas...');
 
-                // Buscar imagens para cada slide
-                // Wikipedia so na capa, Pixabay nos demais
+                let instrucaoCapa = '';
+                if (tipoImagem === 'famosos') {
+                    instrucaoCapa = 'Para o slide 1 (capa): retorne o NOME COMPLETO da pessoa famosa/celebridade do tema (ex: "Anitta", "Neymar Jr"). A foto sera buscada na Wikipedia.';
+                } else if (tipoImagem === 'historia') {
+                    instrucaoCapa = 'Para o slide 1 (capa): retorne o NOME COMPLETO do personagem historico do tema (ex: "Albert Einstein", "Dom Pedro II"). A foto sera buscada na Wikipedia.';
+                } else if (tipoImagem === 'empresa') {
+                    instrucaoCapa = 'Para o slide 1 (capa): retorne o NOME da empresa/marca em ingles (ex: "Instagram", "Google", "Nike"). O logo sera buscado no banco de imagens.';
+                } else {
+                    instrucaoCapa = 'Para o slide 1 (capa): retorne 2-3 palavras visuais que representem o tema geral.';
+                }
+
+                const slidesTexto = dadosGerados.slides.map((s, i) =>
+                    `Slide ${i+1} (${s.tipo}): "${s.headline}" - "${s.body}"`
+                ).join('\n');
+
+                const imagemPrompt = `Analise cada slide abaixo e retorne termos de busca EXATOS para encontrar a foto perfeita no banco de imagens Pixabay.
+
+SLIDES:
+${slidesTexto}
+
+REGRAS CRITICAS:
+- ${instrucaoCapa}
+- Para slides 2 em diante: retorne 2-3 palavras em PORTUGUES que descrevam uma FOTO REAL que combine PERFEITAMENTE com o texto do slide.
+- A imagem deve representar EXATAMENTE o assunto do slide, nao algo generico.
+- Use substantivos CONCRETOS e FOTOGRAFAVEIS. Exemplos:
+  * Slide sobre remedios/farmacia → "laboratorio remedios pilulas"
+  * Slide sobre tecnologia/apps → "smartphone aplicativo tela"
+  * Slide sobre alimentacao → "prato comida saudavel"
+  * Slide sobre exercicios → "academia musculacao treino"
+  * Slide sobre dinheiro/economia → "moedas dinheiro economia"
+  * Slide sobre educacao → "sala aula estudante"
+- NUNCA use termos abstratos como "inovacao", "sucesso", "crescimento"
+- NUNCA use o mesmo termo para slides diferentes
+
+Retorne APENAS um JSON array com os termos, um por slide, na ordem:
+["termo slide 1", "termo slide 2", "termo slide 3", ...]`;
+
+                try {
+                    const imagemResp = await chamarAPI(
+                        'Voce e um especialista em busca de imagens. Retorne APENAS o JSON array solicitado, sem explicacoes.',
+                        imagemPrompt,
+                        1000
+                    );
+                    let imagemJSON = imagemResp.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+                    const arrMatch = imagemJSON.match(/\[[\s\S]*\]/);
+                    if (arrMatch) {
+                        const termos = JSON.parse(arrMatch[0]);
+                        dadosGerados.slides.forEach((slide, i) => {
+                            if (termos[i]) slide.busca_imagem = termos[i];
+                        });
+                        console.log('[Posts] Termos de busca otimizados:', termos);
+                    }
+                } catch(e) {
+                    console.warn('[Posts] Erro na otimizacao de imagens, usando fallback:', e);
+                    // Fallback: usar headline como termo de busca
+                    dadosGerados.slides.forEach(slide => {
+                        if (!slide.busca_imagem) slide.busca_imagem = slide.headline;
+                    });
+                }
+
+                // ===== ETAPA 3: Buscar imagens =====
+                showStatus('Buscando imagens correspondentes...');
+
                 const buscas = dadosGerados.slides.map(async (slide) => {
                     if (slide.busca_imagem) {
                         const isCapa = slide.tipo === 'capa' || slide.numero === 1;
@@ -877,6 +920,14 @@ Retorne EXATAMENTE este JSON:
                     </div>`;
                 }
 
+                // Logo da empresa nos slides internos (marca d'agua)
+                let empresaLogoHTML = '';
+                if (tipoImagem === 'empresa' && empresaLogoURL && !isCapa) {
+                    empresaLogoHTML = `<div style="position:absolute;top:12px;right:12px;z-index:15;width:36px;height:36px;border-radius:8px;overflow:hidden;opacity:0.85;background:rgba(255,255,255,0.9);padding:3px;box-shadow:0 2px 8px rgba(0,0,0,0.2);">
+                        <img src="${empresaLogoURL}" style="width:100%;height:100%;object-fit:contain;">
+                    </div>`;
+                }
+
                 // Layout-specific extras
                 let extras = '';
                 if (layoutNum === 3) extras = '<div class="slide-deco-top"></div><div class="slide-deco-bottom"></div>';
@@ -894,6 +945,7 @@ Retorne EXATAMENTE este JSON:
                         <div class="slide-number">${index + 1}</div>
                         ${badge}
                         ${logoHTML}
+                        ${empresaLogoHTML}
                         <div class="slide-content">
                             ${isCapa ? perfilHTML : ''}
                             <div class="slide-headline" contenteditable="false">${slide.headline || ''}</div>
