@@ -20,7 +20,7 @@
 
         /* ==================== CONFIG GRID ==================== */
         .config-row { display: grid; grid-template-columns: 1fr 120px; gap: 16px; align-items: end; }
-        @media (max-width: 600px) { .config-row { grid-template-columns: 1fr; } }
+        @media (max-width: 600px) { .config-row { grid-template-columns: 1fr !important; } }
         .field-group { display: flex; flex-direction: column; gap: 4px; }
         .field-label { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; color: var(--text-muted); }
         .field-input, .field-select { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-primary); color: var(--text-primary); font-size: 0.85rem; font-family: 'Inter', sans-serif; outline: none; transition: border-color 0.2s; }
@@ -249,6 +249,11 @@
         .switch input:checked + .slider { background: var(--accent); }
         .switch input:checked + .slider::before { transform: translateX(16px); }
 
+        /* ==================== IMAGE TYPE SELECTOR ==================== */
+        .img-type-option { display: inline-flex; align-items: center; gap: 5px; padding: 7px 14px; border: 1.5px solid var(--border); border-radius: 9999px; font-size: 0.75rem; font-weight: 600; color: var(--text-muted); cursor: pointer; transition: all 0.15s; user-select: none; }
+        .img-type-option:hover { border-color: var(--accent); color: var(--accent); }
+        .img-type-option.selected { border-color: var(--accent); color: var(--accent); background: var(--accent-glow); }
+
         /* Clearfix */
         .clearfix::after { content: ''; display: table; clear: both; }
     </style>
@@ -263,10 +268,27 @@
 
         <!-- Config Card -->
         <div class="card">
-            <div class="config-row">
+            <div class="config-row" style="grid-template-columns: 80px 1fr 120px">
                 <div class="field-group">
                     <span class="field-label">Slides</span>
                     <input type="number" id="numSlides" class="field-input" value="5" min="1" max="15" style="width:80px">
+                </div>
+                <div class="field-group">
+                    <span class="field-label">Tipo de imagem</span>
+                    <div style="display:flex;gap:6px;flex-wrap:wrap">
+                        <label class="img-type-option selected" onclick="selecionarTipoImagem('aleatorio',this)">
+                            <svg viewBox="0 0 24 24" width="16" height="16"><path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z" fill="currentColor"/></svg>
+                            Aleatorio
+                        </label>
+                        <label class="img-type-option" onclick="selecionarTipoImagem('famosos',this)">
+                            <svg viewBox="0 0 24 24" width="16" height="16"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z" fill="currentColor"/></svg>
+                            Famosos
+                        </label>
+                        <label class="img-type-option" onclick="selecionarTipoImagem('historia',this)">
+                            <svg viewBox="0 0 24 24" width="16" height="16"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z" fill="currentColor"/></svg>
+                            Historia
+                        </label>
+                    </div>
                 </div>
             </div>
 
@@ -470,6 +492,13 @@
         let currentPage = 1;
         let modalCallback = null;
         let perfilFotoBase64 = localStorage.getItem('post_perfil_foto') || '';
+        let tipoImagem = 'aleatorio'; // 'aleatorio', 'famosos', 'historia'
+
+        function selecionarTipoImagem(tipo, el) {
+            tipoImagem = tipo;
+            document.querySelectorAll('.img-type-option').forEach(e => e.classList.remove('selected'));
+            el.classList.add('selected');
+        }
 
         // Restaurar perfil
         document.getElementById('perfilNome').value = localStorage.getItem('post_perfil_nome') || '';
@@ -545,8 +574,68 @@
             }
         }
 
-        // Buscar 1 imagem para um slide
+        // Buscar imagem de pessoa na Wikipedia (famosos/historia)
+        async function buscarImagemWikipedia(nome) {
+            try {
+                const [ptResp, enResp] = await Promise.allSettled([
+                    fetch(`https://pt.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(nome)}&gsrlimit=3&prop=pageimages&piprop=original|thumbnail&pithumbsize=800&format=json&origin=*`),
+                    fetch(`https://en.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(nome)}&gsrlimit=3&prop=pageimages&piprop=original|thumbnail&pithumbsize=800&format=json&origin=*`)
+                ]);
+
+                // Tentar PT primeiro
+                if (ptResp.status === 'fulfilled' && ptResp.value.ok) {
+                    const data = await ptResp.value.json();
+                    if (data.query && data.query.pages) {
+                        const pages = Object.values(data.query.pages);
+                        for (const page of pages) {
+                            if (page.original) {
+                                console.log('[Wiki PT] "' + nome + '" -> ' + page.title);
+                                return page.original.source;
+                            }
+                            if (page.thumbnail) {
+                                console.log('[Wiki PT] "' + nome + '" -> ' + page.title + ' (thumb)');
+                                return page.thumbnail.source;
+                            }
+                        }
+                    }
+                }
+
+                // Fallback EN
+                if (enResp.status === 'fulfilled' && enResp.value.ok) {
+                    const data = await enResp.value.json();
+                    if (data.query && data.query.pages) {
+                        const pages = Object.values(data.query.pages);
+                        for (const page of pages) {
+                            if (page.original) {
+                                console.log('[Wiki EN] "' + nome + '" -> ' + page.title);
+                                return page.original.source;
+                            }
+                            if (page.thumbnail) {
+                                console.log('[Wiki EN] "' + nome + '" -> ' + page.title + ' (thumb)');
+                                return page.thumbnail.source;
+                            }
+                        }
+                    }
+                }
+
+                return '';
+            } catch(e) {
+                console.warn('[Wiki] erro:', e);
+                return '';
+            }
+        }
+
+        // Buscar 1 imagem para um slide (roteador por tipo)
         async function buscarImagemParaSlide(query) {
+            // Famosos e Historia: buscar na Wikipedia
+            if (tipoImagem === 'famosos' || tipoImagem === 'historia') {
+                const wikiImg = await buscarImagemWikipedia(query);
+                if (wikiImg) return wikiImg;
+                // Fallback para Pixabay se Wikipedia nao encontrar
+                console.log('[Posts] Wiki nao encontrou "' + query + '", tentando Pixabay...');
+            }
+
+            // Aleatorio ou fallback: Pixabay
             const { fotos } = await buscarPixabay(query, 10);
             if (fotos.length > 0) {
                 const pick = fotos[Math.floor(Math.random() * fotos.length)];
@@ -610,6 +699,16 @@ CONTEUDO BASE: ${conteudo}`;
                 userPrompt = `Crie um carrossel de ${numSlides} slides para Instagram sobre: ${tema}`;
             }
 
+            // Regra de busca_imagem varia conforme o tipo selecionado
+            let regraBuscaImagem = '';
+            if (tipoImagem === 'famosos') {
+                regraBuscaImagem = `6. busca_imagem: O NOME COMPLETO da pessoa famosa, celebridade ou personalidade mencionada ou relacionada ao conteudo do slide. Cada slide DEVE ter uma pessoa famosa diferente e relevante ao assunto. Ex: "Anitta", "Neymar Jr", "Elon Musk", "Beyonce". Se o slide nao for sobre uma pessoa especifica, use o nome da pessoa mais relevante ao tema.`;
+            } else if (tipoImagem === 'historia') {
+                regraBuscaImagem = `6. busca_imagem: O NOME COMPLETO do personagem historico, cientista, filosofo, lider ou figura historica mencionada ou relacionada ao conteudo do slide. Cada slide DEVE ter um personagem historico diferente e relevante. Ex: "Albert Einstein", "Cleópatra", "Dom Pedro II", "Leonardo da Vinci", "Princesa Isabel". Se o slide nao for sobre uma pessoa especifica, use o historiador/figura historica mais relevante ao tema.`;
+            } else {
+                regraBuscaImagem = `6. busca_imagem: 1-3 palavras em PORTUGUES para buscar foto no banco Pixabay. Use termos CONCRETOS e VISUAIS relacionados ao slide (ex: "escritorio moderno", "cafe trabalho", "equipe reuniao", "laptop mesa", "escola alunos"). NUNCA use termos abstratos.`;
+            }
+
             userPrompt += `
 
 REGRAS:
@@ -618,7 +717,7 @@ REGRAS:
 3. Cada slide deve manter o MESMO ASSUNTO, com progresso na informacao
 4. headline: titulo curto e impactante (maximo 6 palavras)
 5. body: texto explicativo direto, maximo 3 linhas curtas
-6. busca_imagem: 1-3 palavras em PORTUGUES para buscar foto no banco Pixabay. Use termos CONCRETOS e VISUAIS relacionados ao slide (ex: "escritorio moderno", "cafe trabalho", "equipe reuniao", "laptop mesa", "escola alunos"). NUNCA use termos abstratos.
+${regraBuscaImagem}
 7. A numeracao dos slides internos e opcional - use quando fizer sentido (listas, passos, dicas)
 
 Retorne EXATAMENTE este JSON:
@@ -656,7 +755,8 @@ Retorne EXATAMENTE este JSON:
                 dadosGerados = JSON.parse(jsonLimpo);
                 console.log('[Posts] JSON parsed, slides:', dadosGerados.slides?.length);
 
-                showStatus('Buscando imagens...');
+                const tipoLabel = tipoImagem === 'famosos' ? 'famosos na Wikipedia' : tipoImagem === 'historia' ? 'figuras historicas na Wikipedia' : 'imagens no Pixabay';
+                showStatus('Buscando ' + tipoLabel + '...');
 
                 // Buscar imagens para cada slide
                 const buscas = dadosGerados.slides.map(async (slide) => {
