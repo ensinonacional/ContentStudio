@@ -1224,13 +1224,9 @@ Retorne EXATAMENTE este JSON:
                 ...(pex4.status === 'fulfilled' ? pex4.value : [])
             ]};
 
-            let todas = [];
-            if (pixabay.status === 'fulfilled') todas.push(...pixabay.value);
-            if (pexels.status === 'fulfilled') todas.push(...pexels.value);
-
             // Intercalar resultados
-            const pixFotos = todas.filter(f => f.fonte === 'pixabay');
-            const pexFotos = todas.filter(f => f.fonte === 'pexels');
+            const pixFotos = pixabay.value || [];
+            const pexFotos = pexels.value || [];
             modalResultados = [];
             const max = Math.max(pixFotos.length, pexFotos.length);
             for (let i = 0; i < max; i++) {
