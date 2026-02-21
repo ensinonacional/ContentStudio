@@ -552,98 +552,81 @@
             }
         }
 
-        // ==================== PIXABAY API ====================
+        // ==================== BANCOS DE IMAGENS ====================
         const _pk = '==wN5IjMyUjNhFmZxQTY3IGNkJDM0EzNxImZtIDOwQTM2QTN';
         const PIXABAY_KEY = (function(){ try { return atob(_pk.split('').reverse().join('')); } catch(e) { return ''; } })();
+        const PEXELS_KEY = 'nYMWBpMFOaBkaFPcoJkuAVcPMxFsGHoMg3UyzhAGjrOyYlBUkKK4kDBl';
 
-        // Traduzir termos PT -> EN para busca mais precisa no Pixabay
-        const traducoes = {
-            'marketing':'marketing','rede social':'social media','redes sociais':'social media',
-            'metricas':'analytics metrics','metrica':'analytics','conteudo':'content','conteúdo':'content',
-            'engajamento':'engagement','vendas':'sales','cliente':'customer','clientes':'customers',
-            'empresa':'business company','empresas':'business','tecnologia':'technology',
-            'inovacao':'innovation','inovação':'innovation','educacao':'education','educação':'education',
-            'saude':'health','saúde':'health','fitness':'fitness','treino':'workout training',
-            'exercicio':'exercise','alimentacao':'food nutrition','alimentação':'food nutrition',
-            'comida':'food','receita':'recipe','cozinha':'kitchen cooking',
-            'moda':'fashion','beleza':'beauty','maquiagem':'makeup',
-            'viagem':'travel','turismo':'tourism','fotografia':'photography',
-            'musica':'music','música':'music','cinema':'cinema film','filme':'movie',
-            'livro':'book','leitura':'reading','escrita':'writing',
-            'dinheiro':'money finance','economia':'economy','investimento':'investment',
-            'empreendedorismo':'entrepreneurship','negocio':'business','negócio':'business',
-            'lideranca':'leadership','liderança':'leadership','gestao':'management','gestão':'management',
-            'produtividade':'productivity','organizacao':'organization','organização':'organization',
-            'psicologia':'psychology','motivacao':'motivation','motivação':'motivation',
-            'natureza':'nature','sustentabilidade':'sustainability','meio ambiente':'environment',
-            'esporte':'sport','futebol':'soccer football','corrida':'running',
-            'remedio':'medicine pills','remédio':'medicine pills','farmacia':'pharmacy','farmácia':'pharmacy',
-            'laboratorio':'laboratory','laboratório':'laboratory','ciencia':'science','ciência':'science',
-            'historia':'history','história':'history','arte':'art','cultura':'culture',
-            'design':'design','criatividade':'creativity','grafico':'graphic',
-            'programacao':'programming','programação':'programming','codigo':'code','código':'code',
-            'celular':'smartphone mobile','computador':'computer','internet':'internet',
-            'casa':'home house','decoracao':'decoration interior','decoração':'decoration interior',
-            'familia':'family','família':'family','crianca':'child kids','criança':'child kids',
-            'animal':'animal','cachorro':'dog','gato':'cat','planta':'plant',
-            'flor':'flower','jardim':'garden','praia':'beach','montanha':'mountain'
-        };
-
-        function traduzirParaEN(query) {
-            let resultado = query.toLowerCase();
-            // Tentar traduzir frases compostas primeiro (mais longas primeiro)
-            const chaves = Object.keys(traducoes).sort((a,b) => b.length - a.length);
-            for (const pt of chaves) {
-                if (resultado.includes(pt)) {
-                    resultado = resultado.replace(pt, traducoes[pt]);
-                }
-            }
-            return resultado;
+        // ---- PIXABAY ----
+        async function buscarPixabayAPI(query, perPage = 15) {
+            try {
+                const url = `https://pixabay.com/api/?key=${PIXABAY_KEY}&q=${encodeURIComponent(query)}&image_type=photo&per_page=${perPage}&safesearch=true&order=popular&lang=pt`;
+                const resp = await fetch(url);
+                if (!resp.ok) return [];
+                const data = await resp.json();
+                return (data.hits || []).map(h => ({
+                    url: h.largeImageURL || h.webformatURL,
+                    thumb: h.webformatURL,
+                    credit: h.user + ' - Pixabay',
+                    tags: h.tags,
+                    likes: h.likes || 0,
+                    fonte: 'pixabay'
+                }));
+            } catch(e) { return []; }
         }
 
-        // Buscar fotos no Pixabay - busca em INGLÊS para mais qualidade + fallback PT
-        async function buscarPixabay(query, perPage = 20, page = 1) {
+        // ---- PEXELS ----
+        async function buscarPexelsAPI(query, perPage = 15) {
             try {
-                // Traduzir para inglês para resultados melhores
-                const queryEN = traduzirParaEN(query);
-                console.log('[Pixabay] Busca: "' + query + '" -> EN: "' + queryEN + '"');
-
-                // Busca principal: inglês, ordenado por popularidade, alta resolução
-                const url = `https://pixabay.com/api/?key=${PIXABAY_KEY}&q=${encodeURIComponent(queryEN)}&image_type=photo&per_page=${perPage}&page=${page}&safesearch=true&order=popular&min_width=800`;
-                const resp = await fetch(url);
-                if (!resp.ok) return { fotos: [], total: 0 };
+                const url = `https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&per_page=${perPage}&size=medium`;
+                const resp = await fetch(url, { headers: { 'Authorization': PEXELS_KEY } });
+                if (!resp.ok) return [];
                 const data = await resp.json();
+                return (data.photos || []).map(p => ({
+                    url: p.src.large2x || p.src.large || p.src.original,
+                    thumb: p.src.medium || p.src.small,
+                    credit: p.photographer + ' - Pexels',
+                    tags: p.alt || '',
+                    likes: 0,
+                    fonte: 'pexels'
+                }));
+            } catch(e) { return []; }
+        }
 
-                if (data.hits && data.hits.length > 0) {
-                    return {
-                        fotos: data.hits.map(h => ({
-                            url: h.largeImageURL || h.webformatURL,
-                            thumb: h.webformatURL,
-                            credit: h.user,
-                            tags: h.tags
-                        })),
-                        total: data.totalHits || 0
-                    };
-                }
+        // ---- BUSCA UNIFICADA: Pixabay + Pexels simultâneo ----
+        async function buscarPixabay(query, perPage = 20, page = 1) {
+            // Buscar em TODOS os bancos ao mesmo tempo
+            const [pixabay, pexels] = await Promise.allSettled([
+                buscarPixabayAPI(query, perPage),
+                buscarPexelsAPI(query, perPage)
+            ]);
 
-                // Fallback: busca original em português se inglês não encontrou
-                const urlPT = `https://pixabay.com/api/?key=${PIXABAY_KEY}&q=${encodeURIComponent(query)}&image_type=photo&per_page=${perPage}&page=${page}&safesearch=true&order=popular&lang=pt`;
-                const respPT = await fetch(urlPT);
-                if (!respPT.ok) return { fotos: [], total: 0 };
-                const dataPT = await respPT.json();
-                return {
-                    fotos: (dataPT.hits || []).map(h => ({
-                        url: h.largeImageURL || h.webformatURL,
-                        thumb: h.webformatURL,
-                        credit: h.user,
-                        tags: h.tags
-                    })),
-                    total: dataPT.totalHits || 0
-                };
-            } catch(e) {
-                console.warn('[Pixabay] erro:', e);
-                return { fotos: [], total: 0 };
+            let todas = [];
+            if (pixabay.status === 'fulfilled') todas.push(...pixabay.value);
+            if (pexels.status === 'fulfilled') todas.push(...pexels.value);
+
+            console.log('[Busca] "' + query + '" -> Pixabay: ' + (pixabay.value?.length || 0) + ', Pexels: ' + (pexels.value?.length || 0) + ' = Total: ' + todas.length);
+
+            // Intercalar resultados (1 pixabay, 1 pexels, 1 pixabay...)
+            // para dar variedade
+            const pixFotos = todas.filter(f => f.fonte === 'pixabay');
+            const pexFotos = todas.filter(f => f.fonte === 'pexels');
+            const intercaladas = [];
+            const max = Math.max(pixFotos.length, pexFotos.length);
+            for (let i = 0; i < max; i++) {
+                if (i < pixFotos.length) intercaladas.push(pixFotos[i]);
+                if (i < pexFotos.length) intercaladas.push(pexFotos[i]);
             }
+
+            return {
+                fotos: intercaladas.map(f => ({
+                    url: f.url,
+                    thumb: f.thumb,
+                    credit: f.credit,
+                    tags: f.tags
+                })),
+                total: intercaladas.length
+            };
         }
 
         // Buscar imagem de pessoa na Wikipedia (famosos/historia)
@@ -741,21 +724,21 @@
                 console.log('[Posts] Wiki nao encontrou "' + query + '", tentando Pixabay...');
             }
 
-            // Todos os outros slides + fallback: Pixabay fotos (ordem por popularidade)
-            const { fotos } = await buscarPixabay(query, 15);
+            // Todos os outros slides + fallback: busca unificada (Pixabay + Pexels)
+            const { fotos } = await buscarPixabay(query, 10);
             if (fotos.length > 0) {
-                // Pegar entre os top 5 mais populares (já ordenados por popularidade)
-                const top = Math.min(5, fotos.length);
+                // Pegar entre os top 3 (já ordenados por qualidade/popularidade)
+                const top = Math.min(3, fotos.length);
                 const pick = fotos[Math.floor(Math.random() * top)];
-                console.log('[Posts] Pixabay "' + query + '" -> OK (top ' + top + ')');
+                console.log('[Busca] "' + query + '" -> ' + pick.credit);
                 return pick.url;
             }
-            // Fallback: tentar só o tema (primeira parte da busca)
+            // Fallback: tentar só a primeira palavra
             const primeira = query.split(/\s+/)[0];
             if (primeira && primeira !== query) {
-                const { fotos: fotos2 } = await buscarPixabay(primeira, 15);
+                const { fotos: fotos2 } = await buscarPixabay(primeira, 10);
                 if (fotos2.length > 0) {
-                    return fotos2[0].url; // mais popular
+                    return fotos2[0].url;
                 }
             }
             return '';
@@ -870,20 +853,25 @@ Retorne EXATAMENTE este JSON:
 
                 console.log('[Posts] Tema: "' + temaOriginal + '" -> Chave busca: "' + temaChave + '"');
 
+                // Stop words para filtrar headline
+                const stopWords = ['de','do','da','dos','das','para','com','sem','por','em','no','na','nos','nas','um','uma','o','a','os','as','e','ou','que','se','ao','seu','sua','seus','suas','como','mais','muito','voce','você','esse','essa'];
+
                 dadosGerados.slides.forEach((slide, i) => {
                     const isCapa = slide.tipo === 'capa' || slide.numero === 1;
 
                     if (isCapa) {
                         // CAPA: busca só o tema
                         if ((tipoImagem === 'famosos' || tipoImagem === 'historia') && slide.busca_pessoa) {
-                            // Famosos/Historia: usar nome da pessoa da Wikipedia
                             slide.busca_imagem = slide.busca_pessoa;
                         } else {
                             slide.busca_imagem = temaChave;
                         }
                     } else {
-                        // DEMAIS SLIDES: TEMA + assunto do slide (headline)
-                        slide.busca_imagem = temaChave + ' ' + (slide.headline || '');
+                        // DEMAIS SLIDES: TEMA + 1 palavra-chave do headline (máx 2 palavras total)
+                        const headlineWords = (slide.headline || '').split(/\s+/)
+                            .filter(w => !stopWords.includes(w.toLowerCase()) && w.length > 2);
+                        const keyword = headlineWords[0] || '';
+                        slide.busca_imagem = (temaChave + ' ' + keyword).trim();
                     }
 
                     console.log('[Posts] Slide ' + (i+1) + ' busca: "' + slide.busca_imagem + '"');
