@@ -228,9 +228,65 @@
         .layout-10.is-cover .cover-deco { position: absolute; bottom: -20px; right: -20px; width: 120px; height: 120px; background: radial-gradient(circle, rgba(244,197,66,0.15) 0%, transparent 70%); border-radius: 50%; z-index: 4; }
 
         /* ==================== DESIGNER SELECTOR ==================== */
-        .designer-option { display: inline-flex; align-items: center; gap: 5px; padding: 7px 14px; border: 1.5px solid var(--border); border-radius: 9999px; font-size: 0.75rem; font-weight: 600; color: var(--text-muted); cursor: pointer; transition: all 0.15s; user-select: none; }
-        .designer-option:hover { border-color: var(--accent); color: var(--accent); }
-        .designer-option.selected { border-color: var(--accent); color: var(--accent); background: var(--accent-glow); }
+        .designer-select { width: 100%; padding: 10px 32px 10px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-primary); color: var(--text-primary); font-size: 0.85rem; font-family: 'Inter', sans-serif; font-weight: 600; outline: none; transition: border-color 0.2s; cursor: pointer; appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='%23888'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; }
+        .designer-select:focus { border-color: var(--accent); }
+        .designer-select option { background: var(--bg-card); color: var(--text-primary); padding: 8px; }
+
+        /* ==================== DESIGNER NOTICIA — CAPA ==================== */
+        .noticia-capa { position: relative; overflow: hidden; }
+        .noticia-capa .slide-bg { position: absolute; inset: 0; background-size: cover; background-position: center; }
+        .noticia-capa .slide-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(45,140,255,0.08) 0%, transparent 25%, transparent 40%, rgba(10,46,46,0.45) 55%, rgba(10,46,46,0.9) 78%, rgba(10,46,46,0.98) 100%); }
+        .noticia-capa .slide-content { position: absolute; bottom: 0; left: 0; right: 0; padding: 20px 20px 22px; display: flex; flex-direction: column; justify-content: flex-end; z-index: 5; }
+        .noticia-capa .slide-headline { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.35rem; line-height: 1.15; color: white; text-transform: uppercase; letter-spacing: -0.3px; }
+        .noticia-capa .slide-headline .hl-tag { background: #2D8CFF; color: white; padding: 2px 8px 5px; border-radius: 3px; border-bottom: 3px solid #F5C542; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+        .noticia-capa .slide-body { font-family: 'Inter', sans-serif; font-size: 0.7rem; color: rgba(255,255,255,0.85); line-height: 1.45; margin-top: 6px; }
+        .noticia-capa .noticia-tag { position: absolute; top: 14px; left: 14px; background: #2D8CFF; color: white; font-family: 'Montserrat', sans-serif; font-size: 0.5rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; padding: 4px 10px; border-radius: 3px; z-index: 10; }
+        .noticia-capa .noticia-line { position: absolute; bottom: 0; left: 0; right: 0; height: 4px; background: linear-gradient(to right, #2D8CFF, #00C9A7); z-index: 10; }
+
+        /* ==================== DESIGNER NOTICIA — MODELO 1: Blocos ==================== */
+        .noticia-1 { background: #0A2E2E; }
+        .noticia-1 .slide-bg { display: none; }
+        .noticia-1 .slide-overlay { display: none; }
+        .noticia-1 .slide-content { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; padding: 28px 24px 28px 28px; z-index: 5; border-left: 4px solid #2D8CFF; margin: 20px 16px; }
+        .noticia-1 .slide-headline { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 1.15rem; color: white; line-height: 1.25; text-transform: uppercase; }
+        .noticia-1 .slide-body { font-family: 'Inter', sans-serif; font-size: 0.75rem; color: rgba(255,255,255,0.75); line-height: 1.55; margin-top: 10px; }
+        .noticia-1 .noticia-circle { position: absolute; bottom: 16px; right: 16px; width: 40px; height: 40px; border: 2px solid rgba(0,201,167,0.15); border-radius: 50%; }
+
+        /* ==================== DESIGNER NOTICIA — MODELO 2: Card Limpo ==================== */
+        .noticia-2 { background: #f0f2f5 !important; }
+        .noticia-2 .slide-bg { display: none; }
+        .noticia-2 .slide-overlay { display: none; }
+        .noticia-2 .slide-content { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; padding: 30px 24px; z-index: 5; }
+        .noticia-2 .slide-headline { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 1.1rem; color: #0A2E2E; line-height: 1.3; padding-bottom: 10px; border-bottom: 3px solid #2D8CFF; text-shadow: none; }
+        .noticia-2 .slide-body { font-family: 'Inter', sans-serif; font-size: 0.75rem; color: #333; line-height: 1.6; margin-top: 12px; text-shadow: none; opacity: 1; }
+        .noticia-2 .noticia-bar-top { position: absolute; top: 0; left: 0; right: 0; height: 5px; background: linear-gradient(to right, #2D8CFF, #00C9A7); z-index: 6; }
+        .noticia-2 .slide-number { background: #0A2E2E !important; }
+
+        /* ==================== DESIGNER NOTICIA — MODELO 3: Split Horizontal ==================== */
+        .noticia-3 .slide-bg { position: absolute; top: 0; left: 0; right: 0; height: 45%; background-size: cover; background-position: center; }
+        .noticia-3 .slide-overlay { position: absolute; top: 0; left: 0; right: 0; height: 45%; background: linear-gradient(to bottom, transparent 30%, rgba(10,46,46,0.6) 100%); }
+        .noticia-3 .slide-content { position: absolute; top: 45%; left: 0; right: 0; bottom: 0; background: #0A2E2E; display: flex; flex-direction: column; justify-content: center; padding: 16px 22px; z-index: 5; }
+        .noticia-3 .slide-headline { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 1rem; color: white; line-height: 1.3; }
+        .noticia-3 .slide-body { font-family: 'Inter', sans-serif; font-size: 0.72rem; color: rgba(255,255,255,0.8); line-height: 1.55; margin-top: 8px; }
+        .noticia-3 .noticia-accent { position: absolute; top: 44%; left: 22px; width: 30px; height: 3px; background: #2D8CFF; z-index: 6; border-radius: 2px; }
+
+        /* ==================== DESIGNER NOTICIA — MODELO 4: Textura ==================== */
+        .noticia-4 { background: #0A2E2E; }
+        .noticia-4 .slide-bg { display: none; }
+        .noticia-4 .slide-overlay { display: none; }
+        .noticia-4 .noticia-dots { position: absolute; inset: 0; background-image: radial-gradient(rgba(0,201,167,0.06) 1px, transparent 1px); background-size: 16px 16px; z-index: 1; pointer-events: none; }
+        .noticia-4 .slide-content { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 30px 24px; z-index: 5; }
+        .noticia-4 .slide-headline { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.25rem; color: white; line-height: 1.2; text-transform: uppercase; }
+        .noticia-4 .slide-body { font-family: 'Inter', sans-serif; font-size: 0.72rem; color: rgba(255,255,255,0.7); line-height: 1.6; margin-top: 12px; max-width: 90%; }
+        .noticia-4 .noticia-accent { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); width: 40px; height: 3px; background: linear-gradient(to right, #2D8CFF, #00C9A7); border-radius: 2px; z-index: 6; }
+
+        /* ==================== DESIGNER NOTICIA — MODELO 5: Destaque Lateral ==================== */
+        .noticia-5 .slide-bg { position: absolute; top: 0; left: 0; width: 40%; height: 100%; background-size: cover; background-position: center; }
+        .noticia-5 .slide-overlay { position: absolute; top: 0; left: 0; width: 40%; height: 100%; background: linear-gradient(to right, transparent 40%, rgba(10,46,46,0.8) 100%); }
+        .noticia-5 .slide-content { position: absolute; top: 0; left: 40%; right: 0; bottom: 0; background: #0A2E2E; display: flex; flex-direction: column; justify-content: center; padding: 20px 18px 20px 22px; z-index: 5; }
+        .noticia-5 .slide-headline { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.95rem; color: white; line-height: 1.3; }
+        .noticia-5 .slide-body { font-family: 'Inter', sans-serif; font-size: 0.7rem; color: rgba(255,255,255,0.75); line-height: 1.55; margin-top: 8px; }
+        .noticia-5 .noticia-divider { position: absolute; top: 15%; left: 40%; width: 3px; height: 70%; background: linear-gradient(to bottom, #2D8CFF, #00C9A7); z-index: 6; border-radius: 2px; }
 
         /* ==================== DESIGNER CRIATIVO — CAPA ==================== */
         .criativo-capa { position: relative; overflow: hidden; }
@@ -396,18 +452,13 @@
         <!-- Config Card -->
         <div class="card">
             <div style="display:flex;gap:16px;align-items:end;flex-wrap:wrap;margin-bottom:12px">
-                <div class="field-group" style="flex-shrink:0">
+                <div class="field-group" style="flex-shrink:0;min-width:140px">
                     <span class="field-label">Designer</span>
-                    <div style="display:flex;gap:6px;flex-wrap:wrap">
-                        <label class="designer-option selected" onclick="selecionarDesigner('padrao',this)">
-                            <svg viewBox="0 0 24 24" width="14" height="14"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/></svg>
-                            Padrao
-                        </label>
-                        <label class="designer-option" onclick="selecionarDesigner('criativo',this)">
-                            <svg viewBox="0 0 24 24" width="14" height="14"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-1-.01-.83.67-1.5 1.49-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 9 6.5 9 8 9.67 8 10.5 7.33 12 6.5 12zm3-4C8.67 8 8 7.33 8 6.5S8.67 5 9.5 5s1.5.67 1.5 1.5S10.33 8 9.5 8zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 5 14.5 5s1.5.67 1.5 1.5S15.33 8 14.5 8zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 9 17.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z" fill="currentColor"/></svg>
-                            Criativo
-                        </label>
-                    </div>
+                    <select id="designerSelect" class="designer-select" onchange="selecionarDesigner(this.value)">
+                        <option value="padrao">📐 Padrão</option>
+                        <option value="noticia">📰 Notícia</option>
+                        <option value="criativo">🎨 Criativo</option>
+                    </select>
                 </div>
                 <div class="field-group" style="flex-shrink:0">
                     <span class="field-label">Slides</span>
@@ -651,13 +702,11 @@
         let perfilFotoBase64 = localStorage.getItem('post_perfil_foto') || '';
         let tipoImagem = 'aleatorio'; // 'aleatorio', 'famosos', 'historia', 'empresa'
         let modoImagem = 'imagens'; // 'imagens' ou 'criativo'
-        let designerModelo = 'padrao'; // 'padrao' ou 'criativo'
+        let designerModelo = 'padrao'; // 'padrao', 'noticia' ou 'criativo'
 
-        function selecionarDesigner(modelo, el) {
+        function selecionarDesigner(modelo) {
             designerModelo = modelo;
-            document.querySelectorAll('.designer-option').forEach(e => e.classList.remove('selected'));
-            el.classList.add('selected');
-            // Se já tem slides gerados, re-renderizar com novo designer
+            currentLayoutIndex = 0; // resetar ao trocar de designer
             if (dadosGerados) renderizarSlides();
         }
 
@@ -984,9 +1033,9 @@ CONTEUDO BASE: ${conteudo}`;
                 regraCapa = `\n6. MODO CRIATIVO DE IMAGENS: Adicione o campo "comImagem": true APENAS nos slides que voce quer que tenham foto de fundo. Voce tem liberdade criativa total para escolher: pode colocar imagem so na capa, ou em 2 slides do meio, ou alternados, ou so no ultimo. REGRA OBRIGATORIA: NAO coloque "comImagem": true em TODOS os slides - no minimo 1 slide deve ficar sem imagem. Slides sem "comImagem" terao fundo escuro elegante so com texto. Escolha de forma inteligente para criar contraste visual.`;
             }
 
-            // Regra extra para Designer Criativo: campo "destaque" na capa
+            // Regra extra para Designer Noticia/Criativo: campo "destaque" na capa
             let regraDestaque = '';
-            if (designerModelo === 'criativo') {
+            if (designerModelo === 'criativo' || designerModelo === 'noticia') {
                 regraDestaque = `\n8. destaque: NO SLIDE 1 (CAPA), inclua o campo "destaque" com 1-2 PALAVRAS-CHAVE do titulo que devem ser destacadas visualmente com fundo colorido. Escolha as palavras mais impactantes e de efeito. Ex: se headline="CRISE GLOBAL ATINGE MERCADOS", destaque="CRISE GLOBAL". Se headline="INTELIGENCIA ARTIFICIAL MUDA O MUNDO", destaque="INTELIGENCIA ARTIFICIAL". SEMPRE inclua este campo no slide 1.`;
             }
 
@@ -1009,7 +1058,7 @@ Retorne EXATAMENTE este JSON:
             "numero": 1,
             "tipo": "capa",
             "headline": "DOMINE SUA PRODUTIVIDADE AGORA",
-            "body": "Subtitulo curto e envolvente"${tipoImagem === 'famosos' || tipoImagem === 'historia' ? ',\n            "busca_pessoa": "Nome Completo"' : ''}${modoImagem === 'criativo' ? ',\n            "comImagem": true' : ''}${designerModelo === 'criativo' ? ',\n            "destaque": "PRODUTIVIDADE"' : ''}
+            "body": "Subtitulo curto e envolvente"${tipoImagem === 'famosos' || tipoImagem === 'historia' ? ',\n            "busca_pessoa": "Nome Completo"' : ''}${modoImagem === 'criativo' ? ',\n            "comImagem": true' : ''}${(designerModelo === 'criativo' || designerModelo === 'noticia') ? ',\n            "destaque": "PRODUTIVIDADE"' : ''}
         },
         {
             "numero": 2,
@@ -1168,7 +1217,8 @@ Retorne EXATAMENTE este JSON:
 
             // Determinar layout conforme designer
             const isCriativo = designerModelo === 'criativo';
-            const layoutNum = isCriativo ? (currentLayoutIndex % 5) + 1 : (currentLayoutIndex % 10) + 1;
+            const isNoticia = designerModelo === 'noticia';
+            const layoutNum = (isCriativo || isNoticia) ? (currentLayoutIndex % 5) + 1 : (currentLayoutIndex % 10) + 1;
 
             let html = '';
             dadosGerados.slides.forEach((slide, index) => {
@@ -1200,8 +1250,84 @@ Retorne EXATAMENTE este JSON:
                     </div>`;
                 }
 
+                // ===== MODO NOTICIA =====
+                if (isNoticia) {
+                    const slideClass = isCapa ? 'noticia-capa' : `noticia-${layoutNum}`;
+
+                    // Headline com destaque (hl-tag) na capa
+                    let headlineHTML = slide.headline || '';
+                    if (isCapa && slide.destaque && headlineHTML) {
+                        const escapedDestaque = slide.destaque.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                        const re = new RegExp(`(${escapedDestaque})`, 'gi');
+                        headlineHTML = headlineHTML.replace(re, '<span class="hl-tag">$1</span>');
+                    }
+
+                    // Elementos decorativos reais (divs)
+                    let noticiaExtras = '';
+                    if (isCapa) {
+                        noticiaExtras = `<div class="noticia-tag">NOTÍCIA</div><div class="noticia-line"></div>`;
+                    } else {
+                        const decoMap = {
+                            1: `<div class="noticia-circle"></div>`,
+                            2: `<div class="noticia-bar-top"></div>`,
+                            3: `<div class="noticia-accent"></div>`,
+                            4: `<div class="noticia-dots"></div><div class="noticia-accent"></div>`,
+                            5: `<div class="noticia-divider"></div>`
+                        };
+                        noticiaExtras = decoMap[layoutNum] || '';
+                    }
+
+                    html += `
+                    <div class="slide-wrap" draggable="true" data-index="${index}" ondragstart="dragStart(event)" ondragover="dragOver(event)" ondrop="dropSlide(event)" ondragend="dragEnd(event)">
+                        <div class="slide-card ${slideClass} ${isCapa ? 'is-cover' : ''} ${noBgClass}" id="slide-${index}">
+                            <div class="slide-bg" style="${bgStyle}"></div>
+                            <div class="slide-overlay"></div>
+                            ${noticiaExtras}
+                            <div class="slide-number">${index + 1}</div>
+                            ${badge}
+                            ${logoHTML}
+                            <div class="slide-content">
+                                ${isCapa ? perfilHTML : ''}
+                                <div class="slide-headline" contenteditable="false">${headlineHTML}</div>
+                                <div class="slide-body" contenteditable="false">${slide.body || ''}</div>
+                            </div>
+                        </div>
+                        <div class="slide-edit-overlay">
+                            <button class="slide-edit-btn" onclick="editarSlide(${index})">
+                                <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                                Editar
+                            </button>
+                            <button class="slide-edit-btn" onclick="trocarImagem(${index})">
+                                <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+                                Imagem
+                            </button>
+                            <button class="slide-edit-btn" onclick="baixarSlide(${index})">
+                                <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                            </button>
+                        </div>
+                        <div class="edit-toolbar" id="toolbar-${index}">
+                            <div class="edit-group">
+                                <label>Fonte</label>
+                                <select onchange="mudarFonte(${index},this.value)">
+                                    <option value="Montserrat">Montserrat</option>
+                                    <option value="Inter">Inter</option>
+                                    <option value="Poppins">Poppins</option>
+                                    <option value="Playfair Display">Playfair</option>
+                                </select>
+                            </div>
+                            <div class="edit-group">
+                                <label>Cor texto</label>
+                                <input type="color" value="#ffffff" onchange="mudarCorTexto(${index},this.value)">
+                            </div>
+                            <div class="edit-group">
+                                <label>Tamanho</label>
+                                <input type="range" min="10" max="24" value="16" oninput="mudarTamanho(${index},this.value)">
+                            </div>
+                        </div>
+                    </div>`;
+
                 // ===== MODO CRIATIVO =====
-                if (isCriativo) {
+                } else if (isCriativo) {
                     const slideClass = isCapa ? 'criativo-capa' : `criativo-${layoutNum}`;
 
                     // Headline com destaque (hl-tag) na capa
@@ -1417,8 +1543,9 @@ Retorne EXATAMENTE este JSON:
         async function refazerDesign() {
             currentLayoutIndex++;
             const isCriativo = designerModelo === 'criativo';
-            const layoutNum = isCriativo ? (currentLayoutIndex % 5) + 1 : (currentLayoutIndex % 10) + 1;
-            const designLabel = isCriativo ? `Criativo modelo ${layoutNum}` : `Layout ${layoutNum}`;
+            const isNoticia = designerModelo === 'noticia';
+            const layoutNum = (isCriativo || isNoticia) ? (currentLayoutIndex % 5) + 1 : (currentLayoutIndex % 10) + 1;
+            const designLabel = isCriativo ? `Criativo modelo ${layoutNum}` : isNoticia ? `Notícia modelo ${layoutNum}` : `Layout ${layoutNum}`;
             showStatus(`Carregando ${designLabel} com novas imagens...`);
 
             // Usar o mesmo sistema de pool do tema
@@ -1791,6 +1918,34 @@ Retorne EXATAMENTE este JSON:
                 el.style.padding = '12px 40px';
                 el.style.top = '40px';
                 el.style.right = '40px';
+            });
+
+            // Scale up noticia-specific elements
+            clone.querySelectorAll('.noticia-tag').forEach(el => {
+                el.style.fontSize = '1.6rem';
+                el.style.padding = '14px 36px';
+                el.style.top = '50px';
+                el.style.left = '50px';
+                el.style.letterSpacing = '4px';
+                el.style.borderRadius = '10px';
+            });
+            clone.querySelectorAll('.noticia-line').forEach(el => {
+                el.style.height = '14px';
+            });
+            clone.querySelectorAll('.noticia-circle').forEach(el => {
+                el.style.width = '160px'; el.style.height = '160px'; el.style.bottom = '64px'; el.style.right = '64px'; el.style.borderWidth = '8px';
+            });
+            clone.querySelectorAll('.noticia-bar-top').forEach(el => {
+                el.style.height = '18px';
+            });
+            clone.querySelectorAll('.noticia-accent').forEach(el => {
+                el.style.width = '120px'; el.style.height = '12px';
+            });
+            clone.querySelectorAll('.noticia-divider').forEach(el => {
+                el.style.width = '12px';
+            });
+            clone.querySelectorAll('.noticia-dots').forEach(el => {
+                el.style.backgroundSize = '64px 64px';
             });
 
             // Scale up criativo-specific elements
