@@ -725,24 +725,31 @@
             }
 
             // Todos os outros slides + fallback: busca unificada (Pixabay + Pexels)
-            const { fotos } = await buscarPixabay(query, 10);
+            const { fotos } = await buscarPixabay(query, 15);
             if (fotos.length > 0) {
-                // Pegar entre os top 3 (já ordenados por qualidade/popularidade)
-                const top = Math.min(3, fotos.length);
-                const pick = fotos[Math.floor(Math.random() * top)];
+                // Evitar imagens repetidas entre slides
+                const disponivel = fotos.find(f => !imagensUsadas.has(f.url));
+                const pick = disponivel || fotos[0];
+                imagensUsadas.add(pick.url);
                 console.log('[Busca] "' + query + '" -> ' + pick.credit);
                 return pick.url;
             }
             // Fallback: tentar só a primeira palavra
             const primeira = query.split(/\s+/)[0];
             if (primeira && primeira !== query) {
-                const { fotos: fotos2 } = await buscarPixabay(primeira, 10);
+                const { fotos: fotos2 } = await buscarPixabay(primeira, 15);
                 if (fotos2.length > 0) {
-                    return fotos2[0].url;
+                    const disponivel = fotos2.find(f => !imagensUsadas.has(f.url));
+                    const pick = disponivel || fotos2[0];
+                    imagensUsadas.add(pick.url);
+                    return pick.url;
                 }
             }
             return '';
         }
+
+        // Tracker de imagens já usadas (evitar repetição)
+        let imagensUsadas = new Set();
 
         // ==================== AI GENERATION ====================
         async function gerarPost() {
@@ -758,6 +765,7 @@
             const tema = document.getElementById('inputTema').value.trim();
             const conteudo = document.getElementById('inputConteudo').value.trim();
             const numSlides = parseInt(document.getElementById('numSlides').value) || 5;
+            imagensUsadas = new Set(); // resetar tracker de imagens
 
             if (!tema && !conteudo) {
                 mostrarNotificacao('Digite um tema ou conteudo', 'error');
@@ -1148,32 +1156,65 @@ Retorne EXATAMENTE este JSON:
         }
 
         // Busca de imagens no modal - Pixabay direto, aceita portugues!
+        // Resultados do modal guardados para evitar re-busca
+        let modalResultados = [];
+
         async function buscarImagens(page = 1) {
             const query = document.getElementById('modalSearchInput').value.trim();
             if (!query) return;
             currentPage = page;
             const grid = document.getElementById('imgGrid');
-            grid.innerHTML = '<p style="text-align:center;color:var(--text-muted);grid-column:1/-1;padding:20px">Buscando no Pixabay...</p>';
+            grid.innerHTML = '<p style="text-align:center;color:var(--text-muted);grid-column:1/-1;padding:20px">Buscando em Pixabay + Pexels...</p>';
 
-            const resultado = await buscarPixabay(query, 30, page);
+            // Buscar em ambos bancos com mais resultados
+            const [pixabay, pexels] = await Promise.allSettled([
+                buscarPixabayAPI(query, 40),
+                buscarPexelsAPI(query, 40)
+            ]);
 
-            if (resultado.fotos.length === 0) {
+            let todas = [];
+            if (pixabay.status === 'fulfilled') todas.push(...pixabay.value);
+            if (pexels.status === 'fulfilled') todas.push(...pexels.value);
+
+            // Intercalar resultados
+            const pixFotos = todas.filter(f => f.fonte === 'pixabay');
+            const pexFotos = todas.filter(f => f.fonte === 'pexels');
+            modalResultados = [];
+            const max = Math.max(pixFotos.length, pexFotos.length);
+            for (let i = 0; i < max; i++) {
+                if (i < pixFotos.length) modalResultados.push(pixFotos[i]);
+                if (i < pexFotos.length) modalResultados.push(pexFotos[i]);
+            }
+
+            if (modalResultados.length === 0) {
                 grid.innerHTML = '<p style="text-align:center;color:var(--text-muted);grid-column:1/-1;padding:20px">Nenhuma imagem encontrada para "' + query + '"</p>';
                 document.getElementById('pageInfo').textContent = '';
                 return;
             }
 
-            grid.innerHTML = resultado.fotos.map(img => `
-                <div class="img-grid-item" onclick="selecionarImagem('${img.url}')">
+            // Paginação local (60 por página)
+            const porPagina = 60;
+            const inicio = (page - 1) * porPagina;
+            const paginaFotos = modalResultados.slice(inicio, inicio + porPagina);
+
+            grid.innerHTML = paginaFotos.map((img, idx) => `
+                <div class="img-grid-item" onclick="selecionarModalImg(${inicio + idx})">
                     <img src="${img.thumb}" alt="${img.tags}" loading="lazy">
-                    <div class="img-credit">${img.credit} - Pixabay</div>
+                    <div class="img-credit">${img.credit}</div>
                 </div>
             `).join('');
 
-            const totalPages = Math.ceil(resultado.total / 30);
-            document.getElementById('pageInfo').textContent = `${resultado.total.toLocaleString()} fotos - Pagina ${page} de ${totalPages}`;
+            const totalPages = Math.ceil(modalResultados.length / porPagina);
+            document.getElementById('pageInfo').textContent = `${modalResultados.length} fotos (Pixabay: ${pixFotos.length}, Pexels: ${pexFotos.length}) - Pag ${page}/${totalPages}`;
             document.getElementById('btnPrevPage').disabled = page <= 1;
             document.getElementById('btnNextPage').disabled = page >= totalPages;
+        }
+
+        function selecionarModalImg(index) {
+            const img = modalResultados[index];
+            if (img && img.url) {
+                selecionarImagem(img.url);
+            }
         }
 
         // ==================== BUSCA DE FAMOSOS (WIKIPEDIA) ====================
