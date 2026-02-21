@@ -232,60 +232,77 @@
         .designer-option:hover { border-color: var(--accent); color: var(--accent); }
         .designer-option.selected { border-color: var(--accent); color: var(--accent); background: var(--accent-glow); }
 
-        /* ==================== DESIGNER NOTICIA — CAPA ==================== */
-        .noticia-capa .slide-bg { position: absolute; inset: 0; background-size: cover; background-position: center; }
-        .noticia-capa .slide-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 0%, transparent 25%, rgba(10,22,40,0.4) 50%, rgba(10,22,40,0.88) 75%, rgba(10,22,40,0.98) 100%); }
-        .noticia-capa .slide-content { position: absolute; bottom: 0; left: 0; right: 0; padding: 20px; display: flex; flex-direction: column; justify-content: flex-end; z-index: 5; }
-        .noticia-capa .slide-headline { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.35rem; line-height: 1.15; color: white; text-transform: uppercase; letter-spacing: -0.3px; }
-        .noticia-capa .slide-headline .hl-tag { background: #00b4d8; color: white; padding: 2px 8px 3px; border-radius: 3px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
-        .noticia-capa .slide-body { font-family: 'Inter', sans-serif; font-size: 0.7rem; color: rgba(255,255,255,0.85); line-height: 1.45; margin-top: 6px; }
-        .noticia-capa .noticia-tag { position: absolute; top: 14px; left: 14px; background: #00b4d8; color: white; font-family: 'Montserrat', sans-serif; font-size: 0.5rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; padding: 4px 10px; border-radius: 3px; z-index: 10; }
-        .noticia-capa .noticia-line { position: absolute; bottom: 0; left: 0; right: 0; height: 4px; background: linear-gradient(to right, #00b4d8, #48cae4); z-index: 10; }
+        /* ==================== DESIGNER CRIATIVO — CAPA ==================== */
+        .criativo-capa { position: relative; overflow: hidden; }
+        .criativo-capa .slide-bg { position: absolute; inset: 0; background-size: cover; background-position: center; }
+        .criativo-capa .slide-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(45,140,255,0.1) 0%, transparent 20%, transparent 35%, rgba(10,46,46,0.5) 55%, rgba(10,46,46,0.92) 78%, rgba(10,46,46,0.99) 100%); }
+        .criativo-capa .slide-content { position: absolute; bottom: 0; left: 0; right: 0; padding: 20px 20px 24px; display: flex; flex-direction: column; justify-content: flex-end; z-index: 5; }
+        .criativo-capa .slide-headline { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.35rem; line-height: 1.15; color: white; text-transform: uppercase; letter-spacing: -0.3px; }
+        .criativo-capa .slide-headline .hl-tag { background: #2D8CFF; color: white; padding: 2px 8px 5px; border-radius: 3px; border-bottom: 3px solid #F5C542; box-decoration-break: clone; -webkit-box-decoration-break: clone; box-shadow: 2px 2px 0px rgba(45,140,255,0.3); }
+        .criativo-capa .slide-body { font-family: 'Inter', sans-serif; font-size: 0.7rem; color: rgba(255,255,255,0.85); line-height: 1.45; margin-top: 6px; }
+        .criativo-capa .criativo-line { position: absolute; bottom: 0; left: 0; right: 0; height: 4px; background: linear-gradient(to right, #2D8CFF, #00C9A7); z-index: 10; }
+        .criativo-capa .criativo-capa-glow { position: absolute; top: 0; right: 0; width: 140px; height: 140px; background: radial-gradient(circle at top right, rgba(0,201,167,0.18) 0%, transparent 70%); z-index: 4; pointer-events: none; }
+        .criativo-capa .criativo-capa-bar { position: absolute; bottom: 60px; left: 0; width: 5px; height: 50px; background: linear-gradient(to bottom, #2D8CFF, #00C9A7); border-radius: 0 3px 3px 0; z-index: 6; }
 
-        /* ==================== DESIGNER NOTICIA — MODELO 1: Blocos ==================== */
-        .noticia-1 { background: #0a1628; }
-        .noticia-1 .slide-bg { display: none; }
-        .noticia-1 .slide-overlay { display: none; }
-        .noticia-1 .slide-content { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; padding: 28px 24px 28px 28px; z-index: 5; border-left: 4px solid #00b4d8; margin: 20px 16px; }
-        .noticia-1 .slide-headline { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 1.15rem; color: white; line-height: 1.25; text-transform: uppercase; }
-        .noticia-1 .slide-body { font-family: 'Inter', sans-serif; font-size: 0.75rem; color: rgba(255,255,255,0.75); line-height: 1.55; margin-top: 10px; }
-        .noticia-1::after { content: ''; position: absolute; bottom: 16px; right: 16px; width: 40px; height: 40px; border: 2px solid rgba(0,180,216,0.15); border-radius: 50%; }
+        /* ==================== DESIGNER CRIATIVO — MODELO 1: Impacto ==================== */
+        .criativo-1 { background: #0A2E2E; overflow: hidden; }
+        .criativo-1 .slide-bg { position: absolute; top: 10px; right: 10px; width: 100px; height: 100px; border-radius: 50%; background-size: cover; background-position: center; border: 3px solid rgba(45,140,255,0.6); box-shadow: 0 0 20px rgba(45,140,255,0.25), 0 0 40px rgba(45,140,255,0.08); z-index: 3; }
+        .criativo-1 .slide-overlay { display: none; }
+        .criativo-1 .slide-content { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; padding: 28px 24px; z-index: 5; }
+        .criativo-1 .slide-headline { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.2rem; color: white; line-height: 1.2; text-transform: uppercase; letter-spacing: -0.5px; }
+        .criativo-1 .slide-body { font-family: 'Inter', sans-serif; font-size: 0.72rem; color: rgba(255,255,255,0.72); line-height: 1.55; margin-top: 12px; }
+        .criativo-1 .criativo-noise { position: absolute; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"); z-index: 1; pointer-events: none; }
+        .criativo-1 .criativo-light { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 25% 35%, rgba(0,201,167,0.1) 0%, transparent 55%); z-index: 2; pointer-events: none; }
+        .criativo-1 .criativo-circle-lg { position: absolute; bottom: -40px; left: -40px; width: 140px; height: 140px; border: 3px solid rgba(45,140,255,0.12); border-radius: 50%; z-index: 2; }
+        .criativo-1 .criativo-bar-top { position: absolute; top: 20px; left: 20px; width: 40px; height: 4px; background: #2D8CFF; border-radius: 2px; z-index: 6; }
+        .criativo-1 .criativo-diamond { position: absolute; bottom: 16px; right: 16px; width: 24px; height: 24px; border: 2px solid rgba(0,201,167,0.2); transform: rotate(45deg); z-index: 6; }
 
-        /* ==================== DESIGNER NOTICIA — MODELO 2: Card Limpo ==================== */
-        .noticia-2 { background: #f0f2f5 !important; }
-        .noticia-2 .slide-bg { display: none; }
-        .noticia-2 .slide-overlay { display: none; }
-        .noticia-2 .slide-content { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; padding: 30px 24px; z-index: 5; }
-        .noticia-2 .slide-headline { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 1.1rem; color: #0a1628; line-height: 1.3; padding-bottom: 10px; border-bottom: 3px solid #00b4d8; text-shadow: none; }
-        .noticia-2 .slide-body { font-family: 'Inter', sans-serif; font-size: 0.75rem; color: #333; line-height: 1.6; margin-top: 12px; text-shadow: none; opacity: 1; }
-        .noticia-2::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px; background: linear-gradient(to right, #00b4d8, #48cae4); z-index: 6; }
-        .noticia-2 .slide-number { background: #0a1628 !important; }
+        /* ==================== DESIGNER CRIATIVO — MODELO 2: Editorial ==================== */
+        .criativo-2 { background: #f0f2f5 !important; overflow: hidden; }
+        .criativo-2 .slide-bg { position: absolute; bottom: 16px; right: 16px; width: 80px; height: 80px; border-radius: 8px; background-size: cover; background-position: center; filter: grayscale(60%) contrast(1.1); z-index: 3; }
+        .criativo-2 .slide-overlay { position: absolute; bottom: 16px; right: 16px; width: 80px; height: 80px; border-radius: 8px; background: rgba(45,140,255,0.2); mix-blend-mode: multiply; z-index: 4; }
+        .criativo-2 .slide-content { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; padding: 28px 110px 28px 24px; z-index: 5; }
+        .criativo-2 .slide-headline { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.1rem; color: #0A2E2E; line-height: 1.3; text-shadow: none; }
+        .criativo-2 .slide-body { font-family: 'Inter', sans-serif; font-size: 0.72rem; color: #444; line-height: 1.6; margin-top: 10px; text-shadow: none; opacity: 1; }
+        .criativo-2 .slide-number { background: #2D8CFF !important; }
+        .criativo-2 .criativo-bar-top { position: absolute; top: 0; left: 0; width: 60%; height: 3px; background: linear-gradient(to right, #2D8CFF, #00C9A7); z-index: 6; }
+        .criativo-2 .criativo-dots { position: absolute; bottom: 50px; left: 24px; width: 6px; height: 6px; background: #2D8CFF; border-radius: 50%; box-shadow: 12px 0 0 #00C9A7, 24px 0 0 #2D8CFF; z-index: 6; }
+        .criativo-2 .criativo-vline { position: absolute; top: 20%; right: 108px; width: 1px; height: 60%; background: rgba(45,140,255,0.15); z-index: 6; }
 
-        /* ==================== DESIGNER NOTICIA — MODELO 3: Split Horizontal ==================== */
-        .noticia-3 .slide-bg { position: absolute; top: 0; left: 0; right: 0; height: 45%; background-size: cover; background-position: center; }
-        .noticia-3 .slide-overlay { position: absolute; top: 0; left: 0; right: 0; height: 45%; background: linear-gradient(to bottom, transparent 30%, rgba(10,22,40,0.6) 100%); }
-        .noticia-3 .slide-content { position: absolute; top: 45%; left: 0; right: 0; bottom: 0; background: #0a1628; display: flex; flex-direction: column; justify-content: center; padding: 16px 22px; z-index: 5; }
-        .noticia-3 .slide-headline { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 1rem; color: white; line-height: 1.3; }
-        .noticia-3 .slide-body { font-family: 'Inter', sans-serif; font-size: 0.72rem; color: rgba(255,255,255,0.8); line-height: 1.55; margin-top: 8px; }
-        .noticia-3::after { content: ''; position: absolute; top: 44%; left: 22px; width: 30px; height: 3px; background: #00b4d8; z-index: 6; border-radius: 2px; }
+        /* ==================== DESIGNER CRIATIVO — MODELO 3: Neon ==================== */
+        .criativo-3 { background: linear-gradient(160deg, #061E1E 0%, #0A2E2E 60%, #061E1E 100%); overflow: hidden; }
+        .criativo-3 .slide-bg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -65%); width: 110px; height: 110px; border-radius: 16px; background-size: cover; background-position: center; box-shadow: 0 0 25px rgba(45,140,255,0.4), 0 0 50px rgba(0,201,167,0.15), inset 0 0 20px rgba(0,0,0,0.3); border: 2px solid rgba(0,201,167,0.4); z-index: 3; }
+        .criativo-3 .slide-overlay { display: none; }
+        .criativo-3 .slide-content { position: absolute; bottom: 0; left: 0; right: 0; padding: 0 22px 26px; text-align: center; z-index: 5; }
+        .criativo-3 .slide-headline { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1.05rem; line-height: 1.3; background: linear-gradient(135deg, #ffffff 0%, #00C9A7 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .criativo-3 .slide-body { font-family: 'Inter', sans-serif; font-weight: 300; font-size: 0.7rem; color: rgba(255,255,255,0.6); line-height: 1.55; margin-top: 8px; }
+        .criativo-3 .criativo-light { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 50% 25%, rgba(45,140,255,0.08) 0%, transparent 50%); z-index: 1; pointer-events: none; }
+        .criativo-3 .criativo-wire-rect { position: absolute; top: 12px; right: 12px; width: 50px; height: 50px; border: 1.5px solid rgba(45,140,255,0.25); border-radius: 4px; transform: rotate(15deg); z-index: 2; }
+        .criativo-3 .criativo-wire-circle { position: absolute; bottom: 80px; left: 14px; width: 35px; height: 35px; border: 1.5px solid rgba(0,201,167,0.2); border-radius: 50%; z-index: 2; }
+        .criativo-3 .criativo-triangle { position: absolute; top: 10px; left: 10px; width: 0; height: 0; border-left: 12px solid transparent; border-right: 12px solid transparent; border-bottom: 20px solid rgba(45,140,255,0.1); z-index: 2; }
+        .criativo-3 .criativo-glow-line { position: absolute; bottom: 10px; right: 10px; width: 30px; height: 2px; background: linear-gradient(to right, transparent, #00C9A7, transparent); z-index: 6; }
 
-        /* ==================== DESIGNER NOTICIA — MODELO 4: Textura ==================== */
-        .noticia-4 { background: #0a1628; }
-        .noticia-4 .slide-bg { display: none; }
-        .noticia-4 .slide-overlay { display: none; }
-        .noticia-4::before { content: ''; position: absolute; inset: 0; background-image: radial-gradient(rgba(0,180,216,0.07) 1px, transparent 1px); background-size: 16px 16px; z-index: 1; }
-        .noticia-4 .slide-content { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 30px 24px; z-index: 5; }
-        .noticia-4 .slide-headline { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.25rem; color: white; line-height: 1.2; text-transform: uppercase; }
-        .noticia-4 .slide-body { font-family: 'Inter', sans-serif; font-size: 0.72rem; color: rgba(255,255,255,0.7); line-height: 1.6; margin-top: 12px; max-width: 90%; }
-        .noticia-4::after { content: ''; position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); width: 40px; height: 3px; background: linear-gradient(to right, #00b4d8, #48cae4); border-radius: 2px; z-index: 6; }
+        /* ==================== DESIGNER CRIATIVO — MODELO 4: Colagem ==================== */
+        .criativo-4 { background: #0A2E2E; overflow: hidden; }
+        .criativo-4 .slide-bg { position: absolute; top: 0; left: 0; width: 55%; height: 100%; background-size: cover; background-position: center; clip-path: polygon(0 0, 100% 0, 75% 100%, 0 100%); }
+        .criativo-4 .slide-overlay { position: absolute; top: 0; left: 0; width: 55%; height: 100%; background: linear-gradient(135deg, rgba(45,140,255,0.2), rgba(10,46,46,0.6)); clip-path: polygon(0 0, 100% 0, 75% 100%, 0 100%); }
+        .criativo-4 .slide-content { position: absolute; top: 0; left: 42%; right: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center; padding: 20px 16px 20px 20px; z-index: 5; }
+        .criativo-4 .slide-headline { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.95rem; color: white; line-height: 1.25; text-transform: uppercase; }
+        .criativo-4 .slide-body { font-family: 'Playfair Display', serif; font-weight: 400; font-size: 0.7rem; color: rgba(255,255,255,0.72); line-height: 1.55; margin-top: 10px; font-style: italic; }
+        .criativo-4 .criativo-light { position: absolute; top: 0; right: 0; width: 60%; height: 100%; background: radial-gradient(circle at 80% 50%, rgba(0,201,167,0.08) 0%, transparent 55%); z-index: 1; pointer-events: none; }
+        .criativo-4 .criativo-stripes { position: absolute; inset: 0; background: repeating-linear-gradient(-45deg, transparent, transparent 14px, rgba(45,140,255,0.03) 14px, rgba(45,140,255,0.03) 15px); z-index: 1; pointer-events: none; }
+        .criativo-4 .criativo-divider-v { position: absolute; top: 10%; left: 40%; width: 2px; height: 80%; background: linear-gradient(to bottom, transparent, #2D8CFF, #00C9A7, transparent); z-index: 6; }
 
-        /* ==================== DESIGNER NOTICIA — MODELO 5: Destaque Lateral ==================== */
-        .noticia-5 .slide-bg { position: absolute; top: 0; left: 0; width: 40%; height: 100%; background-size: cover; background-position: center; }
-        .noticia-5 .slide-overlay { position: absolute; top: 0; left: 0; width: 40%; height: 100%; background: linear-gradient(to right, transparent 40%, rgba(10,22,40,0.8) 100%); }
-        .noticia-5 .slide-content { position: absolute; top: 0; left: 40%; right: 0; bottom: 0; background: #0a1628; display: flex; flex-direction: column; justify-content: center; padding: 20px 18px 20px 22px; z-index: 5; }
-        .noticia-5 .slide-headline { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.95rem; color: white; line-height: 1.3; }
-        .noticia-5 .slide-body { font-family: 'Inter', sans-serif; font-size: 0.7rem; color: rgba(255,255,255,0.75); line-height: 1.55; margin-top: 8px; }
-        .noticia-5::after { content: ''; position: absolute; top: 15%; left: 40%; width: 3px; height: 70%; background: linear-gradient(to bottom, #00b4d8, #48cae4); z-index: 6; border-radius: 2px; }
+        /* ==================== DESIGNER CRIATIVO — MODELO 5: Minimalista Bold ==================== */
+        .criativo-5 { background: #0A2E2E; overflow: hidden; }
+        .criativo-5 .slide-bg { position: absolute; bottom: 18px; left: 18px; width: 50px; height: 50px; border-radius: 50%; background-size: cover; background-position: center; border: 2px solid rgba(45,140,255,0.4); z-index: 3; }
+        .criativo-5 .slide-overlay { display: none; }
+        .criativo-5 .slide-content { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; padding: 24px 24px 70px; z-index: 5; }
+        .criativo-5 .slide-headline { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.45rem; color: white; line-height: 1.1; text-transform: uppercase; letter-spacing: -1px; }
+        .criativo-5 .slide-body { font-family: 'Inter', sans-serif; font-weight: 300; font-size: 0.68rem; color: rgba(255,255,255,0.6); line-height: 1.6; margin-top: 14px; max-width: 80%; }
+        .criativo-5 .criativo-light { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 20% 40%, rgba(0,201,167,0.08) 0%, transparent 50%); z-index: 1; pointer-events: none; }
+        .criativo-5 .criativo-grain { position: absolute; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.03'/%3E%3C/svg%3E"); z-index: 1; pointer-events: none; }
+        .criativo-5 .criativo-accent-line { position: absolute; bottom: 45px; left: 80px; width: 50px; height: 2px; background: #2D8CFF; z-index: 6; }
 
         /* ==================== CAPTION SECTION ==================== */
         .caption-section { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border); }
@@ -386,9 +403,9 @@
                             <svg viewBox="0 0 24 24" width="14" height="14"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/></svg>
                             Padrao
                         </label>
-                        <label class="designer-option" onclick="selecionarDesigner('noticia',this)">
-                            <svg viewBox="0 0 24 24" width="14" height="14"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z" fill="currentColor"/></svg>
-                            Noticia
+                        <label class="designer-option" onclick="selecionarDesigner('criativo',this)">
+                            <svg viewBox="0 0 24 24" width="14" height="14"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-1-.01-.83.67-1.5 1.49-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 9 6.5 9 8 9.67 8 10.5 7.33 12 6.5 12zm3-4C8.67 8 8 7.33 8 6.5S8.67 5 9.5 5s1.5.67 1.5 1.5S10.33 8 9.5 8zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 5 14.5 5s1.5.67 1.5 1.5S15.33 8 14.5 8zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 9 17.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z" fill="currentColor"/></svg>
+                            Criativo
                         </label>
                     </div>
                 </div>
@@ -634,7 +651,7 @@
         let perfilFotoBase64 = localStorage.getItem('post_perfil_foto') || '';
         let tipoImagem = 'aleatorio'; // 'aleatorio', 'famosos', 'historia', 'empresa'
         let modoImagem = 'imagens'; // 'imagens' ou 'criativo'
-        let designerModelo = 'padrao'; // 'padrao' ou 'noticia'
+        let designerModelo = 'padrao'; // 'padrao' ou 'criativo'
 
         function selecionarDesigner(modelo, el) {
             designerModelo = modelo;
@@ -967,9 +984,9 @@ CONTEUDO BASE: ${conteudo}`;
                 regraCapa = `\n6. MODO CRIATIVO DE IMAGENS: Adicione o campo "comImagem": true APENAS nos slides que voce quer que tenham foto de fundo. Voce tem liberdade criativa total para escolher: pode colocar imagem so na capa, ou em 2 slides do meio, ou alternados, ou so no ultimo. REGRA OBRIGATORIA: NAO coloque "comImagem": true em TODOS os slides - no minimo 1 slide deve ficar sem imagem. Slides sem "comImagem" terao fundo escuro elegante so com texto. Escolha de forma inteligente para criar contraste visual.`;
             }
 
-            // Regra extra para Designer Noticia: campo "destaque" na capa
+            // Regra extra para Designer Criativo: campo "destaque" na capa
             let regraDestaque = '';
-            if (designerModelo === 'noticia') {
+            if (designerModelo === 'criativo') {
                 regraDestaque = `\n8. destaque: NO SLIDE 1 (CAPA), inclua o campo "destaque" com 1-2 PALAVRAS-CHAVE do titulo que devem ser destacadas visualmente com fundo colorido. Escolha as palavras mais impactantes e de efeito. Ex: se headline="CRISE GLOBAL ATINGE MERCADOS", destaque="CRISE GLOBAL". Se headline="INTELIGENCIA ARTIFICIAL MUDA O MUNDO", destaque="INTELIGENCIA ARTIFICIAL". SEMPRE inclua este campo no slide 1.`;
             }
 
@@ -992,7 +1009,7 @@ Retorne EXATAMENTE este JSON:
             "numero": 1,
             "tipo": "capa",
             "headline": "DOMINE SUA PRODUTIVIDADE AGORA",
-            "body": "Subtitulo curto e envolvente"${tipoImagem === 'famosos' || tipoImagem === 'historia' ? ',\n            "busca_pessoa": "Nome Completo"' : ''}${modoImagem === 'criativo' ? ',\n            "comImagem": true' : ''}${designerModelo === 'noticia' ? ',\n            "destaque": "PRODUTIVIDADE"' : ''}
+            "body": "Subtitulo curto e envolvente"${tipoImagem === 'famosos' || tipoImagem === 'historia' ? ',\n            "busca_pessoa": "Nome Completo"' : ''}${modoImagem === 'criativo' ? ',\n            "comImagem": true' : ''}${designerModelo === 'criativo' ? ',\n            "destaque": "PRODUTIVIDADE"' : ''}
         },
         {
             "numero": 2,
@@ -1150,8 +1167,8 @@ Retorne EXATAMENTE este JSON:
             const logoPosicao = document.getElementById('logoPosicao').value;
 
             // Determinar layout conforme designer
-            const isNoticia = designerModelo === 'noticia';
-            const layoutNum = isNoticia ? (currentLayoutIndex % 5) + 1 : (currentLayoutIndex % 10) + 1;
+            const isCriativo = designerModelo === 'criativo';
+            const layoutNum = isCriativo ? (currentLayoutIndex % 5) + 1 : (currentLayoutIndex % 10) + 1;
 
             let html = '';
             dadosGerados.slides.forEach((slide, index) => {
@@ -1183,23 +1200,31 @@ Retorne EXATAMENTE este JSON:
                     </div>`;
                 }
 
-                // ===== MODO NOTICIA =====
-                if (isNoticia) {
-                    const slideClass = isCapa ? 'noticia-capa' : `noticia-${layoutNum}`;
+                // ===== MODO CRIATIVO =====
+                if (isCriativo) {
+                    const slideClass = isCapa ? 'criativo-capa' : `criativo-${layoutNum}`;
 
                     // Headline com destaque (hl-tag) na capa
                     let headlineHTML = slide.headline || '';
                     if (isCapa && slide.destaque && headlineHTML) {
-                        // Escapar caracteres especiais do destaque para regex
                         const escapedDestaque = slide.destaque.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
                         const re = new RegExp(`(${escapedDestaque})`, 'gi');
                         headlineHTML = headlineHTML.replace(re, '<span class="hl-tag">$1</span>');
                     }
 
-                    // Tag "NOTICIA" e linha inferior na capa
-                    let noticiaExtras = '';
+                    // Elementos decorativos reais (divs) — html2canvas nao renderiza ::before/::after
+                    let criativoExtras = '';
                     if (isCapa) {
-                        noticiaExtras = `<div class="noticia-tag">NOTÍCIA</div><div class="noticia-line"></div>`;
+                        criativoExtras = `<div class="criativo-line"></div><div class="criativo-capa-glow"></div><div class="criativo-capa-bar"></div>`;
+                    } else {
+                        const decoMap = {
+                            1: `<div class="criativo-noise"></div><div class="criativo-light"></div><div class="criativo-circle-lg"></div><div class="criativo-bar-top"></div><div class="criativo-diamond"></div>`,
+                            2: `<div class="criativo-bar-top"></div><div class="criativo-dots"></div><div class="criativo-vline"></div>`,
+                            3: `<div class="criativo-light"></div><div class="criativo-wire-rect"></div><div class="criativo-wire-circle"></div><div class="criativo-triangle"></div><div class="criativo-glow-line"></div>`,
+                            4: `<div class="criativo-light"></div><div class="criativo-stripes"></div><div class="criativo-divider-v"></div>`,
+                            5: `<div class="criativo-light"></div><div class="criativo-grain"></div><div class="criativo-accent-line"></div>`
+                        };
+                        criativoExtras = decoMap[layoutNum] || '';
                     }
 
                     html += `
@@ -1207,7 +1232,7 @@ Retorne EXATAMENTE este JSON:
                         <div class="slide-card ${slideClass} ${isCapa ? 'is-cover' : ''} ${noBgClass}" id="slide-${index}">
                             <div class="slide-bg" style="${bgStyle}"></div>
                             <div class="slide-overlay"></div>
-                            ${noticiaExtras}
+                            ${criativoExtras}
                             <div class="slide-number">${index + 1}</div>
                             ${badge}
                             ${logoHTML}
@@ -1391,9 +1416,9 @@ Retorne EXATAMENTE este JSON:
         // ==================== REFAZER DESIGN ====================
         async function refazerDesign() {
             currentLayoutIndex++;
-            const isNoticia = designerModelo === 'noticia';
-            const layoutNum = isNoticia ? (currentLayoutIndex % 5) + 1 : (currentLayoutIndex % 10) + 1;
-            const designLabel = isNoticia ? `Notícia modelo ${layoutNum}` : `Layout ${layoutNum}`;
+            const isCriativo = designerModelo === 'criativo';
+            const layoutNum = isCriativo ? (currentLayoutIndex % 5) + 1 : (currentLayoutIndex % 10) + 1;
+            const designLabel = isCriativo ? `Criativo modelo ${layoutNum}` : `Layout ${layoutNum}`;
             showStatus(`Carregando ${designLabel} com novas imagens...`);
 
             // Usar o mesmo sistema de pool do tema
@@ -1768,22 +1793,61 @@ Retorne EXATAMENTE este JSON:
                 el.style.right = '40px';
             });
 
-            // Scale up noticia-specific elements
+            // Scale up criativo-specific elements
             clone.querySelectorAll('.hl-tag').forEach(el => {
-                el.style.padding = '6px 28px 8px';
+                el.style.padding = '8px 32px 14px';
                 el.style.borderRadius = '10px';
+                el.style.borderBottomWidth = '10px';
+                el.style.boxShadow = '4px 4px 0px rgba(45,140,255,0.3)';
             });
-            clone.querySelectorAll('.noticia-tag').forEach(el => {
-                el.style.fontSize = '1.6rem';
-                el.style.padding = '14px 36px';
-                el.style.top = '50px';
-                el.style.left = '50px';
-                el.style.letterSpacing = '4px';
-                el.style.borderRadius = '10px';
-            });
-            clone.querySelectorAll('.noticia-line').forEach(el => {
+            clone.querySelectorAll('.criativo-line').forEach(el => {
                 el.style.height = '14px';
             });
+            clone.querySelectorAll('.criativo-capa-glow').forEach(el => {
+                el.style.width = '560px';
+                el.style.height = '560px';
+            });
+            clone.querySelectorAll('.criativo-capa-bar').forEach(el => {
+                el.style.width = '18px';
+                el.style.height = '200px';
+                el.style.bottom = '240px';
+                el.style.borderRadius = '0 10px 10px 0';
+            });
+
+            // Scale criativo model-specific elements
+            if (clone.classList.contains('criativo-1')) {
+                const bg = clone.querySelector('.slide-bg');
+                if (bg) { bg.style.width = '400px'; bg.style.height = '400px'; bg.style.top = '40px'; bg.style.right = '40px'; bg.style.borderWidth = '12px'; bg.style.boxShadow = '0 0 80px rgba(45,140,255,0.25), 0 0 160px rgba(45,140,255,0.08)'; }
+                clone.querySelectorAll('.criativo-circle-lg').forEach(el => { el.style.bottom = '-160px'; el.style.left = '-160px'; el.style.width = '560px'; el.style.height = '560px'; el.style.borderWidth = '12px'; });
+                clone.querySelectorAll('.criativo-bar-top').forEach(el => { el.style.top = '80px'; el.style.left = '80px'; el.style.width = '160px'; el.style.height = '16px'; });
+                clone.querySelectorAll('.criativo-diamond').forEach(el => { el.style.bottom = '64px'; el.style.right = '64px'; el.style.width = '96px'; el.style.height = '96px'; el.style.borderWidth = '8px'; });
+            }
+            if (clone.classList.contains('criativo-2')) {
+                const bg = clone.querySelector('.slide-bg');
+                if (bg) { bg.style.width = '320px'; bg.style.height = '320px'; bg.style.bottom = '64px'; bg.style.right = '64px'; bg.style.borderRadius = '32px'; }
+                const ov = clone.querySelector('.slide-overlay');
+                if (ov) { ov.style.width = '320px'; ov.style.height = '320px'; ov.style.bottom = '64px'; ov.style.right = '64px'; ov.style.borderRadius = '32px'; }
+                const content = clone.querySelector('.slide-content');
+                if (content) content.style.padding = '112px 440px 112px 96px';
+                clone.querySelectorAll('.criativo-bar-top').forEach(el => { el.style.height = '12px'; });
+                clone.querySelectorAll('.criativo-dots').forEach(el => { el.style.width = '24px'; el.style.height = '24px'; el.style.bottom = '200px'; el.style.left = '96px'; el.style.boxShadow = '48px 0 0 #00C9A7, 96px 0 0 #2D8CFF'; });
+                clone.querySelectorAll('.criativo-vline').forEach(el => { el.style.right = '432px'; el.style.width = '4px'; });
+            }
+            if (clone.classList.contains('criativo-3')) {
+                const bg = clone.querySelector('.slide-bg');
+                if (bg) { bg.style.width = '440px'; bg.style.height = '440px'; bg.style.borderRadius = '64px'; bg.style.borderWidth = '8px'; bg.style.boxShadow = '0 0 100px rgba(45,140,255,0.4), 0 0 200px rgba(0,201,167,0.15), inset 0 0 80px rgba(0,0,0,0.3)'; }
+                clone.querySelectorAll('.criativo-wire-rect').forEach(el => { el.style.top = '48px'; el.style.right = '48px'; el.style.width = '200px'; el.style.height = '200px'; el.style.borderWidth = '6px'; });
+                clone.querySelectorAll('.criativo-wire-circle').forEach(el => { el.style.bottom = '320px'; el.style.left = '56px'; el.style.width = '140px'; el.style.height = '140px'; el.style.borderWidth = '6px'; });
+                clone.querySelectorAll('.criativo-triangle').forEach(el => { el.style.top = '40px'; el.style.left = '40px'; el.style.borderLeftWidth = '48px'; el.style.borderRightWidth = '48px'; el.style.borderBottomWidth = '80px'; });
+                clone.querySelectorAll('.criativo-glow-line').forEach(el => { el.style.bottom = '40px'; el.style.right = '40px'; el.style.width = '120px'; el.style.height = '8px'; });
+                // Fallback gradient text for html2canvas
+                clone.querySelectorAll('.slide-headline').forEach(el => { el.style.background = 'none'; el.style.webkitBackgroundClip = 'unset'; el.style.webkitTextFillColor = '#ffffff'; el.style.backgroundClip = 'unset'; });
+            }
+            if (clone.classList.contains('criativo-5')) {
+                const bg = clone.querySelector('.slide-bg');
+                if (bg) { bg.style.width = '200px'; bg.style.height = '200px'; bg.style.bottom = '72px'; bg.style.left = '72px'; bg.style.borderWidth = '8px'; }
+                clone.querySelectorAll('.criativo-accent-line').forEach(el => { el.style.bottom = '180px'; el.style.left = '320px'; el.style.width = '200px'; el.style.height = '8px'; });
+            }
 
             // Remove edit overlay
             clone.querySelectorAll('.slide-edit-overlay').forEach(el => el.remove());
