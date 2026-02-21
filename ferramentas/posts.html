@@ -99,6 +99,7 @@
 
         /* Slide sem imagem (modo Criativo) */
         .slide-card.no-bg-image { background: linear-gradient(145deg, #0a1628 0%, #0d1b2a 50%, #112240 100%); }
+        .slide-card.no-bg-image.fundo-claro { background: linear-gradient(145deg, #e8ecf0 0%, #f0f2f5 50%, #f7f8fa 100%) !important; }
         .slide-card.no-bg-image .slide-overlay { background: none !important; }
         .slide-card.no-bg-image .slide-headline { font-size: 1.5rem !important; line-height: 1.25 !important; text-shadow: none; }
         .slide-card.no-bg-image .slide-body { font-size: 0.82rem !important; opacity: 0.9; text-shadow: none; }
@@ -227,6 +228,22 @@
         /* Layout 10: Splash de cor radial no canto inferior direito */
         .layout-10.is-cover .cover-deco { position: absolute; bottom: -20px; right: -20px; width: 120px; height: 120px; background: radial-gradient(circle, rgba(244,197,66,0.15) 0%, transparent 70%); border-radius: 50%; z-index: 4; }
 
+        /* ==================== PADRAO — MODO CLARO ==================== */
+        .layout-1.fundo-claro .slide-overlay, .layout-2.fundo-claro .slide-overlay,
+        .layout-6.fundo-claro .slide-overlay, .layout-9.fundo-claro .slide-overlay { background: linear-gradient(to bottom, transparent 0%, transparent 55%, rgba(240,242,245,0.4) 72%, rgba(240,242,245,0.88) 88%, rgba(240,242,245,0.98) 100%); }
+        .layout-3.fundo-claro .slide-overlay { background: linear-gradient(to bottom, rgba(240,242,245,0.15) 0%, rgba(240,242,245,0.22) 50%, rgba(240,242,245,0.6) 75%, rgba(240,242,245,0.82) 100%); }
+        .layout-5.fundo-claro .slide-overlay { left: 38%; background: linear-gradient(to right, transparent 0%, rgba(240,242,245,0.38) 30%, rgba(240,242,245,0.78) 55%, rgba(240,242,245,0.92) 80%); }
+        .layout-7.fundo-claro .slide-overlay { background: linear-gradient(to bottom, transparent 0%, transparent 55%, rgba(240,242,245,0.4) 72%, rgba(240,242,245,0.88) 88%, rgba(240,242,245,0.98) 100%); }
+        .layout-10.fundo-claro .slide-overlay { background: linear-gradient(135deg, rgba(45,140,255,0.1), rgba(240,242,245,0.2)); }
+        .layout-10.fundo-claro .slide-overlay2 { background: linear-gradient(to bottom, transparent 0%, transparent 55%, rgba(240,242,245,0.4) 72%, rgba(240,242,245,0.88) 88%, rgba(240,242,245,0.98) 100%); }
+        .fundo-claro .slide-headline { color: #0A2E2E !important; }
+        .fundo-claro .slide-body { color: #444 !important; opacity: 1 !important; }
+        .layout-4.fundo-claro { background: #f0f2f5 !important; }
+        .layout-4.fundo-claro .slide-headline .accent { color: #2D8CFF; }
+        .layout-8.fundo-claro { background: #f0f2f5 !important; }
+        .fundo-claro .slide-number { background: rgba(10,46,46,0.85) !important; }
+        .fundo-claro .slide-headline, .fundo-claro .slide-body { text-shadow: none !important; }
+
         /* ==================== DESIGNER SELECTOR ==================== */
         .designer-select { width: 100%; padding: 10px 32px 10px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-primary); color: var(--text-primary); font-size: 0.85rem; font-family: 'Inter', sans-serif; font-weight: 600; outline: none; transition: border-color 0.2s; cursor: pointer; appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='%23888'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; }
         .designer-select:focus { border-color: var(--accent); }
@@ -287,6 +304,32 @@
         .noticia-5 .slide-headline { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.95rem; color: white; line-height: 1.3; }
         .noticia-5 .slide-body { font-family: 'Inter', sans-serif; font-size: 0.7rem; color: rgba(255,255,255,0.75); line-height: 1.55; margin-top: 8px; }
         .noticia-5 .noticia-divider { position: absolute; top: 15%; left: 40%; width: 3px; height: 70%; background: linear-gradient(to bottom, #2D8CFF, #00C9A7); z-index: 6; border-radius: 2px; }
+
+        /* ==================== NOTICIA — MODO CLARO ==================== */
+        .noticia-capa.fundo-claro .slide-overlay { background: linear-gradient(to bottom, rgba(45,140,255,0.05) 0%, transparent 25%, transparent 40%, rgba(240,242,245,0.5) 55%, rgba(240,242,245,0.92) 78%, rgba(240,242,245,0.99) 100%); }
+        .noticia-capa.fundo-claro .slide-headline { color: #0A2E2E; }
+        .noticia-capa.fundo-claro .slide-body { color: #555; }
+        .noticia-1.fundo-claro { background: #f0f2f5 !important; }
+        .noticia-1.fundo-claro .slide-content { border-left-color: #2D8CFF; }
+        .noticia-1.fundo-claro .slide-headline { color: #0A2E2E; text-shadow: none; }
+        .noticia-1.fundo-claro .slide-body { color: #444; text-shadow: none; opacity: 1; }
+        .noticia-1.fundo-claro .slide-number { background: #0A2E2E !important; }
+
+        .noticia-3.fundo-claro .slide-content { background: #f0f2f5; }
+        .noticia-3.fundo-claro .slide-headline { color: #0A2E2E; text-shadow: none; }
+        .noticia-3.fundo-claro .slide-body { color: #444; text-shadow: none; opacity: 1; }
+        .noticia-3.fundo-claro .slide-number { background: #0A2E2E !important; }
+
+        .noticia-4.fundo-claro { background: #f0f2f5 !important; }
+        .noticia-4.fundo-claro .noticia-dots { background-image: radial-gradient(rgba(45,140,255,0.08) 1px, transparent 1px); }
+        .noticia-4.fundo-claro .slide-headline { color: #0A2E2E; text-shadow: none; }
+        .noticia-4.fundo-claro .slide-body { color: #444; text-shadow: none; opacity: 1; }
+        .noticia-4.fundo-claro .slide-number { background: #0A2E2E !important; }
+
+        .noticia-5.fundo-claro .slide-content { background: #f0f2f5; }
+        .noticia-5.fundo-claro .slide-headline { color: #0A2E2E; text-shadow: none; }
+        .noticia-5.fundo-claro .slide-body { color: #444; text-shadow: none; opacity: 1; }
+        .noticia-5.fundo-claro .slide-number { background: #0A2E2E !important; }
 
         /* ==================== DESIGNER CRIATIVO — CAPA ==================== */
         .criativo-capa { position: relative; overflow: hidden; }
@@ -359,6 +402,151 @@
         .criativo-5 .criativo-light { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 20% 40%, rgba(0,201,167,0.08) 0%, transparent 50%); z-index: 1; pointer-events: none; }
         .criativo-5 .criativo-grain { position: absolute; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.03'/%3E%3C/svg%3E"); z-index: 1; pointer-events: none; }
         .criativo-5 .criativo-accent-line { position: absolute; bottom: 45px; left: 80px; width: 50px; height: 2px; background: #2D8CFF; z-index: 6; }
+
+        /* ==================== CRIATIVO — MODO CLARO ==================== */
+        .criativo-capa.fundo-claro .slide-overlay { background: linear-gradient(to bottom, rgba(45,140,255,0.05) 0%, transparent 20%, transparent 35%, rgba(240,242,245,0.5) 55%, rgba(240,242,245,0.92) 78%, rgba(240,242,245,0.99) 100%); }
+        .criativo-capa.fundo-claro .slide-headline { color: #0A2E2E; }
+        .criativo-capa.fundo-claro .slide-headline .hl-tag { color: white; }
+        .criativo-capa.fundo-claro .slide-body { color: #555; }
+        .criativo-1.fundo-claro { background: #f0f2f5 !important; }
+        .criativo-1.fundo-claro .criativo-light { background: radial-gradient(circle at 25% 35%, rgba(45,140,255,0.06) 0%, transparent 55%); }
+        .criativo-1.fundo-claro .slide-headline { color: #0A2E2E; text-shadow: none; }
+        .criativo-1.fundo-claro .slide-body { color: #444; text-shadow: none; opacity: 1; }
+        .criativo-1.fundo-claro .slide-bg { border-color: rgba(45,140,255,0.4); box-shadow: 0 0 20px rgba(45,140,255,0.15); }
+        .criativo-1.fundo-claro .criativo-circle-lg { border-color: rgba(45,140,255,0.08); }
+        .criativo-1.fundo-claro .slide-number { background: #0A2E2E !important; }
+
+        .criativo-3.fundo-claro { background: linear-gradient(160deg, #e8ecf0 0%, #f0f2f5 60%, #e8ecf0 100%) !important; }
+        .criativo-3.fundo-claro .criativo-light { background: radial-gradient(circle at 50% 25%, rgba(45,140,255,0.06) 0%, transparent 50%); }
+        .criativo-3.fundo-claro .slide-headline { background: linear-gradient(135deg, #0A2E2E 0%, #2D8CFF 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .criativo-3.fundo-claro .slide-body { color: #555; text-shadow: none; opacity: 1; }
+        .criativo-3.fundo-claro .slide-bg { box-shadow: 0 0 25px rgba(45,140,255,0.2); }
+        .criativo-3.fundo-claro .slide-number { background: #0A2E2E !important; }
+
+        .criativo-4.fundo-claro { background: #f0f2f5 !important; }
+        .criativo-4.fundo-claro .criativo-light { background: radial-gradient(circle at 80% 50%, rgba(45,140,255,0.05) 0%, transparent 55%); }
+        .criativo-4.fundo-claro .slide-headline { color: #0A2E2E; text-shadow: none; }
+        .criativo-4.fundo-claro .slide-body { color: #555; text-shadow: none; opacity: 1; }
+        .criativo-4.fundo-claro .criativo-stripes { background: repeating-linear-gradient(-45deg, transparent, transparent 14px, rgba(45,140,255,0.03) 14px, rgba(45,140,255,0.03) 15px); }
+        .criativo-4.fundo-claro .slide-number { background: #0A2E2E !important; }
+
+        .criativo-5.fundo-claro { background: #f0f2f5 !important; }
+        .criativo-5.fundo-claro .criativo-light { background: radial-gradient(circle at 20% 40%, rgba(45,140,255,0.05) 0%, transparent 50%); }
+        .criativo-5.fundo-claro .slide-headline { color: #0A2E2E; text-shadow: none; }
+        .criativo-5.fundo-claro .slide-body { color: #555; text-shadow: none; opacity: 1; }
+        .criativo-5.fundo-claro .slide-number { background: #0A2E2E !important; }
+
+        /* ==================== DESIGNER POST — BASE ==================== */
+        /* Variáveis de tema claro/escuro para Post */
+        .post-dark { --post-bg: #0A2E2E; --post-bg2: #0D3B3B; --post-text: #ffffff; --post-text-sec: rgba(255,255,255,0.7); --post-border: rgba(255,255,255,0.08); --post-profile-bg: rgba(255,255,255,0.06); }
+        .post-light { --post-bg: #f0f2f5; --post-bg2: #ffffff; --post-text: #1a1a1a; --post-text-sec: #555; --post-border: rgba(0,0,0,0.08); --post-profile-bg: rgba(0,0,0,0.03); }
+
+        /* Post profile header — always visible */
+        .post-profile { position: absolute; top: 0; left: 0; right: 0; display: flex; align-items: center; gap: 8px; padding: 12px 14px; z-index: 12; background: var(--post-profile-bg); border-bottom: 1px solid var(--post-border); }
+        .post-profile-pic { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 2px solid #2D8CFF; flex-shrink: 0; }
+        .post-profile-pic-placeholder { width: 32px; height: 32px; border-radius: 50%; background: #2D8CFF; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .post-profile-pic-placeholder svg { width: 16px; height: 16px; fill: white; }
+        .post-profile-info { display: flex; flex-direction: column; }
+        .post-profile-name { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 0.68rem; color: var(--post-text); line-height: 1.2; }
+        .post-profile-handle { font-family: 'Inter', sans-serif; font-weight: 400; font-size: 0.58rem; color: #2D8CFF; line-height: 1.2; }
+        .post-verified { width: 12px; height: 12px; fill: #2D8CFF; margin-left: -4px; flex-shrink: 0; }
+
+        /* Post engagement bar (bottom) */
+        .post-engagement { position: absolute; bottom: 0; left: 0; right: 0; display: flex; align-items: center; gap: 14px; padding: 10px 14px; z-index: 12; border-top: 1px solid var(--post-border); background: var(--post-profile-bg); }
+        .post-engagement svg { width: 16px; height: 16px; fill: var(--post-text-sec); }
+
+        /* ==================== DESIGNER POST — CAPA ==================== */
+        .post-capa { position: relative; overflow: hidden; }
+        .post-capa.post-dark { background: #0A2E2E; }
+        .post-capa.post-light { background: #f0f2f5; }
+        .post-capa .slide-bg { position: absolute; top: 56px; left: 0; right: 0; bottom: 44px; background-size: cover; background-position: center; }
+        .post-capa .slide-overlay { position: absolute; top: 56px; left: 0; right: 0; bottom: 44px; background: linear-gradient(to bottom, transparent 0%, transparent 40%, rgba(10,46,46,0.5) 60%, rgba(10,46,46,0.92) 82%, rgba(10,46,46,0.99) 100%); }
+        .post-capa.post-light .slide-overlay { background: linear-gradient(to bottom, transparent 0%, transparent 40%, rgba(240,242,245,0.5) 60%, rgba(240,242,245,0.92) 82%, rgba(240,242,245,0.99) 100%); }
+        .post-capa .slide-content { position: absolute; bottom: 44px; left: 0; right: 0; padding: 20px 16px 16px; display: flex; flex-direction: column; justify-content: flex-end; z-index: 5; }
+        .post-capa .slide-headline { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.3rem; line-height: 1.15; color: var(--post-text); text-transform: uppercase; letter-spacing: -0.3px; }
+        .post-capa .slide-headline .hl-tag { background: #2D8CFF; color: white; padding: 2px 8px 5px; border-radius: 3px; border-bottom: 3px solid #F5C542; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+        .post-capa .slide-body { font-family: 'Inter', sans-serif; font-size: 0.7rem; color: var(--post-text-sec); line-height: 1.45; margin-top: 6px; }
+        .post-capa .post-line { position: absolute; bottom: 44px; left: 0; right: 0; height: 3px; background: linear-gradient(to right, #2D8CFF, #00C9A7); z-index: 10; }
+        /* Capa sem imagem */
+        .post-capa.no-bg-image .slide-bg { display: none; }
+        .post-capa.no-bg-image .slide-overlay { display: none; }
+        .post-capa.no-bg-image .slide-content { top: 56px; bottom: 44px; justify-content: center; }
+        .post-capa.no-bg-image .slide-headline { text-shadow: none; }
+        .post-capa.no-bg-image .slide-body { text-shadow: none; }
+
+        /* ==================== DESIGNER POST — MODELO 1: Feed Clássico ==================== */
+        .post-1 { overflow: hidden; }
+        .post-1.post-dark { background: #0A2E2E; }
+        .post-1.post-light { background: #f0f2f5; }
+        .post-1 .slide-bg { position: absolute; top: 56px; left: 0; right: 0; bottom: 44px; background-size: cover; background-position: center; }
+        .post-1 .slide-overlay { position: absolute; top: 56px; left: 0; right: 0; bottom: 44px; background: linear-gradient(to bottom, transparent 40%, rgba(10,46,46,0.7) 75%, rgba(10,46,46,0.95) 100%); }
+        .post-1.post-light .slide-overlay { background: linear-gradient(to bottom, transparent 40%, rgba(240,242,245,0.7) 75%, rgba(240,242,245,0.95) 100%); }
+        .post-1 .slide-content { position: absolute; bottom: 44px; left: 0; right: 0; padding: 16px 16px 14px; z-index: 5; }
+        .post-1 .slide-headline { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 1.05rem; color: var(--post-text); line-height: 1.25; }
+        .post-1 .slide-body { font-family: 'Inter', sans-serif; font-size: 0.72rem; color: var(--post-text-sec); line-height: 1.5; margin-top: 6px; }
+        /* Sem imagem */
+        .post-1.no-bg-image .slide-bg { display: none; }
+        .post-1.no-bg-image .slide-overlay { display: none; }
+        .post-1.no-bg-image .slide-content { top: 56px; bottom: 44px; display: flex; flex-direction: column; justify-content: center; padding: 20px 20px; }
+        .post-1.no-bg-image .slide-headline { text-shadow: none; }
+        .post-1.no-bg-image .slide-body { text-shadow: none; }
+        .post-1 .post-accent { position: absolute; bottom: 48px; left: 0; width: 40px; height: 3px; background: #2D8CFF; z-index: 6; }
+
+        /* ==================== DESIGNER POST — MODELO 2: Card Texto ==================== */
+        .post-2 { overflow: hidden; }
+        .post-2.post-dark { background: #0A2E2E; }
+        .post-2.post-light { background: #f0f2f5; }
+        .post-2 .slide-bg { display: none; }
+        .post-2 .slide-overlay { display: none; }
+        .post-2 .slide-content { position: absolute; top: 56px; left: 0; right: 0; bottom: 44px; display: flex; flex-direction: column; justify-content: center; padding: 24px 20px; z-index: 5; }
+        .post-2 .slide-headline { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.15rem; color: var(--post-text); line-height: 1.3; text-shadow: none; }
+        .post-2 .slide-body { font-family: 'Inter', sans-serif; font-size: 0.75rem; color: var(--post-text-sec); line-height: 1.6; margin-top: 12px; text-shadow: none; opacity: 1; }
+        .post-2 .post-quote-bar { position: absolute; top: 56px; left: 16px; width: 3px; bottom: 44px; background: linear-gradient(to bottom, #2D8CFF, #00C9A7); z-index: 6; border-radius: 2px; }
+        .post-2 .slide-content { padding-left: 28px; }
+
+        /* ==================== DESIGNER POST — MODELO 3: Destaque Central ==================== */
+        .post-3 { overflow: hidden; }
+        .post-3.post-dark { background: linear-gradient(160deg, #061E1E 0%, #0A2E2E 60%, #0D3B3B 100%); }
+        .post-3.post-light { background: linear-gradient(160deg, #e8ecf0 0%, #f0f2f5 60%, #f7f8fa 100%); }
+        .post-3 .slide-bg { display: none; }
+        .post-3 .slide-overlay { display: none; }
+        .post-3 .slide-content { position: absolute; top: 56px; left: 0; right: 0; bottom: 44px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 30px 24px; z-index: 5; }
+        .post-3 .slide-headline { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.25rem; color: var(--post-text); line-height: 1.2; text-transform: uppercase; text-shadow: none; }
+        .post-3 .slide-body { font-family: 'Inter', sans-serif; font-weight: 300; font-size: 0.72rem; color: var(--post-text-sec); line-height: 1.6; margin-top: 12px; max-width: 90%; text-shadow: none; opacity: 1; }
+        .post-3 .post-glow { position: absolute; top: 56px; left: 0; right: 0; bottom: 44px; background: radial-gradient(circle at 50% 45%, rgba(0,201,167,0.08) 0%, transparent 55%); z-index: 1; pointer-events: none; }
+        .post-3 .post-top-line { position: absolute; top: 56px; left: 0; right: 0; height: 3px; background: linear-gradient(to right, #2D8CFF, #00C9A7); z-index: 6; }
+
+        /* ==================== DESIGNER POST — MODELO 4: Split Image ==================== */
+        .post-4 { overflow: hidden; }
+        .post-4.post-dark { background: #0A2E2E; }
+        .post-4.post-light { background: #f0f2f5; }
+        .post-4 .slide-bg { position: absolute; top: 56px; left: 0; width: 40%; bottom: 44px; background-size: cover; background-position: center; }
+        .post-4 .slide-overlay { position: absolute; top: 56px; left: 0; width: 40%; bottom: 44px; background: linear-gradient(to right, transparent 40%, var(--post-bg) 100%); }
+        .post-4 .slide-content { position: absolute; top: 56px; left: 38%; right: 0; bottom: 44px; display: flex; flex-direction: column; justify-content: center; padding: 16px 16px 16px 14px; z-index: 5; }
+        .post-4 .slide-headline { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.95rem; color: var(--post-text); line-height: 1.3; text-shadow: none; }
+        .post-4 .slide-body { font-family: 'Inter', sans-serif; font-size: 0.7rem; color: var(--post-text-sec); line-height: 1.55; margin-top: 8px; text-shadow: none; opacity: 1; }
+        /* Sem imagem */
+        .post-4.no-bg-image .slide-bg { display: none; }
+        .post-4.no-bg-image .slide-overlay { display: none; }
+        .post-4.no-bg-image .slide-content { left: 0; padding: 20px 20px; }
+        .post-4 .post-divider { position: absolute; top: 56px; left: 38%; width: 2px; bottom: 44px; background: linear-gradient(to bottom, transparent, #2D8CFF, #00C9A7, transparent); z-index: 6; }
+
+        /* ==================== DESIGNER POST — MODELO 5: Minimalista ==================== */
+        .post-5 { overflow: hidden; }
+        .post-5.post-dark { background: #0A2E2E; }
+        .post-5.post-light { background: #f0f2f5; }
+        .post-5 .slide-bg { display: none; }
+        .post-5 .slide-overlay { display: none; }
+        .post-5 .slide-content { position: absolute; top: 56px; left: 0; right: 0; bottom: 44px; display: flex; flex-direction: column; justify-content: center; padding: 24px 22px; z-index: 5; }
+        .post-5 .slide-headline { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1.1rem; color: var(--post-text); line-height: 1.3; text-shadow: none; }
+        .post-5 .slide-body { font-family: 'Inter', sans-serif; font-weight: 300; font-size: 0.72rem; color: var(--post-text-sec); line-height: 1.6; margin-top: 10px; text-shadow: none; opacity: 1; }
+        .post-5 .post-dots { position: absolute; bottom: 52px; left: 22px; width: 6px; height: 6px; background: #2D8CFF; border-radius: 50%; box-shadow: 12px 0 0 #00C9A7, 24px 0 0 #2D8CFF; z-index: 6; }
+
+        /* ==================== FUNDO TOGGLE (claro/escuro para todos) ==================== */
+        .fundo-toggle { display: inline-flex; border: 1.5px solid var(--border); border-radius: 9999px; overflow: hidden; cursor: pointer; user-select: none; }
+        .fundo-option { display: flex; align-items: center; gap: 4px; padding: 7px 12px; font-size: 0.72rem; font-weight: 600; color: var(--text-muted); transition: all 0.2s; white-space: nowrap; }
+        .fundo-option.active { background: var(--accent); color: white; }
+        .fundo-option:not(.active):hover { background: var(--accent-glow); color: var(--accent); }
 
         /* ==================== CAPTION SECTION ==================== */
         .caption-section { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border); }
@@ -458,7 +646,15 @@
                         <option value="padrao">📐 Padrão</option>
                         <option value="noticia">📰 Notícia</option>
                         <option value="criativo">🎨 Criativo</option>
+                        <option value="post">📱 Post</option>
                     </select>
+                </div>
+                <div class="field-group" style="flex-shrink:0">
+                    <span class="field-label">Fundo</span>
+                    <div class="fundo-toggle" id="fundoToggle" onclick="toggleFundo()">
+                        <div class="fundo-option active" data-fundo="escuro">🌙 Escuro</div>
+                        <div class="fundo-option" data-fundo="claro">☀️ Claro</div>
+                    </div>
                 </div>
                 <div class="field-group" style="flex-shrink:0">
                     <span class="field-label">Slides</span>
@@ -702,11 +898,26 @@
         let perfilFotoBase64 = localStorage.getItem('post_perfil_foto') || '';
         let tipoImagem = 'aleatorio'; // 'aleatorio', 'famosos', 'historia', 'empresa'
         let modoImagem = 'imagens'; // 'imagens' ou 'criativo'
-        let designerModelo = 'padrao'; // 'padrao', 'noticia' ou 'criativo'
+        let designerModelo = 'padrao'; // 'padrao', 'noticia', 'criativo' ou 'post'
+        let fundoTema = 'escuro'; // 'escuro' ou 'claro'
 
         function selecionarDesigner(modelo) {
             designerModelo = modelo;
             currentLayoutIndex = 0; // resetar ao trocar de designer
+            if (dadosGerados) renderizarSlides();
+        }
+
+        function toggleFundo() {
+            const options = document.querySelectorAll('.fundo-option');
+            if (fundoTema === 'escuro') {
+                fundoTema = 'claro';
+                options[0].classList.remove('active');
+                options[1].classList.add('active');
+            } else {
+                fundoTema = 'escuro';
+                options[1].classList.remove('active');
+                options[0].classList.add('active');
+            }
             if (dadosGerados) renderizarSlides();
         }
 
@@ -1035,7 +1246,7 @@ CONTEUDO BASE: ${conteudo}`;
 
             // Regra extra para Designer Noticia/Criativo: campo "destaque" na capa
             let regraDestaque = '';
-            if (designerModelo === 'criativo' || designerModelo === 'noticia') {
+            if (designerModelo === 'criativo' || designerModelo === 'noticia' || designerModelo === 'post') {
                 regraDestaque = `\n8. destaque: NO SLIDE 1 (CAPA), inclua o campo "destaque" com 1-2 PALAVRAS-CHAVE do titulo que devem ser destacadas visualmente com fundo colorido. Escolha as palavras mais impactantes e de efeito. Ex: se headline="CRISE GLOBAL ATINGE MERCADOS", destaque="CRISE GLOBAL". Se headline="INTELIGENCIA ARTIFICIAL MUDA O MUNDO", destaque="INTELIGENCIA ARTIFICIAL". SEMPRE inclua este campo no slide 1.`;
             }
 
@@ -1058,7 +1269,7 @@ Retorne EXATAMENTE este JSON:
             "numero": 1,
             "tipo": "capa",
             "headline": "DOMINE SUA PRODUTIVIDADE AGORA",
-            "body": "Subtitulo curto e envolvente"${tipoImagem === 'famosos' || tipoImagem === 'historia' ? ',\n            "busca_pessoa": "Nome Completo"' : ''}${modoImagem === 'criativo' ? ',\n            "comImagem": true' : ''}${(designerModelo === 'criativo' || designerModelo === 'noticia') ? ',\n            "destaque": "PRODUTIVIDADE"' : ''}
+            "body": "Subtitulo curto e envolvente"${tipoImagem === 'famosos' || tipoImagem === 'historia' ? ',\n            "busca_pessoa": "Nome Completo"' : ''}${modoImagem === 'criativo' ? ',\n            "comImagem": true' : ''}${(designerModelo === 'criativo' || designerModelo === 'noticia' || designerModelo === 'post') ? ',\n            "destaque": "PRODUTIVIDADE"' : ''}
         },
         {
             "numero": 2,
@@ -1218,7 +1429,9 @@ Retorne EXATAMENTE este JSON:
             // Determinar layout conforme designer
             const isCriativo = designerModelo === 'criativo';
             const isNoticia = designerModelo === 'noticia';
-            const layoutNum = (isCriativo || isNoticia) ? (currentLayoutIndex % 5) + 1 : (currentLayoutIndex % 10) + 1;
+            const isPost = designerModelo === 'post';
+            const layoutNum = (isCriativo || isNoticia || isPost) ? (currentLayoutIndex % 5) + 1 : (currentLayoutIndex % 10) + 1;
+            const fundoClass = fundoTema === 'claro' ? 'post-light' : 'post-dark';
 
             let html = '';
             dadosGerados.slides.forEach((slide, index) => {
@@ -1279,7 +1492,7 @@ Retorne EXATAMENTE este JSON:
 
                     html += `
                     <div class="slide-wrap" draggable="true" data-index="${index}" ondragstart="dragStart(event)" ondragover="dragOver(event)" ondrop="dropSlide(event)" ondragend="dragEnd(event)">
-                        <div class="slide-card ${slideClass} ${isCapa ? 'is-cover' : ''} ${noBgClass}" id="slide-${index}">
+                        <div class="slide-card ${slideClass} ${fundoTema === 'claro' ? 'fundo-claro' : ''} ${isCapa ? 'is-cover' : ''} ${noBgClass}" id="slide-${index}">
                             <div class="slide-bg" style="${bgStyle}"></div>
                             <div class="slide-overlay"></div>
                             ${noticiaExtras}
@@ -1355,7 +1568,7 @@ Retorne EXATAMENTE este JSON:
 
                     html += `
                     <div class="slide-wrap" draggable="true" data-index="${index}" ondragstart="dragStart(event)" ondragover="dragOver(event)" ondrop="dropSlide(event)" ondragend="dragEnd(event)">
-                        <div class="slide-card ${slideClass} ${isCapa ? 'is-cover' : ''} ${noBgClass}" id="slide-${index}">
+                        <div class="slide-card ${slideClass} ${fundoTema === 'claro' ? 'fundo-claro' : ''} ${isCapa ? 'is-cover' : ''} ${noBgClass}" id="slide-${index}">
                             <div class="slide-bg" style="${bgStyle}"></div>
                             <div class="slide-overlay"></div>
                             ${criativoExtras}
@@ -1367,6 +1580,100 @@ Retorne EXATAMENTE este JSON:
                                 <div class="slide-headline" contenteditable="false">${headlineHTML}</div>
                                 <div class="slide-body" contenteditable="false">${slide.body || ''}</div>
                             </div>
+                        </div>
+                        <div class="slide-edit-overlay">
+                            <button class="slide-edit-btn" onclick="editarSlide(${index})">
+                                <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                                Editar
+                            </button>
+                            <button class="slide-edit-btn" onclick="trocarImagem(${index})">
+                                <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+                                Imagem
+                            </button>
+                            <button class="slide-edit-btn" onclick="baixarSlide(${index})">
+                                <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                            </button>
+                        </div>
+                        <div class="edit-toolbar" id="toolbar-${index}">
+                            <div class="edit-group">
+                                <label>Fonte</label>
+                                <select onchange="mudarFonte(${index},this.value)">
+                                    <option value="Montserrat">Montserrat</option>
+                                    <option value="Inter">Inter</option>
+                                    <option value="Poppins">Poppins</option>
+                                    <option value="Playfair Display">Playfair</option>
+                                </select>
+                            </div>
+                            <div class="edit-group">
+                                <label>Cor texto</label>
+                                <input type="color" value="#ffffff" onchange="mudarCorTexto(${index},this.value)">
+                            </div>
+                            <div class="edit-group">
+                                <label>Tamanho</label>
+                                <input type="range" min="10" max="24" value="16" oninput="mudarTamanho(${index},this.value)">
+                            </div>
+                        </div>
+                    </div>`;
+
+                // ===== MODO POST =====
+                } else if (isPost) {
+                    const slideClass = isCapa ? 'post-capa' : `post-${layoutNum}`;
+
+                    // Headline com destaque (hl-tag) na capa
+                    let headlineHTML = slide.headline || '';
+                    if (isCapa && slide.destaque && headlineHTML) {
+                        const escapedDestaque = slide.destaque.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                        const re = new RegExp(`(${escapedDestaque})`, 'gi');
+                        headlineHTML = headlineHTML.replace(re, '<span class="hl-tag">$1</span>');
+                    }
+
+                    // Profile header (sempre visível no Post)
+                    const postProfileHTML = `<div class="post-profile">
+                        ${perfilFotoBase64 ? `<img src="${perfilFotoBase64}" class="post-profile-pic" alt="">` : `<div class="post-profile-pic-placeholder"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>`}
+                        <div class="post-profile-info">
+                            <span class="post-profile-name">${perfilNome || 'Seu Nome'}</span>
+                            <span class="post-profile-handle">${perfilArroba || '@perfil'}</span>
+                        </div>
+                        <svg class="post-verified" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
+                    </div>`;
+
+                    // Engagement bar (bottom)
+                    const postEngageHTML = `<div class="post-engagement">
+                        <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                        <svg viewBox="0 0 24 24"><path d="M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18z"/></svg>
+                        <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                        <svg viewBox="0 0 24 24" style="margin-left:auto"><path d="M17 3H7c-1.1 0-1.99.9-1.99 2L5 21l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>
+                    </div>`;
+
+                    // Decorative elements per model
+                    let postExtras = '';
+                    if (isCapa) {
+                        postExtras = `<div class="post-line"></div>`;
+                    } else {
+                        const decoMap = {
+                            1: `<div class="post-accent"></div>`,
+                            2: `<div class="post-quote-bar"></div>`,
+                            3: `<div class="post-glow"></div><div class="post-top-line"></div>`,
+                            4: `<div class="post-divider"></div>`,
+                            5: `<div class="post-dots"></div>`
+                        };
+                        postExtras = decoMap[layoutNum] || '';
+                    }
+
+                    html += `
+                    <div class="slide-wrap" draggable="true" data-index="${index}" ondragstart="dragStart(event)" ondragover="dragOver(event)" ondrop="dropSlide(event)" ondragend="dragEnd(event)">
+                        <div class="slide-card ${slideClass} ${fundoClass} ${isCapa ? 'is-cover' : ''} ${noBgClass}" id="slide-${index}">
+                            ${postProfileHTML}
+                            <div class="slide-bg" style="${bgStyle}"></div>
+                            <div class="slide-overlay"></div>
+                            ${postExtras}
+                            <div class="slide-number">${index + 1}</div>
+                            ${badge}
+                            <div class="slide-content">
+                                <div class="slide-headline" contenteditable="false">${headlineHTML}</div>
+                                <div class="slide-body" contenteditable="false">${slide.body || ''}</div>
+                            </div>
+                            ${postEngageHTML}
                         </div>
                         <div class="slide-edit-overlay">
                             <button class="slide-edit-btn" onclick="editarSlide(${index})">
@@ -1428,7 +1735,7 @@ Retorne EXATAMENTE este JSON:
 
                     html += `
                     <div class="slide-wrap" draggable="true" data-index="${index}" ondragstart="dragStart(event)" ondragover="dragOver(event)" ondrop="dropSlide(event)" ondragend="dragEnd(event)">
-                        <div class="slide-card layout-${layoutNum} ${isCapa ? 'is-cover' : ''} ${noBgClass}" id="slide-${index}">
+                        <div class="slide-card layout-${layoutNum} ${fundoTema === 'claro' ? 'fundo-claro' : ''} ${isCapa ? 'is-cover' : ''} ${noBgClass}" id="slide-${index}">
                             <div class="slide-bg" style="${bgStyle}"></div>
                             <div class="slide-overlay"></div>
                             ${extras}
@@ -1544,8 +1851,9 @@ Retorne EXATAMENTE este JSON:
             currentLayoutIndex++;
             const isCriativo = designerModelo === 'criativo';
             const isNoticia = designerModelo === 'noticia';
-            const layoutNum = (isCriativo || isNoticia) ? (currentLayoutIndex % 5) + 1 : (currentLayoutIndex % 10) + 1;
-            const designLabel = isCriativo ? `Criativo modelo ${layoutNum}` : isNoticia ? `Notícia modelo ${layoutNum}` : `Layout ${layoutNum}`;
+            const isPost = designerModelo === 'post';
+            const layoutNum = (isCriativo || isNoticia || isPost) ? (currentLayoutIndex % 5) + 1 : (currentLayoutIndex % 10) + 1;
+            const designLabel = isCriativo ? `Criativo modelo ${layoutNum}` : isNoticia ? `Notícia modelo ${layoutNum}` : isPost ? `Post modelo ${layoutNum}` : `Layout ${layoutNum}`;
             showStatus(`Carregando ${designLabel} com novas imagens...`);
 
             // Usar o mesmo sistema de pool do tema
@@ -2004,6 +2312,90 @@ Retorne EXATAMENTE este JSON:
                 clone.querySelectorAll('.criativo-accent-line').forEach(el => { el.style.bottom = '180px'; el.style.left = '320px'; el.style.width = '200px'; el.style.height = '8px'; });
             }
 
+            // Scale up post-specific elements
+            clone.querySelectorAll('.post-profile').forEach(el => {
+                el.style.padding = '48px 56px';
+            });
+            clone.querySelectorAll('.post-profile-pic').forEach(el => {
+                el.style.width = '128px'; el.style.height = '128px'; el.style.borderWidth = '8px';
+            });
+            clone.querySelectorAll('.post-profile-pic-placeholder').forEach(el => {
+                el.style.width = '128px'; el.style.height = '128px';
+            });
+            clone.querySelectorAll('.post-profile-pic-placeholder svg').forEach(el => {
+                el.style.width = '64px'; el.style.height = '64px';
+            });
+            clone.querySelectorAll('.post-profile-name').forEach(el => {
+                el.style.fontSize = '2.7rem';
+            });
+            clone.querySelectorAll('.post-profile-handle').forEach(el => {
+                el.style.fontSize = '2.3rem';
+            });
+            clone.querySelectorAll('.post-verified').forEach(el => {
+                el.style.width = '48px'; el.style.height = '48px';
+            });
+            clone.querySelectorAll('.post-profile-info').forEach(el => {
+                el.style.gap = '4px';
+            });
+            clone.querySelectorAll('.post-engagement').forEach(el => {
+                el.style.padding = '40px 56px'; el.style.gap = '56px';
+            });
+            clone.querySelectorAll('.post-engagement svg').forEach(el => {
+                el.style.width = '64px'; el.style.height = '64px';
+            });
+            clone.querySelectorAll('.post-line').forEach(el => {
+                el.style.height = '12px';
+            });
+            clone.querySelectorAll('.post-accent').forEach(el => {
+                el.style.width = '160px'; el.style.height = '12px';
+            });
+            clone.querySelectorAll('.post-quote-bar').forEach(el => {
+                el.style.width = '12px'; el.style.left = '64px';
+            });
+            clone.querySelectorAll('.post-top-line').forEach(el => {
+                el.style.height = '12px';
+            });
+            clone.querySelectorAll('.post-divider').forEach(el => {
+                el.style.width = '8px';
+            });
+            clone.querySelectorAll('.post-dots').forEach(el => {
+                el.style.width = '24px'; el.style.height = '24px'; el.style.left = '88px'; el.style.boxShadow = '48px 0 0 #00C9A7, 96px 0 0 #2D8CFF';
+            });
+
+            // Adjust post slide-bg/overlay for fullres (top/bottom offsets)
+            if (clone.classList.contains('post-capa') || clone.classList.contains('post-1') || clone.classList.contains('post-4')) {
+                const postBg = clone.querySelector('.slide-bg');
+                const postOv = clone.querySelector('.slide-overlay');
+                if (postBg) { postBg.style.top = '224px'; postBg.style.bottom = '176px'; }
+                if (postOv) { postOv.style.top = '224px'; postOv.style.bottom = '176px'; }
+                if (clone.classList.contains('post-capa')) {
+                    const cnt = clone.querySelector('.slide-content');
+                    if (cnt) cnt.style.bottom = '176px';
+                    clone.querySelectorAll('.post-line').forEach(el => { el.style.bottom = '176px'; });
+                }
+                if (clone.classList.contains('post-1')) {
+                    const cnt = clone.querySelector('.slide-content');
+                    if (cnt) cnt.style.bottom = '176px';
+                }
+                if (clone.classList.contains('post-4')) {
+                    const postBg4 = clone.querySelector('.slide-bg');
+                    if (postBg4) { postBg4.style.top = '224px'; postBg4.style.bottom = '176px'; }
+                    const postOv4 = clone.querySelector('.slide-overlay');
+                    if (postOv4) { postOv4.style.top = '224px'; postOv4.style.bottom = '176px'; }
+                    const cnt = clone.querySelector('.slide-content');
+                    if (cnt) { cnt.style.top = '224px'; cnt.style.bottom = '176px'; }
+                    clone.querySelectorAll('.post-divider').forEach(el => { el.style.top = '224px'; el.style.bottom = '176px'; });
+                }
+            }
+            // Text-only post models
+            if (clone.classList.contains('post-2') || clone.classList.contains('post-3') || clone.classList.contains('post-5')) {
+                const cnt = clone.querySelector('.slide-content');
+                if (cnt) { cnt.style.top = '224px'; cnt.style.bottom = '176px'; }
+                clone.querySelectorAll('.post-quote-bar').forEach(el => { el.style.top = '224px'; el.style.bottom = '176px'; });
+                clone.querySelectorAll('.post-glow').forEach(el => { el.style.top = '224px'; el.style.bottom = '176px'; });
+                clone.querySelectorAll('.post-top-line').forEach(el => { el.style.top = '224px'; });
+            }
+
             // Remove edit overlay
             clone.querySelectorAll('.slide-edit-overlay').forEach(el => el.remove());
 
@@ -2016,7 +2408,7 @@ Retorne EXATAMENTE este JSON:
                 scale: 1,
                 useCORS: true,
                 allowTaint: true,
-                backgroundColor: '#0a1628'
+                backgroundColor: fundoTema === 'claro' ? '#f0f2f5' : '#0a1628'
             });
 
             container.innerHTML = '';
