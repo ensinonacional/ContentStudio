@@ -412,27 +412,31 @@
     </div>
 
     <!-- Image Search Modal -->
-    <div class="modal-overlay" id="imageModal">
+    <div class="modal-overlay" id="imageModal" onclick="if(event.target===this)fecharModal()">
         <div class="modal-box">
-            <div class="modal-tabs">
-                <button class="modal-tab active" onclick="switchModalTab('search',this)">Pixabay</button>
-                <button class="modal-tab" onclick="switchModalTab('famosos',this)">Famosos</button>
-                <button class="modal-tab" onclick="switchModalTab('upload',this)">Upload</button>
+            <div style="display:flex;align-items:center;border-bottom:1px solid var(--border)">
+                <div class="modal-tabs" style="flex:1;border-bottom:none">
+                    <button class="modal-tab active" onclick="switchModalTab('search',this)">Pixabay</button>
+                    <button class="modal-tab" onclick="switchModalTab('famosos',this)">Famosos</button>
+                    <button class="modal-tab" onclick="switchModalTab('upload',this)">Upload</button>
+                </div>
+                <button class="modal-close" onclick="fecharModal()" style="margin-right:12px;font-size:1.5rem">&times;</button>
             </div>
+            <!-- Pixabay search header -->
             <div class="modal-header" id="modalSearchHeader">
                 <input type="text" id="modalSearchInput" placeholder="Buscar imagens no Pixabay..." onkeydown="if(event.key==='Enter')buscarImagens()">
                 <button onclick="buscarImagens()">Buscar</button>
-                <button class="modal-close" onclick="fecharModal()">&times;</button>
+            </div>
+            <!-- Famosos search header -->
+            <div id="famososHeader" style="display:none;padding:12px 20px;border-bottom:1px solid var(--border);gap:8px">
+                <div style="display:flex;gap:8px">
+                    <input type="text" id="famososInput" placeholder="Nome do famoso (ex: Anitta, Neymar, Einstein...)" style="flex:1;padding:10px 14px;background:var(--bg-primary);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);font-size:0.85rem;outline:none" onkeydown="if(event.key==='Enter')buscarFamosos()">
+                    <button onclick="buscarFamosos()" style="padding:10px 18px;background:var(--accent);color:white;border:none;border-radius:var(--radius-sm);font-size:0.8rem;font-weight:600;cursor:pointer">Buscar</button>
+                </div>
             </div>
             <div class="modal-body" id="modalBody">
                 <div class="img-grid" id="imgGrid"></div>
-                <div id="famososArea" style="display:none">
-                    <div style="display:flex;gap:8px;margin-bottom:16px">
-                        <input type="text" id="famososInput" placeholder="Nome do famoso (ex: Anitta, Neymar, Einstein...)" style="flex:1;padding:10px 14px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:8px;color:var(--text-primary);font-size:0.9rem" onkeydown="if(event.key==='Enter')buscarFamosos()">
-                        <button onclick="buscarFamosos()" style="padding:10px 20px;background:var(--accent);border:none;border-radius:8px;color:white;cursor:pointer;font-weight:600">Buscar</button>
-                    </div>
-                    <div id="famososGrid" class="img-grid"></div>
-                </div>
+                <div id="famososGrid" class="img-grid" style="display:none"></div>
                 <div id="uploadArea" style="display:none">
                     <div class="upload-area" onclick="document.getElementById('uploadImgInput').click()">
                         <svg viewBox="0 0 24 24" width="40" height="40" fill="var(--text-muted)"><path d="M19 7v2.99s-1.99.01-2 0V7h-3s.01-1.99 0-2h3V2h2v3h3v2h-3zm-3 4V8h-3V5H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-8h-3zM5 19l3-4 2 3 3-4 4 5H5z"/></svg>
@@ -902,8 +906,9 @@ Retorne EXATAMENTE este JSON:
             btn.classList.add('active');
             // Esconder tudo
             document.getElementById('modalSearchHeader').style.display = 'none';
+            document.getElementById('famososHeader').style.display = 'none';
             document.getElementById('imgGrid').style.display = 'none';
-            document.getElementById('famososArea').style.display = 'none';
+            document.getElementById('famososGrid').style.display = 'none';
             document.getElementById('uploadArea').style.display = 'none';
             document.getElementById('modalFooter').style.display = 'none';
 
@@ -912,8 +917,9 @@ Retorne EXATAMENTE este JSON:
                 document.getElementById('imgGrid').style.display = 'grid';
                 document.getElementById('modalFooter').style.display = 'flex';
             } else if (tab === 'famosos') {
-                document.getElementById('famososArea').style.display = 'block';
-                document.getElementById('famososInput').focus();
+                document.getElementById('famososHeader').style.display = 'block';
+                document.getElementById('famososGrid').style.display = 'grid';
+                setTimeout(() => document.getElementById('famososInput').focus(), 100);
             } else {
                 document.getElementById('uploadArea').style.display = 'block';
             }
