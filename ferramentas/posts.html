@@ -949,60 +949,75 @@ Retorne EXATAMENTE este JSON:
         }
 
         // ==================== BUSCA DE FAMOSOS (WIKIPEDIA) ====================
+        let famososResultados = [];
+
         async function buscarFamosos() {
             const nome = document.getElementById('famososInput').value.trim();
             if (!nome) return;
             const grid = document.getElementById('famososGrid');
-            grid.innerHTML = '<p style="text-align:center;color:var(--text-muted);grid-column:1/-1;padding:20px">Buscando "' + nome + '" na Wikipedia...</p>';
+            grid.innerHTML = '<p style="text-align:center;color:var(--text-muted);grid-column:1/-1;padding:20px">Buscando "' + nome + '"...</p>';
+            famososResultados = [];
 
             try {
-                // 1. Buscar na Wikipedia PT os resultados relacionados
-                const searchResp = await fetch(`https://pt.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(nome)}&format=json&srlimit=10&origin=*`);
-                const searchData = await searchResp.json();
-                const titulos = searchData.query.search.map(r => r.title);
+                // Usar MediaWiki API com pageimages (suporta CORS com origin=*)
+                // Buscar em PT e EN simultaneamente
+                const [ptResp, enResp] = await Promise.allSettled([
+                    fetch(`https://pt.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(nome)}&gsrlimit=10&prop=pageimages|info&piprop=thumbnail|original&pithumbsize=400&format=json&origin=*`),
+                    fetch(`https://en.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(nome)}&gsrlimit=10&prop=pageimages|info&piprop=thumbnail|original&pithumbsize=400&format=json&origin=*`)
+                ]);
 
-                if (titulos.length === 0) {
-                    // Tentar Wikipedia EN
-                    const searchEN = await fetch(`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(nome)}&format=json&srlimit=10&origin=*`);
-                    const searchENData = await searchEN.json();
-                    titulos.push(...searchENData.query.search.map(r => r.title));
-                }
-
-                // 2. Buscar imagem de cada resultado
                 const resultados = [];
-                for (const titulo of titulos.slice(0, 8)) {
-                    try {
-                        // Tentar PT primeiro, depois EN
-                        let resp = await fetch(`https://pt.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(titulo)}`);
-                        let data = await resp.json();
+                const titulosVistos = new Set();
 
-                        if (!data.originalimage && !data.thumbnail) {
-                            resp = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(titulo)}`);
-                            data = await resp.json();
-                        }
-
-                        if (data.thumbnail || data.originalimage) {
-                            resultados.push({
-                                url: data.originalimage ? data.originalimage.source : data.thumbnail.source.replace(/\/\d+px-/, '/800px-'),
-                                thumb: data.thumbnail ? data.thumbnail.source : data.originalimage.source,
-                                titulo: data.title,
-                                descricao: data.description || ''
-                            });
-                        }
-                    } catch(e) {}
+                // Processar resultados PT
+                if (ptResp.status === 'fulfilled' && ptResp.value.ok) {
+                    const ptData = await ptResp.value.json();
+                    if (ptData.query && ptData.query.pages) {
+                        Object.values(ptData.query.pages).forEach(page => {
+                            if (page.thumbnail && !titulosVistos.has(page.title.toLowerCase())) {
+                                titulosVistos.add(page.title.toLowerCase());
+                                resultados.push({
+                                    url: page.original ? page.original.source : page.thumbnail.source.replace(/\/\d+px-/, '/800px-'),
+                                    thumb: page.thumbnail.source,
+                                    titulo: page.title,
+                                    wiki: 'PT'
+                                });
+                            }
+                        });
+                    }
                 }
+
+                // Processar resultados EN
+                if (enResp.status === 'fulfilled' && enResp.value.ok) {
+                    const enData = await enResp.value.json();
+                    if (enData.query && enData.query.pages) {
+                        Object.values(enData.query.pages).forEach(page => {
+                            if (page.thumbnail && !titulosVistos.has(page.title.toLowerCase())) {
+                                titulosVistos.add(page.title.toLowerCase());
+                                resultados.push({
+                                    url: page.original ? page.original.source : page.thumbnail.source.replace(/\/\d+px-/, '/800px-'),
+                                    thumb: page.thumbnail.source,
+                                    titulo: page.title,
+                                    wiki: 'EN'
+                                });
+                            }
+                        });
+                    }
+                }
+
+                famososResultados = resultados;
 
                 if (resultados.length === 0) {
-                    grid.innerHTML = '<p style="text-align:center;color:var(--text-muted);grid-column:1/-1;padding:20px">Nenhuma imagem encontrada para "' + nome + '"</p>';
+                    grid.innerHTML = '<p style="text-align:center;color:var(--text-muted);grid-column:1/-1;padding:20px">Nenhuma imagem encontrada para "' + nome + '". Tente outro nome.</p>';
                     return;
                 }
 
-                grid.innerHTML = resultados.map(r => `
-                    <div class="img-grid-item" onclick="selecionarImagem('${r.url}')" style="position:relative">
+                grid.innerHTML = resultados.map((r, i) => `
+                    <div class="img-grid-item" onclick="selecionarFamoso(${i})" style="position:relative">
                         <img src="${r.thumb}" alt="${r.titulo}" loading="lazy">
                         <div class="img-credit" style="font-size:0.65rem;line-height:1.2">
-                            <strong>${r.titulo}</strong><br>${r.descricao}
-                            <br>Wikipedia
+                            <strong>${r.titulo}</strong>
+                            <br>Wikipedia ${r.wiki}
                         </div>
                     </div>
                 `).join('');
@@ -1010,6 +1025,13 @@ Retorne EXATAMENTE este JSON:
             } catch(e) {
                 console.error('[Famosos] erro:', e);
                 grid.innerHTML = '<p style="text-align:center;color:var(--text-muted);grid-column:1/-1;padding:20px">Erro na busca. Tente novamente.</p>';
+            }
+        }
+
+        function selecionarFamoso(index) {
+            const r = famososResultados[index];
+            if (r && r.url) {
+                selecionarImagem(r.url);
             }
         }
 
