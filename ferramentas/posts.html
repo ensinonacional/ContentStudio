@@ -288,6 +288,10 @@
                             <svg viewBox="0 0 24 24" width="14" height="14"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z" fill="currentColor"/></svg>
                             Historia
                         </label>
+                        <label class="img-type-option" onclick="selecionarTipoImagem('empresa',this)">
+                            <svg viewBox="0 0 24 24" width="14" height="14"><path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z" fill="currentColor"/></svg>
+                            Empresa
+                        </label>
                     </div>
                 </div>
             </div>
@@ -626,16 +630,16 @@
         }
 
         // Buscar 1 imagem para um slide (roteador por tipo)
-        async function buscarImagemParaSlide(query) {
-            // Famosos e Historia: buscar na Wikipedia
-            if (tipoImagem === 'famosos' || tipoImagem === 'historia') {
+        // isCapa = true so para o slide 1 (capa)
+        async function buscarImagemParaSlide(query, isCapa = false) {
+            // Famosos/Historia/Empresa: Wikipedia SÓ na CAPA
+            if (isCapa && (tipoImagem === 'famosos' || tipoImagem === 'historia' || tipoImagem === 'empresa')) {
                 const wikiImg = await buscarImagemWikipedia(query);
                 if (wikiImg) return wikiImg;
-                // Fallback para Pixabay se Wikipedia nao encontrar
                 console.log('[Posts] Wiki nao encontrou "' + query + '", tentando Pixabay...');
             }
 
-            // Aleatorio ou fallback: Pixabay
+            // Todos os outros slides + fallback: Pixabay
             const { fotos } = await buscarPixabay(query, 10);
             if (fotos.length > 0) {
                 const pick = fotos[Math.floor(Math.random() * fotos.length)];
@@ -702,9 +706,17 @@ CONTEUDO BASE: ${conteudo}`;
             // Regra de busca_imagem varia conforme o tipo selecionado
             let regraBuscaImagem = '';
             if (tipoImagem === 'famosos') {
-                regraBuscaImagem = `6. busca_imagem: O NOME COMPLETO da pessoa famosa, celebridade ou personalidade mencionada ou relacionada ao conteudo do slide. Cada slide DEVE ter uma pessoa famosa diferente e relevante ao assunto. Ex: "Anitta", "Neymar Jr", "Elon Musk", "Beyonce". Se o slide nao for sobre uma pessoa especifica, use o nome da pessoa mais relevante ao tema.`;
+                regraBuscaImagem = `6. busca_imagem: REGRA IMPORTANTE:
+   - Para o SLIDE 1 (CAPA): use o NOME COMPLETO da pessoa famosa ou celebridade principal do tema. Ex: "Anitta", "Neymar Jr", "Elon Musk". A foto dessa pessoa sera buscada na Wikipedia.
+   - Para os DEMAIS slides (2 em diante): use 1-3 palavras em PORTUGUES para buscar foto no Pixabay. Use termos CONCRETOS e VISUAIS relacionados ao conteudo do slide (ex: "palco show", "microfone musica", "trofeu premiacao"). NUNCA repita o nome do famoso nos slides internos.`;
             } else if (tipoImagem === 'historia') {
-                regraBuscaImagem = `6. busca_imagem: O NOME COMPLETO do personagem historico, cientista, filosofo, lider ou figura historica mencionada ou relacionada ao conteudo do slide. Cada slide DEVE ter um personagem historico diferente e relevante. Ex: "Albert Einstein", "Cleópatra", "Dom Pedro II", "Leonardo da Vinci", "Princesa Isabel". Se o slide nao for sobre uma pessoa especifica, use o historiador/figura historica mais relevante ao tema.`;
+                regraBuscaImagem = `6. busca_imagem: REGRA IMPORTANTE:
+   - Para o SLIDE 1 (CAPA): use o NOME COMPLETO do personagem historico principal do tema. Ex: "Albert Einstein", "Dom Pedro II", "Princesa Isabel". A foto sera buscada na Wikipedia.
+   - Para os DEMAIS slides (2 em diante): use 1-3 palavras em PORTUGUES para buscar foto no Pixabay. Use termos CONCRETOS e VISUAIS relacionados ao conteudo do slide (ex: "livro antigo", "mapa historico", "castelo medieval", "laboratorio ciencia"). NUNCA repita o nome da pessoa nos slides internos.`;
+            } else if (tipoImagem === 'empresa') {
+                regraBuscaImagem = `6. busca_imagem: REGRA IMPORTANTE:
+   - Para o SLIDE 1 (CAPA): use o NOME da empresa, marca ou organizacao principal do tema. Ex: "Apple", "Google", "Natura", "Magazine Luiza". O logo/imagem sera buscado na Wikipedia.
+   - Para os DEMAIS slides (2 em diante): use 1-3 palavras em PORTUGUES para buscar foto no Pixabay. Use termos CONCRETOS e VISUAIS relacionados ao conteudo do slide (ex: "escritorio corporativo", "reuniao equipe", "tecnologia inovacao"). NUNCA repita o nome da empresa nos slides internos.`;
             } else {
                 regraBuscaImagem = `6. busca_imagem: 1-3 palavras em PORTUGUES para buscar foto no banco Pixabay. Use termos CONCRETOS e VISUAIS relacionados ao slide (ex: "escritorio moderno", "cafe trabalho", "equipe reuniao", "laptop mesa", "escola alunos"). NUNCA use termos abstratos.`;
             }
@@ -755,13 +767,16 @@ Retorne EXATAMENTE este JSON:
                 dadosGerados = JSON.parse(jsonLimpo);
                 console.log('[Posts] JSON parsed, slides:', dadosGerados.slides?.length);
 
-                const tipoLabel = tipoImagem === 'famosos' ? 'famosos na Wikipedia' : tipoImagem === 'historia' ? 'figuras historicas na Wikipedia' : 'imagens no Pixabay';
+                const tipoLabels = { famosos: 'foto do famoso na Wikipedia + imagens no Pixabay', historia: 'foto historica na Wikipedia + imagens no Pixabay', empresa: 'logo/foto da empresa na Wikipedia + imagens no Pixabay', aleatorio: 'imagens no Pixabay' };
+                const tipoLabel = tipoLabels[tipoImagem] || 'imagens no Pixabay';
                 showStatus('Buscando ' + tipoLabel + '...');
 
                 // Buscar imagens para cada slide
+                // Wikipedia so na capa, Pixabay nos demais
                 const buscas = dadosGerados.slides.map(async (slide) => {
                     if (slide.busca_imagem) {
-                        slide.bgImage = await buscarImagemParaSlide(slide.busca_imagem);
+                        const isCapa = slide.tipo === 'capa' || slide.numero === 1;
+                        slide.bgImage = await buscarImagemParaSlide(slide.busca_imagem, isCapa);
                     }
                 });
                 await Promise.allSettled(buscas);
