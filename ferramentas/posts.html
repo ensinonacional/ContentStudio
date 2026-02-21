@@ -737,36 +737,12 @@ CONTEUDO BASE: ${conteudo}`;
                 userPrompt = `Crie um carrossel de ${numSlides} slides para Instagram sobre: ${tema}`;
             }
 
-            // Extrair o assunto principal (marca/pessoa/tema) do texto
-            const assuntoPrincipal = tema || conteudo.split(/[.\n]/)[0].trim();
-
-            // Regra de busca_imagem - SEMPRE incluir o assunto principal nos termos
-            let regraBuscaImagem = '';
+            // Regra de busca_imagem para famosos/historia: a IA precisa informar o nome da pessoa na capa
+            let regraCapa = '';
             if (tipoImagem === 'famosos') {
-                regraBuscaImagem = `6. busca_imagem: REGRA CRITICA - a imagem DEVE ter relacao direta com o slide:
-   - SLIDE 1 (CAPA): o NOME COMPLETO da pessoa (ex: "Anitta", "Neymar Jr"). Sera buscada na Wikipedia.
-   - DEMAIS slides: SEMPRE comece com o nome da pessoa + contexto do slide. Ex para Anitta: "Anitta show", "Anitta musica", "Anitta premio". Para Neymar: "Neymar futebol", "Neymar gol", "Neymar selecao".`;
+                regraCapa = `\n6. busca_pessoa: NO SLIDE 1 (CAPA), inclua o campo "busca_pessoa" com o NOME COMPLETO da pessoa famosa principal do tema. Ex: "Anitta", "Neymar Jr", "Elon Musk". A foto sera buscada na Wikipedia.`;
             } else if (tipoImagem === 'historia') {
-                regraBuscaImagem = `6. busca_imagem: REGRA CRITICA - a imagem DEVE ter relacao direta com o slide:
-   - SLIDE 1 (CAPA): o NOME COMPLETO do personagem (ex: "Albert Einstein"). Sera buscada na Wikipedia.
-   - DEMAIS slides: SEMPRE comece com o nome da pessoa + contexto. Ex para Einstein: "Einstein fisica", "Einstein Nobel", "Einstein laboratorio".`;
-            } else if (tipoImagem === 'empresa') {
-                regraBuscaImagem = `6. busca_imagem: REGRA CRITICA - TODOS os slides devem ter imagens da marca/empresa:
-   - SLIDE 1 (CAPA): APENAS o nome da marca (ex: "Nike", "Instagram", "Google").
-   - DEMAIS slides: SEMPRE comece com o nome da marca + contexto do slide. Exemplos:
-     * Para Nike: "nike tenis", "nike corrida", "nike logo", "nike esporte"
-     * Para Instagram: "instagram app", "instagram rede social", "instagram stories"
-     * Para Google: "google logo", "google busca", "google tecnologia"
-   IMPORTANTE: O nome da marca DEVE aparecer em TODOS os termos de busca para garantir imagens relevantes.`;
-            } else {
-                regraBuscaImagem = `6. busca_imagem: REGRA CRITICA - a imagem DEVE representar EXATAMENTE o conteudo do slide:
-   - SEMPRE inclua o ASSUNTO PRINCIPAL do post nos termos de busca.
-   - Use o formato: "assunto principal + contexto do slide". Exemplos:
-     * Post sobre cafe: "cafe graos", "cafe xicara", "cafe barista", "cafe plantacao"
-     * Post sobre fitness: "academia treino", "musculacao peso", "corrida parque"
-     * Post sobre marketing: "marketing digital", "marketing redes sociais"
-   - NUNCA use termos genericos sem relacao com o assunto principal.
-   - Se o tema for uma MARCA ou PRODUTO, SEMPRE inclua o nome nos termos (ex: "nike tenis", "apple iphone").`;
+                regraCapa = `\n6. busca_pessoa: NO SLIDE 1 (CAPA), inclua o campo "busca_pessoa" com o NOME COMPLETO do personagem historico. Ex: "Albert Einstein", "Dom Pedro II". A foto sera buscada na Wikipedia.`;
             }
 
             userPrompt += `
@@ -776,12 +752,10 @@ REGRAS:
 2. Slides 2 a ${numSlides} sao conteudo com começo, meio e fim logico
 3. Cada slide deve manter o MESMO ASSUNTO, com progresso na informacao
 4. headline: titulo curto e impactante (maximo 6 palavras)
-5. body: texto explicativo direto, maximo 3 linhas curtas
-${regraBuscaImagem}
+5. body: texto explicativo direto, maximo 3 linhas curtas${regraCapa}
 7. A numeracao dos slides internos e opcional - use quando fizer sentido (listas, passos, dicas)
 
-O ASSUNTO PRINCIPAL deste post e: "${assuntoPrincipal}"
-TODAS as buscas de imagem DEVEM incluir "${assuntoPrincipal}" ou palavras-chave diretamente relacionadas.
+NAO inclua o campo "busca_imagem" - as imagens serao montadas automaticamente pelo sistema.
 
 Retorne EXATAMENTE este JSON:
 {
@@ -790,15 +764,13 @@ Retorne EXATAMENTE este JSON:
             "numero": 1,
             "tipo": "capa",
             "headline": "Titulo da Capa Aqui",
-            "body": "Subtitulo curto e envolvente",
-            "busca_imagem": "${assuntoPrincipal}"
+            "body": "Subtitulo curto e envolvente"${tipoImagem === 'famosos' || tipoImagem === 'historia' ? ',\n            "busca_pessoa": "Nome Completo"' : ''}
         },
         {
             "numero": 2,
             "tipo": "conteudo",
             "headline": "Primeiro Ponto",
-            "body": "Texto explicativo curto e direto ao ponto.",
-            "busca_imagem": "${assuntoPrincipal} contexto"
+            "body": "Texto explicativo curto e direto ao ponto."
         }
     ],
     "legenda": "Texto completo da legenda para Instagram com emojis",
@@ -818,39 +790,38 @@ Retorne EXATAMENTE este JSON:
                 dadosGerados = JSON.parse(jsonLimpo);
                 console.log('[Posts] JSON parsed, slides:', dadosGerados.slides?.length);
 
-                // Extrair palavra-chave principal do tema para forçar relevância
-                // Remove prefixos comuns para encontrar o assunto real
-                const prefixos = /^(a historia d[aoe]s?|historia d[aoe]s?|como fazer|como criar|como|o que [eé]|tudo sobre|dicas de|dicas para|guia d[aoe]s?|guia completo|guia para|passo a passo|erros que|o que ningu[eé]m|antes e depois|mito vs verdade|por que|porque|beneficios d[aoe]s?|vantagens d[aoe]s?|segredos d[aoe]s?|5 dicas|7 dicas|10 dicas|\d+ dicas)\s*/i;
-                const temaLimpo = (tema || '').replace(prefixos, '').trim();
-                // Pegar as palavras-chave mais importantes (até 3 palavras, ignorando preposições)
-                const stopWords = ['de','do','da','dos','das','para','com','sem','por','em','no','na','nos','nas','um','uma','uns','umas','o','a','os','as','e','ou','que','se','ao','aos','pela','pelo','sobre','entre','ate','mais','muito','como'];
-                const palavrasImportantes = temaLimpo.split(/\s+/).filter(p => !stopWords.includes(p.toLowerCase()) && p.length > 2);
-                const palavraChave = palavrasImportantes.slice(0, 3).join(' ').trim();
+                // ===== MONTAR TERMOS DE BUSCA AUTOMATICAMENTE =====
+                // Regra: CAPA = só o TEMA | DEMAIS = TEMA + assunto do slide (headline)
+                const temaOriginal = tema || conteudo.split(/[.\n]/)[0].trim();
 
-                console.log('[Posts] Tema: "' + tema + '" -> Palavra-chave: "' + palavraChave + '"');
+                // Extrair palavra-chave limpa do tema (remover prefixos como "5 dicas de", "como fazer", etc)
+                const prefixos = /^(a historia d[aoe]s?|historia d[aoe]s?|como fazer|como criar|como|o que [eé]|tudo sobre|dicas de|dicas para|guia d[aoe]s?|guia completo|guia para|passo a passo|erros que|o que ningu[eé]m|antes e depois|mito vs verdade|por que|porque|beneficios d[aoe]s?|vantagens d[aoe]s?|segredos d[aoe]s?|\d+ dicas d[aoe]s?|\d+ dicas)\s*/i;
+                const temaChave = temaOriginal.replace(prefixos, '').trim() || temaOriginal;
 
-                // GARANTIA: Forçar que busca_imagem inclua o assunto principal
-                // Funciona para TUDO: marcas (Nike), assuntos (produtividade), etc.
-                if (palavraChave) {
-                    const chave = palavraChave.toLowerCase();
-                    const chaveWords = chave.split(/\s+/);
-                    dadosGerados.slides.forEach((slide, i) => {
-                        if (slide.busca_imagem) {
-                            const termo = slide.busca_imagem.toLowerCase();
-                            // Verificar se PELO MENOS UMA palavra-chave está no termo
-                            const temRelacao = chaveWords.some(w => termo.includes(w));
-                            if (!temRelacao) {
-                                slide.busca_imagem = palavraChave + ' ' + slide.busca_imagem;
-                                console.log('[Posts] Forcando relevancia slide ' + (i+1) + ': "' + slide.busca_imagem + '"');
-                            }
+                console.log('[Posts] Tema: "' + temaOriginal + '" -> Chave busca: "' + temaChave + '"');
+
+                dadosGerados.slides.forEach((slide, i) => {
+                    const isCapa = slide.tipo === 'capa' || slide.numero === 1;
+
+                    if (isCapa) {
+                        // CAPA: busca só o tema
+                        if ((tipoImagem === 'famosos' || tipoImagem === 'historia') && slide.busca_pessoa) {
+                            // Famosos/Historia: usar nome da pessoa da Wikipedia
+                            slide.busca_imagem = slide.busca_pessoa;
+                        } else {
+                            slide.busca_imagem = temaChave;
                         }
-                    });
-                }
+                    } else {
+                        // DEMAIS SLIDES: TEMA + assunto do slide (headline)
+                        slide.busca_imagem = temaChave + ' ' + (slide.headline || '');
+                    }
+
+                    console.log('[Posts] Slide ' + (i+1) + ' busca: "' + slide.busca_imagem + '"');
+                });
 
                 showStatus('Buscando imagens...');
 
                 // Buscar imagens para cada slide
-                // Wikipedia so na capa, Pixabay nos demais
                 const buscas = dadosGerados.slides.map(async (slide) => {
                     if (slide.busca_imagem) {
                         const isCapa = slide.tipo === 'capa' || slide.numero === 1;
