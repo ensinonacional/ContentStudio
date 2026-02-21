@@ -629,17 +629,51 @@
             }
         }
 
+        // Buscar logo/imagem de empresa no Pixabay (inclui ilustracoes e vetores)
+        async function buscarLogoPixabay(nome) {
+            // Tentar varias combinacoes para achar o melhor resultado
+            const termos = [
+                `${nome} logo`,
+                `${nome} app`,
+                `${nome} brand`,
+                nome
+            ];
+            for (const termo of termos) {
+                try {
+                    const url = `https://pixabay.com/api/?key=${PIXABAY_KEY}&q=${encodeURIComponent(termo)}&image_type=all&per_page=10&safesearch=true`;
+                    const resp = await fetch(url);
+                    if (!resp.ok) continue;
+                    const data = await resp.json();
+                    if (data.hits && data.hits.length > 0) {
+                        const pick = data.hits[0]; // primeiro resultado e geralmente o mais relevante
+                        console.log('[Logo] "' + termo + '" -> OK (' + data.totalHits + ' resultados)');
+                        return pick.largeImageURL || pick.webformatURL;
+                    }
+                } catch(e) {}
+            }
+            return '';
+        }
+
         // Buscar 1 imagem para um slide (roteador por tipo)
         // isCapa = true so para o slide 1 (capa)
         async function buscarImagemParaSlide(query, isCapa = false) {
-            // Famosos/Historia/Empresa: Wikipedia SÓ na CAPA
-            if (isCapa && (tipoImagem === 'famosos' || tipoImagem === 'historia' || tipoImagem === 'empresa')) {
+            // SÓ NA CAPA: buscar imagem especial conforme tipo
+            if (isCapa && tipoImagem === 'empresa') {
+                // Empresa: buscar logo no Pixabay (inclui vetores/ilustracoes)
+                const logo = await buscarLogoPixabay(query);
+                if (logo) return logo;
+                // Fallback Wikipedia
+                const wikiImg = await buscarImagemWikipedia(query);
+                if (wikiImg) return wikiImg;
+                console.log('[Posts] Logo nao encontrado para "' + query + '", usando Pixabay generico...');
+            } else if (isCapa && (tipoImagem === 'famosos' || tipoImagem === 'historia')) {
+                // Famosos/Historia: Wikipedia para foto da pessoa
                 const wikiImg = await buscarImagemWikipedia(query);
                 if (wikiImg) return wikiImg;
                 console.log('[Posts] Wiki nao encontrou "' + query + '", tentando Pixabay...');
             }
 
-            // Todos os outros slides + fallback: Pixabay
+            // Todos os outros slides + fallback: Pixabay fotos
             const { fotos } = await buscarPixabay(query, 10);
             if (fotos.length > 0) {
                 const pick = fotos[Math.floor(Math.random() * fotos.length)];
@@ -708,15 +742,23 @@ CONTEUDO BASE: ${conteudo}`;
             if (tipoImagem === 'famosos') {
                 regraBuscaImagem = `6. busca_imagem: REGRA IMPORTANTE:
    - Para o SLIDE 1 (CAPA): use o NOME COMPLETO da pessoa famosa ou celebridade principal do tema. Ex: "Anitta", "Neymar Jr", "Elon Musk". A foto dessa pessoa sera buscada na Wikipedia.
-   - Para os DEMAIS slides (2 em diante): use 1-3 palavras em PORTUGUES para buscar foto no Pixabay. Use termos CONCRETOS e VISUAIS relacionados ao conteudo do slide (ex: "palco show", "microfone musica", "trofeu premiacao"). NUNCA repita o nome do famoso nos slides internos.`;
+   - Para os DEMAIS slides (2 em diante): use 1-3 palavras em PORTUGUES para buscar foto no Pixabay. Escolha termos que representem VISUALMENTE o conteudo. Exemplos por area:
+     * Musica: "palco show luzes", "microfone cantor", "publico festival"
+     * Esporte: "estadio futebol", "trofeu campeonato", "atleta correndo"
+     * Cinema: "camera cinema", "tapete vermelho", "oscar premiacao"
+     NUNCA repita o nome do famoso nos slides internos.`;
             } else if (tipoImagem === 'historia') {
                 regraBuscaImagem = `6. busca_imagem: REGRA IMPORTANTE:
    - Para o SLIDE 1 (CAPA): use o NOME COMPLETO do personagem historico principal do tema. Ex: "Albert Einstein", "Dom Pedro II", "Princesa Isabel". A foto sera buscada na Wikipedia.
-   - Para os DEMAIS slides (2 em diante): use 1-3 palavras em PORTUGUES para buscar foto no Pixabay. Use termos CONCRETOS e VISUAIS relacionados ao conteudo do slide (ex: "livro antigo", "mapa historico", "castelo medieval", "laboratorio ciencia"). NUNCA repita o nome da pessoa nos slides internos.`;
+   - Para os DEMAIS slides (2 em diante): use 1-3 palavras em PORTUGUES para buscar foto no Pixabay. Escolha termos que representem VISUALMENTE o contexto historico. Exemplos:
+     * "livro antigo biblioteca", "mapa mundo antigo", "castelo medieval"
+     * "laboratorio ciencia", "pergaminho escrita", "museu estatua"
+     * "coroa realeza", "espada cavaleiro", "navio caravela"
+     NUNCA repita o nome da pessoa nos slides internos.`;
             } else if (tipoImagem === 'empresa') {
                 regraBuscaImagem = `6. busca_imagem: REGRA IMPORTANTE:
-   - Para o SLIDE 1 (CAPA): use o NOME da empresa, marca ou organizacao principal do tema. Ex: "Apple", "Google", "Natura", "Magazine Luiza". O logo/imagem sera buscado na Wikipedia.
-   - Para os DEMAIS slides (2 em diante): use 1-3 palavras em PORTUGUES para buscar foto no Pixabay. Use termos CONCRETOS e VISUAIS relacionados ao conteudo do slide (ex: "escritorio corporativo", "reuniao equipe", "tecnologia inovacao"). NUNCA repita o nome da empresa nos slides internos.`;
+   - Para o SLIDE 1 (CAPA): use APENAS o nome da empresa/marca em INGLES como e conhecida mundialmente. Ex: "Instagram", "Facebook", "Google", "Apple", "Nike", "Coca Cola", "Netflix", "Amazon", "Uber", "Spotify". O logo sera buscado automaticamente.
+   - Para os DEMAIS slides (2 em diante): use 1-3 palavras em PORTUGUES para buscar foto no Pixabay. Use termos CONCRETOS e VISUAIS que representem o setor ou atividade da empresa (ex: para Instagram use "rede social celular", para Nike use "tenis corrida esporte", para Starbucks use "cafe xicara"). NUNCA repita o nome da empresa nos slides internos.`;
             } else {
                 regraBuscaImagem = `6. busca_imagem: 1-3 palavras em PORTUGUES para buscar foto no banco Pixabay. Use termos CONCRETOS e VISUAIS relacionados ao slide (ex: "escritorio moderno", "cafe trabalho", "equipe reuniao", "laptop mesa", "escola alunos"). NUNCA use termos abstratos.`;
             }
