@@ -303,7 +303,6 @@
         .img-type-option { display: inline-flex; align-items: center; gap: 5px; padding: 7px 14px; border: 1.5px solid var(--border); border-radius: 9999px; font-size: 0.75rem; font-weight: 600; color: var(--text-muted); cursor: pointer; transition: all 0.15s; user-select: none; }
         .img-type-option:hover { border-color: var(--accent); color: var(--accent); }
         .img-type-option.selected { border-color: var(--accent); color: var(--accent); background: var(--accent-glow); }
-        #tipoImagemGroup.disabled { opacity: 0.35; pointer-events: none; }
 
         /* Clearfix */
         .clearfix::after { content: ''; display: table; clear: both; }
@@ -569,12 +568,10 @@
                 modoImagem = 'criativo';
                 options[0].classList.remove('active');
                 options[1].classList.add('active');
-                document.getElementById('tipoImagemGroup').classList.add('disabled');
             } else {
                 modoImagem = 'imagens';
                 options[1].classList.remove('active');
                 options[0].classList.add('active');
-                document.getElementById('tipoImagemGroup').classList.remove('disabled');
             }
         }
 
