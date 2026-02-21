@@ -819,18 +819,29 @@ Retorne EXATAMENTE este JSON:
                 console.log('[Posts] JSON parsed, slides:', dadosGerados.slides?.length);
 
                 // Extrair palavra-chave principal do tema para forçar relevância
-                const palavraChave = (tema || '').replace(/^(a historia d[aoe]s?|como|o que e|tudo sobre|dicas de|guia d[aoe]s?)\s*/i, '').split(/\s+/).slice(0, 2).join(' ').trim();
+                // Remove prefixos comuns para encontrar o assunto real
+                const prefixos = /^(a historia d[aoe]s?|historia d[aoe]s?|como fazer|como criar|como|o que [eé]|tudo sobre|dicas de|dicas para|guia d[aoe]s?|guia completo|guia para|passo a passo|erros que|o que ningu[eé]m|antes e depois|mito vs verdade|por que|porque|beneficios d[aoe]s?|vantagens d[aoe]s?|segredos d[aoe]s?|5 dicas|7 dicas|10 dicas|\d+ dicas)\s*/i;
+                const temaLimpo = (tema || '').replace(prefixos, '').trim();
+                // Pegar as palavras-chave mais importantes (até 3 palavras, ignorando preposições)
+                const stopWords = ['de','do','da','dos','das','para','com','sem','por','em','no','na','nos','nas','um','uma','uns','umas','o','a','os','as','e','ou','que','se','ao','aos','pela','pelo','sobre','entre','ate','mais','muito','como'];
+                const palavrasImportantes = temaLimpo.split(/\s+/).filter(p => !stopWords.includes(p.toLowerCase()) && p.length > 2);
+                const palavraChave = palavrasImportantes.slice(0, 3).join(' ').trim();
+
+                console.log('[Posts] Tema: "' + tema + '" -> Palavra-chave: "' + palavraChave + '"');
 
                 // GARANTIA: Forçar que busca_imagem inclua o assunto principal
-                if (palavraChave && tipoImagem !== 'famosos' && tipoImagem !== 'historia') {
+                // Funciona para TUDO: marcas (Nike), assuntos (produtividade), etc.
+                if (palavraChave) {
+                    const chave = palavraChave.toLowerCase();
+                    const chaveWords = chave.split(/\s+/);
                     dadosGerados.slides.forEach((slide, i) => {
                         if (slide.busca_imagem) {
                             const termo = slide.busca_imagem.toLowerCase();
-                            const chave = palavraChave.toLowerCase();
-                            // Se o termo não contem a palavra-chave, adicionar
-                            if (!termo.includes(chave)) {
+                            // Verificar se PELO MENOS UMA palavra-chave está no termo
+                            const temRelacao = chaveWords.some(w => termo.includes(w));
+                            if (!temRelacao) {
                                 slide.busca_imagem = palavraChave + ' ' + slide.busca_imagem;
-                                console.log('[Posts] Forçando relevancia slide ' + (i+1) + ': "' + slide.busca_imagem + '"');
+                                console.log('[Posts] Forcando relevancia slide ' + (i+1) + ': "' + slide.busca_imagem + '"');
                             }
                         }
                     });
