@@ -164,9 +164,9 @@ const UsageControl = {
 
 // Só cria se não existir (common.js pode já ter definido)
 // Se já existe, apenas adiciona os métodos admin que faltam
-if (typeof UserAuth === 'undefined') {
+if (typeof window.UserAuth === 'undefined') {
     // Versão completa para quando config.js é carregado sozinho (ex: admin.html)
-    var UserAuth = {
+    window.UserAuth = {
         // Credenciais admin (em produção, isso estaria no backend)
         ADMIN_USER: 'rafaeladias',
         ADMIN_PASS: 'diasdias',
