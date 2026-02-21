@@ -887,14 +887,51 @@ Retorne EXATAMENTE este JSON:
 
                 showStatus('Buscando imagens...');
 
-                // Buscar imagens para cada slide
-                const buscas = dadosGerados.slides.map(async (slide) => {
-                    if (slide.busca_imagem) {
-                        const isCapa = slide.tipo === 'capa' || slide.numero === 1;
-                        slide.bgImage = await buscarImagemParaSlide(slide.busca_imagem, isCapa);
+                // BUSCA INTELIGENTE: uma busca grande + distribuir sem repetir
+                // 1. Buscar bastante fotos do tema principal
+                const { fotos: fotosTema } = await buscarPixabay(temaChave, 30);
+                let fotosDisponiveis = [...fotosTema];
+                let indiceFoto = 0;
+
+                // 2. Para cada slide, atribuir uma foto diferente
+                for (const slide of dadosGerados.slides) {
+                    const isCapa = slide.tipo === 'capa' || slide.numero === 1;
+
+                    // Famosos/Historia: capa busca na Wikipedia
+                    if (isCapa && (tipoImagem === 'famosos' || tipoImagem === 'historia') && slide.busca_pessoa) {
+                        slide.bgImage = await buscarImagemWikipedia(slide.busca_pessoa);
+                        if (slide.bgImage) continue;
                     }
-                });
-                await Promise.allSettled(buscas);
+
+                    // Empresa: capa busca logo
+                    if (isCapa && tipoImagem === 'empresa') {
+                        const logo = await buscarLogoPixabay(temaChave);
+                        if (logo) { slide.bgImage = logo; continue; }
+                    }
+
+                    // Tentar busca específica do slide (tema + keyword)
+                    if (slide.busca_imagem && slide.busca_imagem !== temaChave) {
+                        const { fotos: fotasEspecificas } = await buscarPixabay(slide.busca_imagem, 5);
+                        // Pegar a primeira que não foi usada
+                        const nova = fotasEspecificas.find(f => !imagensUsadas.has(f.url));
+                        if (nova) {
+                            slide.bgImage = nova.url;
+                            imagensUsadas.add(nova.url);
+                            continue;
+                        }
+                    }
+
+                    // Fallback: pegar da lista geral do tema (sem repetir)
+                    while (indiceFoto < fotosDisponiveis.length) {
+                        const foto = fotosDisponiveis[indiceFoto];
+                        indiceFoto++;
+                        if (!imagensUsadas.has(foto.url)) {
+                            slide.bgImage = foto.url;
+                            imagensUsadas.add(foto.url);
+                            break;
+                        }
+                    }
+                }
 
                 hideStatus();
                 renderizarSlides();
