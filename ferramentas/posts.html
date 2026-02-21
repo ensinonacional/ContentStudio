@@ -887,20 +887,29 @@ Retorne EXATAMENTE este JSON:
 
                 showStatus('Buscando imagens...');
 
-                // BUSCA INTELIGENTE: uma busca grande + distribuir sem repetir
-                // 1. Buscar bastante fotos do tema principal
-                const { fotos: fotosTema } = await buscarPixabay(temaChave, 30);
-                let fotosDisponiveis = [...fotosTema];
-                let indiceFoto = 0;
+                // BUSCA SIMPLES: UMA busca grande no Pixabay, cada slide pega a próxima foto
+                // Buscar direto no Pixabay (sem Pexels que falha muito) com bastante resultado
+                let fotosPool = [];
+                try {
+                    const url = `https://pixabay.com/api/?key=${PIXABAY_KEY}&q=${encodeURIComponent(temaChave)}&image_type=photo&per_page=50&safesearch=true&order=popular&lang=pt`;
+                    const resp = await fetch(url);
+                    if (resp.ok) {
+                        const data = await resp.json();
+                        fotosPool = (data.hits || []).map(h => h.largeImageURL || h.webformatURL);
+                    }
+                } catch(e) { console.warn('[Pool] erro:', e); }
 
-                // 2. Para cada slide, atribuir uma foto diferente
+                console.log('[Posts] Pool de fotos para "' + temaChave + '": ' + fotosPool.length + ' imagens');
+
+                // Distribuir: cada slide pega uma foto diferente na ordem
+                let fotoIndex = 0;
                 for (const slide of dadosGerados.slides) {
                     const isCapa = slide.tipo === 'capa' || slide.numero === 1;
 
                     // Famosos/Historia: capa busca na Wikipedia
                     if (isCapa && (tipoImagem === 'famosos' || tipoImagem === 'historia') && slide.busca_pessoa) {
-                        slide.bgImage = await buscarImagemWikipedia(slide.busca_pessoa);
-                        if (slide.bgImage) continue;
+                        const wikiImg = await buscarImagemWikipedia(slide.busca_pessoa);
+                        if (wikiImg) { slide.bgImage = wikiImg; continue; }
                     }
 
                     // Empresa: capa busca logo
@@ -909,27 +918,10 @@ Retorne EXATAMENTE este JSON:
                         if (logo) { slide.bgImage = logo; continue; }
                     }
 
-                    // Tentar busca específica do slide (tema + keyword)
-                    if (slide.busca_imagem && slide.busca_imagem !== temaChave) {
-                        const { fotos: fotasEspecificas } = await buscarPixabay(slide.busca_imagem, 5);
-                        // Pegar a primeira que não foi usada
-                        const nova = fotasEspecificas.find(f => !imagensUsadas.has(f.url));
-                        if (nova) {
-                            slide.bgImage = nova.url;
-                            imagensUsadas.add(nova.url);
-                            continue;
-                        }
-                    }
-
-                    // Fallback: pegar da lista geral do tema (sem repetir)
-                    while (indiceFoto < fotosDisponiveis.length) {
-                        const foto = fotosDisponiveis[indiceFoto];
-                        indiceFoto++;
-                        if (!imagensUsadas.has(foto.url)) {
-                            slide.bgImage = foto.url;
-                            imagensUsadas.add(foto.url);
-                            break;
-                        }
+                    // Atribuir próxima foto do pool (nunca repete)
+                    if (fotoIndex < fotosPool.length) {
+                        slide.bgImage = fotosPool[fotoIndex];
+                        fotoIndex++;
                     }
                 }
 
