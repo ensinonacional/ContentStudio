@@ -1114,20 +1114,61 @@ Retorne EXATAMENTE este JSON:
         async function refazerDesign() {
             currentLayoutIndex++;
             const layoutNum = (currentLayoutIndex % 10) + 1;
-            showStatus(`Carregando layout ${layoutNum} de 10 com novas imagens...`);
+            showStatus(`Carregando layout ${layoutNum} com novas imagens...`);
 
-            // Forcar novas imagens (limpar cache das URLs anteriores)
-            const buscas = dadosGerados.slides.map(async (slide) => {
-                if (slide.busca_imagem) {
-                    // Sempre buscar imagem nova
-                    slide.bgImage = await buscarImagemParaSlide(slide.busca_imagem);
+            // Usar o mesmo sistema de pool do tema
+            const temaOriginal = document.getElementById('inputTema').value.trim() || '';
+            const prefixos = /^(a historia d[aoe]s?|historia d[aoe]s?|como fazer|como criar|como|o que [eé]|tudo sobre|dicas de|dicas para|guia d[aoe]s?|guia completo|guia para|passo a passo|erros que|o que ningu[eé]m|antes e depois|mito vs verdade|por que|porque|beneficios d[aoe]s?|vantagens d[aoe]s?|segredos d[aoe]s?|\d+ dicas d[aoe]s?|\d+ dicas)\s*/i;
+            const temaChave = temaOriginal.replace(prefixos, '').trim() || temaOriginal;
+
+            // Carregar histórico
+            const storageKey = 'imgs_usadas_' + temaChave.toLowerCase().replace(/\s+/g, '_');
+            let jaUsadas = new Set();
+            try {
+                const saved = localStorage.getItem(storageKey);
+                if (saved) jaUsadas = new Set(JSON.parse(saved));
+            } catch(e) {}
+
+            // Buscar pool de 200 fotos
+            let fotosPool = [];
+            try {
+                const url = `https://pixabay.com/api/?key=${PIXABAY_KEY}&q=${encodeURIComponent(temaChave)}&image_type=photo&per_page=200&safesearch=true&lang=pt`;
+                const resp = await fetch(url);
+                if (resp.ok) {
+                    const data = await resp.json();
+                    fotosPool = (data.hits || []).map(h => h.largeImageURL || h.webformatURL);
                 }
-            });
-            await Promise.allSettled(buscas);
+            } catch(e) {}
+
+            // Filtrar já usadas
+            let fotosNovas = fotosPool.filter(url => !jaUsadas.has(url));
+            if (fotosNovas.length < dadosGerados.slides.length) {
+                jaUsadas.clear();
+                fotosNovas = [...fotosPool];
+            }
+
+            // Embaralhar
+            for (let i = fotosNovas.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [fotosNovas[i], fotosNovas[j]] = [fotosNovas[j], fotosNovas[i]];
+            }
+
+            // Distribuir
+            let idx = 0;
+            for (const slide of dadosGerados.slides) {
+                if (idx < fotosNovas.length) {
+                    slide.bgImage = fotosNovas[idx];
+                    jaUsadas.add(fotosNovas[idx]);
+                    idx++;
+                }
+            }
+
+            // Salvar
+            try { localStorage.setItem(storageKey, JSON.stringify([...jaUsadas])); } catch(e) {}
 
             renderizarSlides();
             setTimeout(hideStatus, 1500);
-            mostrarNotificacao(`Layout ${layoutNum} de 10 - novas imagens!`, 'success');
+            mostrarNotificacao(`Layout ${layoutNum} - novas imagens!`, 'success');
         }
 
         // ==================== DRAG & DROP ====================
