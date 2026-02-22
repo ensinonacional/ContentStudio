@@ -356,8 +356,8 @@
             flex: 1;
             padding: 14px 12px;
             background: transparent;
-            color: var(--evt-text-muted);
-            border: 1.5px solid rgba(255,255,255,0.1);
+            color: var(--evt-accent);
+            border: 1.5px solid rgba(245,197,66,0.4);
             border-radius: var(--evt-radius-sm);
             font-size: 0.82rem;
             font-weight: 600;
@@ -366,10 +366,11 @@
             transition: all var(--evt-transition);
         }
         .btn-lembrete:hover {
-            border-color: rgba(0,201,183,0.3);
-            color: var(--evt-teal);
+            border-color: var(--evt-accent);
+            color: var(--evt-accent);
+            box-shadow: 0 4px 20px rgba(245,197,66,0.15);
         }
-        .btn-lembrete svg { width: 18px; height: 18px; fill: currentColor; }
+        .btn-lembrete svg { width: 18px; height: 18px; fill: var(--evt-accent); }
 
         /* Spinner */
         .spinner {
@@ -541,19 +542,18 @@
         /* ==================== RESPONSIVO ==================== */
         @media (max-width: 480px) {
             .btn-group { flex-direction: column; }
-            .info-cards {
-                grid-template-columns: 1fr 1fr;
-            }
-            .info-card-local {
-                grid-column: 1 / -1;
-            }
+            .info-section { padding: 0 12px; }
+            .info-cards { gap: 6px; }
+            .info-card { padding: 14px 6px 12px; }
+            .info-icon { width: 32px; height: 32px; border-radius: 8px; margin-bottom: 8px; }
+            .info-icon svg { width: 14px; height: 14px; }
+            .info-label { font-size: 0.5rem; letter-spacing: 0.5px; }
+            .info-value { font-size: 0.7rem; white-space: nowrap; }
         }
-        @media (max-width: 380px) {
+        @media (max-width: 340px) {
             .evento-titulo { font-size: 2.2rem; }
-            .info-cards { gap: 8px; }
-            .info-card { padding: 14px 8px 12px; }
-            .info-value { font-size: 0.78rem; }
-            .hero-logo { width: 220px; }
+            .info-value { font-size: 0.62rem; }
+            .hero-logo { width: 200px; }
         }
     </style>
 </head>
