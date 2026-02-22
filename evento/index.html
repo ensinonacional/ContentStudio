@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Multiplicar — Ensino Nacional</title>
+    <meta name="description" content="Confirme sua presenca no evento Multiplicar — Ensino Nacional. 21 de marco as 19h.">
+    <meta property="og:title" content="Multiplicar — Ensino Nacional">
+    <meta property="og:description" content="21 de marco as 19h - Uma noite de oportunidades!">
+    <meta property="og:type" content="website">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        /* ==================== RESET & BASE ==================== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --evt-bg: #0D1B2A;
+            --evt-bg-light: #112240;
+            --evt-bg-card: #0F2234;
+            --evt-accent: #F5C542;
+            --evt-accent-dark: #D4A832;
+            --evt-accent-glow: rgba(245,197,66,0.12);
+            --evt-teal: #00C9B7;
+            --evt-teal-glow: rgba(0,201,183,0.12);
+            --evt-white: #FFFFFF;
+            --evt-text: #E8ECF1;
+            --evt-text-muted: rgba(255,255,255,0.55);
+            --evt-card-bg: rgba(255,255,255,0.035);
+            --evt-card-border: rgba(255,255,255,0.07);
+            --evt-green: #34c759;
+            --evt-radius: 16px;
+            --evt-radius-sm: 12px;
+            --evt-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            --evt-transition: 0.3s ease;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--evt-bg);
+            background-image:
+                radial-gradient(ellipse 80% 50% at 50% 0%, rgba(17,34,64,0.8) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 40% at 30% 80%, rgba(0,201,183,0.03) 0%, transparent 50%),
+                radial-gradient(ellipse 60% 40% at 70% 60%, rgba(245,197,66,0.02) 0%, transparent 50%);
+            color: var(--evt-text);
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* ==================== PARTICULAS DE FUNDO ==================== */
+        #particles {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .hidden { display: none !important; }
+
+        /* ==================== CONTAINER ==================== */
+        .evento-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding-bottom: 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ==================== HERO ==================== */
+        .hero {
+            position: relative;
+            padding: 40px 24px 12px;
+            text-align: center;
+            overflow: hidden;
+        }
+        .hero-content { position: relative; z-index: 2; }
+
+        /* Logo */
+        .hero-logo {
+            width: 280px;
+            max-width: 70%;
+            margin: 0 auto 0;
+            position: relative;
+        }
+        .hero-logo img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 0 40px rgba(0,201,183,0.2)) drop-shadow(0 0 80px rgba(245,197,66,0.08));
+        }
+
+        .evento-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 18px;
+            background: rgba(0,201,183,0.06);
+            border: 1px solid rgba(0,201,183,0.15);
+            border-radius: 999px;
+            color: var(--evt-teal);
+            font-size: 0.6rem;
+            font-weight: 700;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            margin-bottom: 22px;
+        }
+        .evento-badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: var(--evt-teal);
+            border-radius: 50%;
+            box-shadow: 0 0 8px rgba(0,201,183,0.5);
+        }
+        .evento-titulo {
+            font-family: 'Poppins', sans-serif;
+            font-size: 3.2rem;
+            font-weight: 900;
+            line-height: 1.0;
+            color: var(--evt-white);
+            margin-bottom: 6px;
+            letter-spacing: -1.5px;
+        }
+        .evento-titulo span {
+            background: linear-gradient(135deg, #F5C542 0%, #FFE082 40%, #F5C542 80%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .evento-subtitulo-marca {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: rgba(255,255,255,0.35);
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+        .evento-subtitulo {
+            font-size: 0.9rem;
+            color: var(--evt-text-muted);
+            max-width: 340px;
+            margin: 0 auto;
+            line-height: 1.65;
+        }
+
+        /* ==================== LINHA DECORATIVA ==================== */
+        .hero-line {
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(to right, transparent, var(--evt-teal), transparent);
+            margin: 12px auto 0;
+            border-radius: 1px;
+        }
+
+        /* ==================== INFO CARDS ==================== */
+        .info-section {
+            padding: 0 24px;
+            text-align: center;
+        }
+        .info-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        .info-card {
+            background: var(--evt-card-bg);
+            border: 1px solid var(--evt-card-border);
+            border-radius: var(--evt-radius-sm);
+            padding: 18px 10px 14px;
+            text-align: center;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            transition: all var(--evt-transition);
+        }
+        .info-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(0,201,183,0.2);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+        }
+        .info-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--evt-teal-glow);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+        }
+        .info-icon svg { width: 18px; height: 18px; fill: var(--evt-teal); }
+        .info-card-link {
+            text-decoration: none;
+            color: inherit;
+            cursor: pointer;
+        }
+        .info-card-local { position: relative; overflow: visible; }
+        .info-endereco {
+            position: absolute;
+            bottom: -32px;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            font-size: 0.65rem;
+            color: var(--evt-teal);
+            background: rgba(13,27,42,0.95);
+            border: 1px solid rgba(0,201,183,0.2);
+            padding: 5px 12px;
+            border-radius: 6px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity var(--evt-transition);
+        }
+        .info-card-local:hover .info-endereco { opacity: 1; }
+        .info-label {
+            font-size: 0.58rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--evt-text-muted);
+            margin-bottom: 4px;
+        }
+        .info-value {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--evt-white);
+        }
+
+        /* ==================== DESCRICAO ==================== */
+        .descricao-section {
+            padding: 28px 24px 0;
+            text-align: center;
+        }
+        .descricao-section p {
+            font-size: 0.88rem;
+            color: var(--evt-text-muted);
+            line-height: 1.7;
+            max-width: 380px;
+            margin: 0 auto;
+        }
+
+        /* ==================== DIVIDER ==================== */
+        .divider {
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(to right, transparent, var(--evt-teal), transparent);
+            border-radius: 1px;
+            margin: 28px auto;
+        }
+
+        /* ==================== FORMULARIO ==================== */
+        .form-section {
+            max-width: 440px;
+            margin: 0 auto;
+            padding: 32px 24px 0;
+        }
+        .form-section h2 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 24px;
+            color: var(--evt-white);
+        }
+        .form-group { margin-bottom: 16px; }
+        .form-group label {
+            display: block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--evt-text-muted);
+            margin-bottom: 6px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(255,255,255,0.04);
+            border: 1.5px solid rgba(255,255,255,0.08);
+            border-radius: var(--evt-radius-sm);
+            color: var(--evt-white);
+            font-size: 1rem;
+            font-family: inherit;
+            outline: none;
+            transition: all var(--evt-transition);
+        }
+        .form-group input:focus {
+            border-color: var(--evt-teal);
+            background: rgba(0,201,183,0.03);
+            box-shadow: 0 0 0 3px rgba(0,201,183,0.08);
+        }
+        .form-group input::placeholder { color: rgba(255,255,255,0.2); }
+        .form-nota {
+            text-align: center;
+            font-size: 0.78rem;
+            color: var(--evt-text-muted);
+            margin-top: 18px;
+            line-height: 1.5;
+        }
+        .form-erro {
+            background: rgba(255,59,48,0.1);
+            border: 1px solid rgba(255,59,48,0.25);
+            color: #ff6b6b;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-weight: 500;
+            margin-bottom: 16px;
+            text-align: center;
+            display: none;
+        }
+
+        /* ==================== BOTOES ==================== */
+        .btn-group {
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+            margin-top: 24px;
+        }
+        .btn-confirmar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex: 1;
+            padding: 14px 12px;
+            background: linear-gradient(135deg, #1E90FF 0%, #00B894 100%);
+            color: var(--evt-white);
+            border: none;
+            border-radius: var(--evt-radius-sm);
+            font-size: 0.82rem;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all var(--evt-transition);
+            box-shadow: 0 4px 20px rgba(0,201,183,0.25);
+        }
+        .btn-confirmar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0,201,183,0.4);
+        }
+        .btn-confirmar:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+        .btn-confirmar svg { width: 20px; height: 20px; fill: var(--evt-white); }
+        .btn-lembrete {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex: 1;
+            padding: 14px 12px;
+            background: transparent;
+            color: var(--evt-text-muted);
+            border: 1.5px solid rgba(255,255,255,0.1);
+            border-radius: var(--evt-radius-sm);
+            font-size: 0.82rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all var(--evt-transition);
+        }
+        .btn-lembrete:hover {
+            border-color: rgba(0,201,183,0.3);
+            color: var(--evt-teal);
+        }
+        .btn-lembrete svg { width: 18px; height: 18px; fill: currentColor; }
+
+        /* Spinner */
+        .spinner {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2.5px solid rgba(255,255,255,0.3);
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ==================== TELA DE SUCESSO ==================== */
+        .sucesso-section {
+            text-align: center;
+            padding: 50px 24px 20px;
+            max-width: 440px;
+            margin: 0 auto;
+            animation: fadeInUp 0.5s ease;
+        }
+        .sucesso-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(52,199,89,0.1);
+            border: 2px solid var(--evt-green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            animation: scaleIn 0.4s ease 0.2s both;
+        }
+        .sucesso-icon svg { width: 36px; height: 36px; fill: var(--evt-green); }
+        .sucesso-icon.lembrete {
+            background: rgba(245,197,66,0.1);
+            border-color: var(--evt-accent);
+        }
+        .sucesso-icon.lembrete svg { fill: var(--evt-accent); }
+        .sucesso-section h2 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--evt-white);
+            margin-bottom: 12px;
+        }
+        .sucesso-section p {
+            font-size: 0.92rem;
+            color: var(--evt-text-muted);
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+        .sucesso-section .nome-destaque { color: var(--evt-accent); font-weight: 600; }
+        .sucesso-detalhe {
+            margin-top: 20px;
+            padding: 14px 18px;
+            background: var(--evt-card-bg);
+            border-radius: var(--evt-radius-sm);
+            border: 1px solid var(--evt-card-border);
+            font-size: 0.85rem !important;
+        }
+        .sucesso-nota {
+            font-size: 0.75rem !important;
+            color: rgba(255,255,255,0.3) !important;
+            margin-top: 16px !important;
+        }
+
+        /* ==================== BOTAO WHATSAPP ==================== */
+        .btn-whatsapp {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 28px;
+            background: #25D366;
+            color: white;
+            border-radius: var(--evt-radius-sm);
+            font-size: 0.95rem;
+            font-weight: 700;
+            font-family: inherit;
+            text-decoration: none;
+            margin-top: 20px;
+            transition: all var(--evt-transition);
+            box-shadow: 0 4px 20px rgba(37,211,102,0.2);
+        }
+        .btn-whatsapp:hover {
+            background: #1DA851;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(37,211,102,0.3);
+        }
+        .btn-whatsapp svg { width: 22px; height: 22px; fill: white; }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes scaleIn {
+            from { transform: scale(0); }
+            to { transform: scale(1); }
+        }
+
+        /* ==================== QR CODE ADMIN ==================== */
+        .qr-section {
+            text-align: center;
+            padding: 40px 24px;
+            margin-top: 32px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        .qr-section h2 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--evt-white);
+            margin-bottom: 20px;
+        }
+        .qr-section h2 span {
+            display: inline-block;
+            padding: 2px 10px;
+            background: var(--evt-accent-glow);
+            border-radius: 6px;
+            color: var(--evt-accent);
+            font-size: 0.65rem;
+            vertical-align: middle;
+            margin-left: 8px;
+        }
+        #qrcode {
+            display: inline-block;
+            padding: 16px;
+            background: white;
+            border-radius: var(--evt-radius);
+            box-shadow: var(--evt-shadow);
+            margin-bottom: 16px;
+        }
+        .btn-download-qr {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            color: var(--evt-text);
+            font-size: 0.85rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all var(--evt-transition);
+        }
+        .btn-download-qr:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: var(--evt-teal);
+        }
+        .btn-download-qr svg { width: 16px; height: 16px; fill: currentColor; }
+        .qr-url {
+            margin-top: 12px;
+            font-size: 0.72rem;
+            color: rgba(255,255,255,0.2);
+            word-break: break-all;
+        }
+
+        /* ==================== FOOTER ==================== */
+        .evento-footer {
+            text-align: center;
+            padding: 32px 24px 16px;
+            font-size: 0.72rem;
+            color: rgba(255,255,255,0.15);
+        }
+        .evento-footer strong { color: rgba(255,255,255,0.25); }
+
+        /* ==================== RESPONSIVO ==================== */
+        @media (max-width: 380px) {
+            .evento-titulo { font-size: 2.2rem; }
+            .info-cards { gap: 8px; }
+            .info-card { padding: 14px 8px 12px; }
+            .info-value { font-size: 0.78rem; }
+            .hero-logo { width: 220px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="evento-container">
+
+        <!-- PARTICULAS -->
+        <canvas id="particles"></canvas>
+
+        <!-- HERO -->
+        <section class="hero">
+            <div class="hero-content">
+                <div class="hero-logo">
+                    <img src="logo-ensino.png" alt="Ensino Nacional">
+                </div>
+                <div class="hero-line"></div>
+            </div>
+        </section>
+
+        <!-- INFO CARDS -->
+        <section class="info-section">
+            <div class="info-cards">
+                <div class="info-card">
+                    <div class="info-icon">
+                        <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM9 10H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z"/></svg>
+                    </div>
+                    <div class="info-label">Data</div>
+                    <div class="info-value">21 de Marco</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon">
+                        <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+                    </div>
+                    <div class="info-label">Horario</div>
+                    <div class="info-value">19h00</div>
+                </div>
+                <a class="info-card info-card-link info-card-local" href="https://www.google.com/maps/search/NGC+Aprisco+Avenida+Santa+Catarina+1821+Tabuleiro" target="_blank" rel="noopener">
+                    <div class="info-icon">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                    </div>
+                    <div class="info-label">Local</div>
+                    <div class="info-value">NGC - Aprisco</div>
+                    <div class="info-endereco">Av. Santa Catarina, 1821 — Tabuleiro</div>
+                </a>
+            </div>
+        </section>
+
+        <!-- FORMULARIO -->
+        <section class="form-section" id="formSection">
+            <h2>Confirme sua presenca</h2>
+            <form id="formConfirmacao" onsubmit="return false;">
+                <div id="formErro" class="form-erro"></div>
+                <div class="form-group">
+                    <label for="nome">Seu nome</label>
+                    <input type="text" id="nome" name="name" autocomplete="name" required placeholder="Digite seu nome completo">
+                </div>
+                <div class="form-group">
+                    <label for="email">Seu e-mail</label>
+                    <input type="email" id="email" name="email" autocomplete="email" required placeholder="seu@email.com">
+                </div>
+                <div class="form-group">
+                    <label for="whatsapp">Seu WhatsApp <span style="opacity:0.5;font-weight:400;text-transform:none;">(opcional)</span></label>
+                    <input type="tel" id="whatsapp" name="phone" autocomplete="tel" placeholder="(11) 99999-9999" oninput="mascaraTelefone(this)">
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn-confirmar" id="btnConfirmar" onclick="confirmarPresenca()">
+                        <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                        Confirmar Presenca
+                    </button>
+                    <button type="button" class="btn-lembrete" id="btnLembrete" onclick="adicionarLembrete()">
+                        <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+                        Adicionar Lembrete
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- SUCESSO: CONFIRMACAO -->
+        <section class="sucesso-section hidden" id="sucessoConfirmacao">
+            <div class="sucesso-icon">
+                <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+            </div>
+            <h2>Presenca Confirmada!</h2>
+            <p>Obrigado, <span class="nome-destaque" id="nomeConfirmado"></span>!</p>
+            <p>Seus dados foram registrados e um lembrete foi adicionado na sua agenda.</p>
+            <div class="sucesso-detalhe">
+                Nos vemos dia <strong>21 de marco as 19h</strong>!
+            </div>
+            <a class="btn-whatsapp" href="https://wa.me/5544988071154?text=Oi!%20Confirmei%20minha%20presen%C3%A7a%20no%20evento%20Multiplicar%20-%20Ensino%20Nacional%20dia%2021%2F03!" target="_blank" id="btnWhatsapp">
+                <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                Falar no WhatsApp
+            </a>
+            <p class="sucesso-nota">Abra o arquivo baixado (.ics) para adicionar o evento ao seu calendario.</p>
+        </section>
+
+        <!-- SUCESSO: LEMBRETE -->
+        <section class="sucesso-section hidden" id="sucessoLembrete">
+            <div class="sucesso-icon lembrete">
+                <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+            </div>
+            <h2>Lembrete Adicionado!</h2>
+            <p>Voce recebera um lembrete antes do evento para confirmar sua presenca.</p>
+            <div class="sucesso-detalhe">
+                Nao esqueca de voltar aqui e <strong>confirmar sua presenca</strong>!
+            </div>
+            <p class="sucesso-nota">Abra o arquivo baixado (.ics) para adicionar o lembrete ao seu calendario.</p>
+        </section>
+
+        <!-- QR CODE ADMIN (visivel com ?admin=1) -->
+        <section class="qr-section hidden" id="qrSection">
+            <h2>QR Code do Evento <span>ADMIN</span></h2>
+            <div id="qrcode"></div>
+            <br>
+            <button class="btn-download-qr" onclick="baixarQR()">
+                <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                Baixar QR Code
+            </button>
+            <p class="qr-url" id="qrUrl"></p>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="evento-footer">
+            <p onclick="toggleAdmin()" style="cursor:pointer;">Powered by <strong>StudioDias</strong></p>
+        </footer>
+    </div>
+
+    <script>
+        // ==================== CONFIGURACAO ====================
+        const CONFIG = {
+            WEBHOOK_URL: 'https://script.google.com/macros/s/AKfycbyrrgbqiYc3TekyBr46j9156ltPXUZ6n8g27WTUFBIiQOM_HQ0fXttn32hdumTC2ak_/exec',
+
+            EVENTO: {
+                nome: 'Multiplicar — Ensino Nacional',
+                data: '2025-03-21',
+                hora: '19:00',
+                horaFim: '21:00',
+                local: 'NGC Aprisco - Av. Santa Catarina, 1821, Tabuleiro',
+                descricao: 'Evento Multiplicar — Ensino Nacional'
+            },
+
+            get PAGE_URL() {
+                return window.location.href.split('?')[0];
+            }
+        };
+
+        // ==================== CONFIRMAR PRESENCA ====================
+        async function confirmarPresenca() {
+            const nome = document.getElementById('nome').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const whatsapp = document.getElementById('whatsapp').value.trim();
+
+            if (!nome || !email) {
+                mostrarErro('Preencha seu nome e e-mail.');
+                return;
+            }
+            if (!validarEmail(email)) {
+                mostrarErro('Digite um e-mail valido.');
+                return;
+            }
+
+            const btn = document.getElementById('btnConfirmar');
+            const btnLembrete = document.getElementById('btnLembrete');
+            btn.disabled = true;
+            btnLembrete.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> Enviando...';
+
+            try {
+                await enviarParaPlanilha(nome, email, whatsapp);
+            } catch (e) {
+                console.warn('Erro ao enviar:', e);
+            }
+
+            gerarICS_Confirmacao(nome);
+
+            document.getElementById('nomeConfirmado').textContent = nome;
+            document.getElementById('formSection').classList.add('hidden');
+            document.getElementById('sucessoConfirmacao').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ==================== ADICIONAR LEMBRETE ====================
+        function adicionarLembrete() {
+            const nome = document.getElementById('nome').value.trim() || 'Convidado';
+            gerarICS_Lembrete(nome);
+            document.getElementById('formSection').classList.add('hidden');
+            document.getElementById('sucessoLembrete').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ==================== ENVIAR PARA GOOGLE SHEETS ====================
+        async function enviarParaPlanilha(nome, email, whatsapp) {
+            return new Promise((resolve) => {
+                const telefone = whatsapp ? whatsapp.replace(/\D/g, '') : '';
+                const params = new URLSearchParams({
+                    nome: nome,
+                    email: email,
+                    whatsapp: telefone,
+                    data_confirmacao: new Date().toISOString()
+                });
+
+                const img = new Image();
+                img.onload = resolve;
+                img.onerror = resolve;
+                img.src = CONFIG.WEBHOOK_URL + '?' + params.toString();
+
+                setTimeout(resolve, 4000);
+            });
+        }
+
+        // ==================== GERAR .ICS — CONFIRMACAO ====================
+        function gerarICS_Confirmacao(nome) {
+            const uid = 'multiplicar-' + Date.now() + '@studiodias';
+            const agora = formatarDataICS(new Date());
+
+            const ics = [
+                'BEGIN:VCALENDAR',
+                'VERSION:2.0',
+                'PRODID:-//StudioDias//Evento//PT',
+                'CALSCALE:GREGORIAN',
+                'METHOD:PUBLISH',
+                'BEGIN:VEVENT',
+                'UID:' + uid,
+                'DTSTAMP:' + agora,
+                'DTSTART:20250321T190000',
+                'DTEND:20250321T210000',
+                'SUMMARY:' + CONFIG.EVENTO.nome,
+                'DESCRIPTION:Presenca confirmada por ' + nome + '. ' + CONFIG.EVENTO.descricao,
+                'LOCATION:' + CONFIG.EVENTO.local,
+                'STATUS:CONFIRMED',
+                'BEGIN:VALARM',
+                'TRIGGER:-P3D',
+                'ACTION:DISPLAY',
+                'DESCRIPTION:Daqui a 3 dias: ' + CONFIG.EVENTO.nome,
+                'END:VALARM',
+                'BEGIN:VALARM',
+                'TRIGGER:-PT6H',
+                'ACTION:DISPLAY',
+                'DESCRIPTION:Hoje as 19h! ' + CONFIG.EVENTO.nome,
+                'END:VALARM',
+                'END:VEVENT',
+                'END:VCALENDAR'
+            ].join('\r\n');
+
+            baixarArquivo(ics, 'evento-multiplicar.ics', 'text/calendar');
+        }
+
+        // ==================== GERAR .ICS — LEMBRETE ====================
+        function gerarICS_Lembrete(nome) {
+            const uid = 'multiplicar-lembrete-' + Date.now() + '@studiodias';
+            const agora = formatarDataICS(new Date());
+
+            const ics = [
+                'BEGIN:VCALENDAR',
+                'VERSION:2.0',
+                'PRODID:-//StudioDias//Lembrete//PT',
+                'CALSCALE:GREGORIAN',
+                'METHOD:PUBLISH',
+                'BEGIN:VEVENT',
+                'UID:' + uid,
+                'DTSTAMP:' + agora,
+                'DTSTART:20250321T190000',
+                'DTEND:20250321T210000',
+                'SUMMARY:[CONFIRME] ' + CONFIG.EVENTO.nome,
+                'DESCRIPTION:Nao esqueca de confirmar sua presenca!\\nLink: ' + CONFIG.PAGE_URL,
+                'LOCATION:' + CONFIG.EVENTO.local,
+                'STATUS:TENTATIVE',
+                'BEGIN:VALARM',
+                'TRIGGER:-P2D',
+                'ACTION:DISPLAY',
+                'DESCRIPTION:Confirme sua presenca: ' + CONFIG.EVENTO.nome,
+                'END:VALARM',
+                'END:VEVENT',
+                'END:VCALENDAR'
+            ].join('\r\n');
+
+            baixarArquivo(ics, 'lembrete-multiplicar.ics', 'text/calendar');
+        }
+
+        // ==================== UTILITARIOS ====================
+        function formatarDataICS(date) {
+            return date.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+        }
+
+        function baixarArquivo(conteudo, nomeArquivo, mimeType) {
+            const blob = new Blob([conteudo], { type: mimeType + ';charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = nomeArquivo;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function validarEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        function mascaraTelefone(input) {
+            let v = input.value.replace(/\D/g, '');
+            if (v.length > 11) v = v.slice(0, 11);
+            if (v.length > 6) {
+                v = '(' + v.slice(0,2) + ') ' + v.slice(2,7) + '-' + v.slice(7);
+            } else if (v.length > 2) {
+                v = '(' + v.slice(0,2) + ') ' + v.slice(2);
+            } else if (v.length > 0) {
+                v = '(' + v;
+            }
+            input.value = v;
+        }
+
+        function mostrarErro(msg) {
+            const el = document.getElementById('formErro');
+            el.textContent = msg;
+            el.style.display = 'block';
+            setTimeout(() => { el.style.display = 'none'; }, 4000);
+        }
+
+        // ==================== QR CODE (ADMIN) ====================
+        let qrGerado = false;
+
+        function gerarQR() {
+            if (qrGerado) return;
+            const urlEvento = CONFIG.PAGE_URL;
+            document.getElementById('qrUrl').textContent = urlEvento;
+
+            new QRCode(document.getElementById('qrcode'), {
+                text: urlEvento,
+                width: 256,
+                height: 256,
+                colorDark: '#0D1B2A',
+                colorLight: '#FFFFFF',
+                correctLevel: QRCode.CorrectLevel.H
+            });
+            qrGerado = true;
+        }
+
+        function initQR() {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('admin') !== '1') return;
+            document.getElementById('qrSection').classList.remove('hidden');
+            gerarQR();
+        }
+
+        function toggleAdmin() {
+            const section = document.getElementById('qrSection');
+            const isHidden = section.classList.contains('hidden');
+            if (isHidden) {
+                section.classList.remove('hidden');
+                gerarQR();
+                section.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                section.classList.add('hidden');
+            }
+        }
+
+        function baixarQR() {
+            const canvas = document.querySelector('#qrcode canvas');
+            if (!canvas) return;
+            const link = document.createElement('a');
+            link.download = 'qrcode-multiplicar.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        // ==================== PARTICULAS ====================
+        function initParticles() {
+            const canvas = document.getElementById('particles');
+            const ctx = canvas.getContext('2d');
+            let w, h, particles = [];
+
+            function resize() {
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = document.documentElement.scrollHeight;
+            }
+            resize();
+            window.addEventListener('resize', resize);
+
+            // Criar particulas — estilo estrelas sutis como no site Ensino Nacional
+            const count = 120;
+            for (let i = 0; i < count; i++) {
+                const isTeal = Math.random() < 0.15; // 15% das particulas com cor teal
+                particles.push({
+                    x: Math.random() * w,
+                    y: Math.random() * h,
+                    r: Math.random() * 1.2 + 0.2,
+                    dx: (Math.random() - 0.5) * 0.15,
+                    dy: (Math.random() - 0.5) * 0.15,
+                    baseOpacity: Math.random() * 0.4 + 0.05,
+                    opacity: 0,
+                    twinkleSpeed: Math.random() * 0.008 + 0.003,
+                    twinkleOffset: Math.random() * Math.PI * 2,
+                    color: isTeal ? '0,201,183' : '255,255,255'
+                });
+            }
+
+            let time = 0;
+            function draw() {
+                ctx.clearRect(0, 0, w, h);
+                time += 1;
+                for (let p of particles) {
+                    // Efeito twinkle (piscar sutil)
+                    p.opacity = p.baseOpacity * (0.5 + 0.5 * Math.sin(time * p.twinkleSpeed + p.twinkleOffset));
+
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(' + p.color + ',' + p.opacity + ')';
+                    ctx.fill();
+
+                    p.x += p.dx;
+                    p.y += p.dy;
+
+                    if (p.x < -5) p.x = w + 5;
+                    if (p.x > w + 5) p.x = -5;
+                    if (p.y < -5) p.y = h + 5;
+                    if (p.y > h + 5) p.y = -5;
+                }
+                requestAnimationFrame(draw);
+            }
+            draw();
+        }
+
+        // ==================== INIT ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            initQR();
+            initParticles();
+        });
+    </script>
+</body>
+</html>
