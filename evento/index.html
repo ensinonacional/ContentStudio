@@ -541,6 +541,12 @@
         /* ==================== RESPONSIVO ==================== */
         @media (max-width: 480px) {
             .btn-group { flex-direction: column; }
+            .info-cards {
+                grid-template-columns: 1fr 1fr;
+            }
+            .info-card-local {
+                grid-column: 1 / -1;
+            }
         }
         @media (max-width: 380px) {
             .evento-titulo { font-size: 2.2rem; }
